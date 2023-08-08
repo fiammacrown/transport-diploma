@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Abeslamidze_Kursovaya7.Models
 {
@@ -12,7 +9,6 @@ namespace Abeslamidze_Kursovaya7.Models
         Registered,
         InProgress,
         InQueue,
-        Unknown,
         Done,
     }
 
@@ -23,8 +19,9 @@ namespace Abeslamidze_Kursovaya7.Models
         public double Weight { get; }
         public Location From { get; }  
         public Location To { get; }
-        public DateTime DateOfIssue { get; }
-        public OrderStatus Status { get; }
+        public DateTime IssueDate { get; }
+        public DateTime? DeliveryDate { get; set;}
+        public OrderStatus Status { get; set; }
 
 
         public Order(double weight, Location from, Location to)
@@ -39,10 +36,26 @@ namespace Abeslamidze_Kursovaya7.Models
 
             Status = OrderStatus.Registered;
 
-            DateOfIssue = DateTime.Now;
+            IssueDate = DateTime.Now;
 
 
         }
+
+    }
+    public class GroupedOrder
+    {
+        public GroupedOrder(Location from, Location to, List<Order> orders)
+        {
+            From = from;
+            To = to;
+            Orders = orders;
+        }
+
+        public Location To { get; }
+        public Location From { get;  }
+        public int Count { get => Orders.Count; }
+        public double TotalWeight { get => Orders.Sum(o => o.Weight); }
+        public List<Order> Orders { get; }
 
     }
 }
