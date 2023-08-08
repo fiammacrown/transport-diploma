@@ -21,17 +21,23 @@ namespace Abeslamidze_Kursovaya7.Models
         public Guid Id { get; }
 
         public double Weight { get; }
+        public Location From { get; }  
+        public Location To { get; }
         public DateTime DateOfIssue { get; }
         public OrderStatus Status { get; }
 
 
-        public Order(double weight)
+        public Order(double weight, Location from, Location to)
         {
             Id = Guid.NewGuid();
 
             Weight = weight;
 
-            Status = OrderStatus.Unknown;
+            From = from;    
+
+            To = to;    
+
+            Status = OrderStatus.Registered;
 
             DateOfIssue = DateTime.Now;
 

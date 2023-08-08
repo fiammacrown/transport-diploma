@@ -1,55 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
+using Abeslamidze_Kursovaya7.ViewModels;
+using Abeslamidze_Kursovaya7.Models;
 
 namespace Abeslamidze_Kursovaya7
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
 
-            //dGrid.ItemsSource = new ObservableCollection<Order>
-            //{
-            //    new Order(),
-            //    new Order(),
-            //    new Order(),
-            //    new Order(),
-            //    new Order(),
-            //    new Order(),
-            //    new Order(),
-            //    new Order(),
-            //};
+            DataContext = ViewModel = new MainWindowViewModel();
         }
+
+        public MainWindowViewModel ViewModel { get; }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             RegisterWindow registerWindow = new RegisterWindow();
 
-            if (registerWindow.ShowDialog() == false)
+            if (registerWindow.ShowDialog() == true)
             {
-                return;
+                var result = registerWindow.DataResult;
+                if (result != null)
+                {
+                    ViewModel.Orders.Add(result);
+                }
             }
-
-            var model = registerWindow.Model;
-
-            //((ObservableCollection<Order>)dGrid.ItemsSource).Add(new Order());
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)

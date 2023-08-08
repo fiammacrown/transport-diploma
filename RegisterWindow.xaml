@@ -12,7 +12,9 @@
 
     <Window.Resources>
         <c:StringToDoubleConverter x:Key="StringToDouble" />
-
+        <DataTemplate x:Key="LocationItemTemplate">
+            <TextBlock Text="{Binding Name}" />
+        </DataTemplate>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -29,12 +31,21 @@
         </Grid.RowDefinitions>
         <TextBlock FontSize="24" FontWeight="Bold" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center">Заявка</TextBlock>
         <Label Content="Вес"  FontSize="16"  Grid.Row="1" Grid.Column="0" />
-        <TextBox  Grid.Row="1" Grid.Column="1" Text="{Binding Weight, Mode=TwoWay, ValidatesOnDataErrors=True, Converter={StaticResource StringToDouble}}" />
+        <TextBox  Grid.Row="1" Grid.Column="1"
+                  Text="{Binding Weight, Mode=TwoWay, ValidatesOnDataErrors=True, Converter={StaticResource StringToDouble}}" />
         <Label Content="Место отправления"  FontSize="16"  Grid.Row="2" Grid.Column="0" />
-        <ComboBox Grid.Row="2" Grid.Column="1" IsReadOnly="True" ItemsSource="{Binding Locations}" SelectedItem="{Binding From, Mode=TwoWay, ValidatesOnDataErrors=True}"/>
+        <ComboBox Grid.Row="2" Grid.Column="1"
+                  IsReadOnly="True"
+                  ItemsSource="{Binding Locations}"
+                  SelectedItem="{Binding From, Mode=TwoWay, ValidatesOnDataErrors=True}"
+                  ItemTemplate="{StaticResource LocationItemTemplate}" />
         <Label Content="Место доставки"  FontSize="16"  Grid.Row="3" Grid.Column="0" />
-        <ComboBox Grid.Row="3" Grid.Column="1" IsReadOnly="True" ItemsSource="{Binding Locations}" SelectedItem="{Binding To, Mode=TwoWay, ValidatesOnDataErrors=True}"/>
+        <ComboBox Grid.Row="3" Grid.Column="1"
+                  IsReadOnly="True"
+                  ItemsSource="{Binding Locations}"
+                  SelectedItem="{Binding To, Mode=TwoWay, ValidatesOnDataErrors=True}"
+                  ItemTemplate="{StaticResource LocationItemTemplate}" />
         <Button Grid.Row="8" Grid.Column="0" Content="Создать" Command="{Binding SaveCommand}" />
-        <Button Grid.Row="8" Grid.Column="1" Content="Отмена" Command="ApplicationCommands.Close" />
+        <Button Grid.Row="8" Grid.Column="1" Content="Отмена" Command="{Binding CancelCommand}" />
     </Grid>
 </Window>
