@@ -7,6 +7,7 @@ namespace Abeslamidze_Kursovaya7.Models
     public enum OrderStatus
     {
         Registered,
+        Assigned,
         InProgress,
         InQueue,
         Done,

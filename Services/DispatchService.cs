@@ -4,55 +4,213 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using Abeslamidze_Kursovaya7.Models;
 
 namespace Abeslamidze_Kursovaya7.Services
 {
     public class DispatchService
     {
+        private List<Delivery> _inProgressDeliveries = new List<Delivery>();
+        private List<Order> _inQueueOrders = new List<Order>();
 
-        public Delivery DispatchOrders(List<Order> orders, List<Transport> transports)
+        private List<Order> _orders;
+        private List<Transport> _transports;
+        public DispatchService(List<Order> orders, List<Transport> transports)
         {
-            // TODO
-            // 1. Filter Registered orders
-            // 2. Filter Free transports
-            // 3. Group Orders with same From, To
-            // 4. Iterate over grouped orders to calculate max subsum that <= transport Volume
-            // 5. Assign transport to orders: set trasport status, set order status
-            // 6. Calculate Delivery time and Total price
-            // 7. Set Delivery timer to calculated Delivery time 
-            // 8. Push Delivery to RunLoop
+            _orders = orders;
+            _transports = transports;
+        }
 
-            var filteredOrders = FilterRegisteredOrders(orders);
-            var filteredTransports = FilteFreeTransport(transports);
+        public int NumOfInProgressDeliveries { get => _inProgressDeliveries.Count; }
+        public int NumOfFreeTransport { get => FilteFreeTransport().Count; }
+        public int NumOfInQueueOrders { get => _inQueueOrders.Count; }
+        public List<Delivery> Dispatch()
+        {
+            DispatchGroupOrders();
+            // если групповой заказ превышаем максимальный доступный объем машины
+            // пробуем распределить заявки поодиночке начиная с наибольшей по весу
+            DispatchOrders();
+            // необработанные заявки поступают в очередь
+            InQueueOrders();
+            return _inProgressDeliveries;
+        }
 
-            var groupedOrders = GroupOrdersByFromTo(filteredOrders);
+        public void CalculateDeliveryPrice(Delivery delivery)
+        {
+            
+        }
+        public void CalculateOrderPrice(Order order)
+        {
 
-            foreach (var item in groupedOrders)
+        }
+
+        public void GetDeliveryDate(Delivery delivery)
+        {
+
+        }
+        public void GetOrderDate(Order order)
+        {
+
+        }
+
+        private void DispatchOrders()
+        {
+            var filteredOrders = FilterRegisteredOrders().OrderBy(o => o.Weight);
+            var filteredTransports = FilteFreeTransport().OrderBy(t => t.Volume);
+
+            var temp = new Dictionary<string, Transport>();
+
+            foreach (var item in filteredOrders)
             {
-                foreach (var order in item.Orders)
+                string key = item.From.ToString() + "-" + item.To.ToString();
+
+                
+
+                if (temp.TryGetValue(key, out var value))
                 {
+                    if (item.Weight <= value.AvailableVolume)
+                    {
+                        value.Load(item);
+
+                        item.Status = OrderStatus.Assigned;
+
+                    }
+                }
+                else
+                {
+                    foreach (var transport in filteredTransports)
+                    {
+                        if (item.Weight <= transport.AvailableVolume)
+                        {
+                            transport.Load(item);
+
+                            item.Status = OrderStatus.Assigned;
+
+                            temp.Add(key, transport);
+                        }
+
+                    }
+
                 }
             }
 
-            return new Delivery();
+            foreach (KeyValuePair<string, Transport> kvp in temp)
+            {
+                string[] words = kvp.Key.Split('-');
+                Transport transport = kvp.Value;
+
+                var delivery = new Delivery(
+                        new Location(words[0]),
+                        new Location(words[1]),
+                        transport.AssignedOrders,
+                        transport.Id
+                    );
+
+                _inProgressDeliveries.Add(delivery);
+            }
+
+            return;
         }
 
-        private List<Order> FilterRegisteredOrders(List<Order> orders)
+        private void DispatchGroupOrders()
         {
-            return orders.Where(o => o.Status == OrderStatus.Registered).ToList();
+            var groupedOrders = GroupOrdersByFromTo().OrderBy(g => g.TotalWeight);
+            var filteredTransports = FilteFreeTransport().OrderBy(t => t.Volume);
+
+            var temp = new Dictionary<string, Transport>();
+
+            foreach (var item in groupedOrders)
+            {
+
+                string key = item.From.ToString() + "-" + item.To.ToString();
+
+                if (temp.TryGetValue(key, out var value))
+                {
+                    if (item.TotalWeight <= value.AvailableVolume)
+                    {
+                        LoadTransport(value, item.Orders);
+                        AssignOrders(item.Orders);
+
+                    }
+                }
+                else
+                {
+                    foreach (var transport in filteredTransports)
+                    {
+                        if (item.TotalWeight <= transport.AvailableVolume)
+                        {
+                            LoadTransport(transport, item.Orders);
+                            AssignOrders(item.Orders);
+
+                            temp.Add(key, transport);
+                        }
+
+                    }
+
+                }
+            }
+
+            foreach (KeyValuePair<string, Transport> kvp in temp)
+            {
+                string[] words = kvp.Key.Split('-');
+                Transport transport = kvp.Value;
+
+                var delivery = new Delivery(
+                        new Location(words[0]),
+                        new Location(words[1]),
+                        transport.AssignedOrders,
+                        transport.Id
+                    );
+
+                _inProgressDeliveries.Add(delivery);
+            }
+
+            return;
+        }
+
+        private void LoadTransport(Transport transport, List<Order> orders)
+        {
+            foreach (var order in orders)
+            {
+                transport.Load(order);
+            }
+        }
+
+        private void AssignOrders(List<Order> orders)
+        {
+            foreach (var order in orders)
+            {
+                order.Status = OrderStatus.Assigned;
+            }
+        }
+        private void InQueueOrders()
+        {
+            var unprocessedOrders = _orders.Where(o => o.Status == OrderStatus.Registered);
+
+            foreach (var order in unprocessedOrders)
+            {
+                order.Status = OrderStatus.InQueue;
+                _inQueueOrders.Add(order);
+            }
 
         }
 
-        private List<Transport> FilteFreeTransport(List<Transport> transports)
+        private List<Order> FilterRegisteredOrders()
         {
-            return transports.Where(t => t.Status == TransportStatus.Free).ToList();
+            return _orders.Where(o => o.Status == OrderStatus.Registered).ToList();
 
         }
 
-        private List<GroupedOrder> GroupOrdersByFromTo(List<Order> orders)
+        private List<Transport> FilteFreeTransport()
         {
-            return orders
+            return _transports.Where(t => t.Status == TransportStatus.Free).ToList();
+
+        }
+
+        private List<GroupedOrder> GroupOrdersByFromTo()
+        {
+            return FilterRegisteredOrders()
                 .GroupBy(order => new { order.From, order.To })
                 .Select(groupedOrder => new GroupedOrder(
                     groupedOrder.Key.From,
@@ -62,6 +220,7 @@ namespace Abeslamidze_Kursovaya7.Services
                 )
                 .ToList();
         }
+
 
     }
 }
