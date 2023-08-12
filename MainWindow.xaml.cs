@@ -2,8 +2,10 @@
 using Abeslamidze_Kursovaya7.ViewModels;
 using Abeslamidze_Kursovaya7.Services;
 using Abeslamidze_Kursovaya7.Models;
+using Abeslamidze_Kursovaya7.Repos;
 
 using System.Collections.Generic;
+using System;
 
 namespace Abeslamidze_Kursovaya7
 {
@@ -14,10 +16,17 @@ namespace Abeslamidze_Kursovaya7
         {
             InitializeComponent();
 
-            DataContext = ViewModel = new MainWindowViewModel();
+            DataContext = ViewModel = new MainWindowViewModel(new OrdersRepo(), new TransportsRepo(), new DeliveriesRepo());
         }
 
         public MainWindowViewModel ViewModel { get; }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            ViewModel.UpdateState();
+
+            // start runner
+        }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -41,11 +50,20 @@ namespace Abeslamidze_Kursovaya7
                 result.NumOfInQueueOrders,
                 result.NumOfFreeTransport );
             MessageBox.Show(message, "Распределение заявок выполнено!");
+
+            ViewModel.UpdateState();
+            Button_Dispatch.IsEnabled = false;
         }
 
         private void Run()
         {
-
+            
+            
+            // create new thread with Runner 
+            // run on UI thread
+            this.Dispatcher.Invoke(() => { 
+                ViewModel.UpdateState();
+            });
         }
     }
 }

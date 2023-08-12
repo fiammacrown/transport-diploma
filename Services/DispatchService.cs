@@ -1,45 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Documents;
+
+using Abeslamidze_Kursovaya7.Repos;
 using Abeslamidze_Kursovaya7.Models;
 
 namespace Abeslamidze_Kursovaya7.Services
 {
-    public class DispatchServiceResult
-    {
-        public DispatchServiceResult(List<Delivery> inProgressDeliveries, List<Order> inQueueOrders, List<Transport> freeTransport)
-        {
-            InProgressDeliveries = inProgressDeliveries;
-            InQueueOrders = inQueueOrders;
-            FreeTransport = freeTransport;
-        }
-
-        public List<Delivery> InProgressDeliveries { get; }
-        public List<Order> InQueueOrders { get; }
-        public List<Transport> FreeTransport { get; }
-
-        public int NumOfInProgressDeliveries { get => InProgressDeliveries.Count; }
-        public int NumOfInQueueOrders { get => InQueueOrders.Count; }
-        public int NumOfFreeTransport { get => FreeTransport.Count; }
-    }
-
     public class DispatchService
     {
-        private List<Delivery> _inProgressDeliveries = new List<Delivery>();
-        private List<Order> _inQueueOrders = new List<Order>();
-
-        private List<Order> _orders;
-        private List<Transport> _transports;
+        private readonly OrdersRepo _ordersRepo;
+        private readonly DeliveriesRepo _deliveriesRepo;
+        private readonly TransportsRepo _transportsRepo;
 
         private Dictionary<Distance, Transport> _temp = new Dictionary<Distance, Transport>();
-        public DispatchService(List<Order> orders, List<Transport> transports)
+        public DispatchService(OrdersRepo ordersService, TransportsRepo transportsRepo, DeliveriesRepo deliveriesRepo)
         {
-            _orders = orders;
-            _transports = transports;
+            _ordersRepo = ordersService;
+            _deliveriesRepo = deliveriesRepo;
+            _transportsRepo = transportsRepo;
         }
 
         public DispatchServiceResult Dispatch()
@@ -49,43 +27,45 @@ namespace Abeslamidze_Kursovaya7.Services
             // пробуем распределить заявки поодиночке начиная с наибольшей по весу
             DispatchOrders();
             // переводим грузоперевозки и транспорт в новый статус
-            PutDeliveriesInProgress();
+            UpdateDeliveriesStatus();
             // рассчитываем дату выполнения и стоимость для грузоперевозок и заявок
-            CalculateDeliveryDateAndPrice();
-            CalculateOrderDeliveryDateAndPrice();
+            UpdateDeliveryDateAndPrice();
+            UpdateOrderDeliveryDateAndPrice();
             // необработанные заявки поступают в очередь
-            InQueueOrders();
-            return new DispatchServiceResult(_inProgressDeliveries, _inQueueOrders, FilteFreeTransport());
+            UpdateOrders();
+            return new DispatchServiceResult(_deliveriesRepo.GetAll(), _ordersRepo.GetInQueue(), _transportsRepo.GetFree());
         }
 
-        public void CalculateDeliveryDateAndPrice()
+        public void UpdateDeliveryDateAndPrice()
         {   
-            foreach (var delivery in _inProgressDeliveries)
+            foreach (var delivery in _deliveriesRepo.GetAll())
             {
                 // срок выполнения = расстояние / скорость
                 int distanceInKm = new Distance(delivery.From, delivery.To).InKm;
-                double transportSpeedInKmHour = _transports.Where(t => t.Id == delivery.TransportId).Select(t => t.Speed).First();
+                double transportSpeedInKmHour = _transportsRepo.GetSpeedInKmById(delivery.TransportId);
                 double deliveryTimeInHours = distanceInKm / transportSpeedInKmHour;
 
                 // установить дату доставки используя минуты для ускорения
                 delivery.EndDate = delivery.StartDate.AddMinutes(deliveryTimeInHours);
 
                 // стоимость = расстояние * стоимость перевозки для транспортного средства
-                double transportPricePerKm = _transports.Where(t => t.Id == delivery.TransportId).Select(t => t.PricePerKm).First();
+                double transportPricePerKm = _transportsRepo.GetPricePerKmById(delivery.TransportId);
                 delivery.TotalPrice = distanceInKm * transportPricePerKm;
             }       
 
         }
-        public void CalculateOrderDeliveryDateAndPrice()
+        public void UpdateOrderDeliveryDateAndPrice() // TODO: rework
         {
-            foreach (var delivery in _inProgressDeliveries)
+            foreach (var delivery in _deliveriesRepo.GetAll())
             {
                 foreach (var orderId in delivery.OrderIds)
                 {
-                    Order order = _orders.Where(o => o.Id == orderId).First();
-
-                    order.DeliveryDate = delivery.EndDate;
-                    order.DeliveryPrice = delivery.TotalPrice / delivery.OrderIds.Count;
+                    var order = _ordersRepo.GetById(orderId);
+                    if (order != null)
+                    {
+                        order.DeliveryDate = delivery.EndDate;
+                        order.DeliveryPrice = delivery.TotalPrice / delivery.OrderIds.Count;
+                    }
                 }
             }
 
@@ -93,8 +73,7 @@ namespace Abeslamidze_Kursovaya7.Services
 
         private void DispatchOrders()
         {
-            var filteredOrders = FilterRegisteredOrders()
-                .OrderByDescending(o => o.Weight).ToList();
+            var filteredOrders = _ordersRepo.GetRegisteredOrders();
 
             foreach (var item in filteredOrders)
             {
@@ -112,8 +91,7 @@ namespace Abeslamidze_Kursovaya7.Services
                 }
                 else
                 {
-                    var filteredTransports = FilteFreeTransport().Where(t => t.AssignedOrders.Count == 0)
-                        .OrderByDescending(t => t.Volume);
+                    var filteredTransports = _transportsRepo.GetFree();
 
                     foreach (var transport in filteredTransports)
                     {
@@ -134,8 +112,7 @@ namespace Abeslamidze_Kursovaya7.Services
 
         private void DispatchGroupOrders()
         {
-            var groupedOrders = GroupOrdersByFromTo()
-                .OrderByDescending(o => o.TotalWeight).ToList();
+            var groupedOrders = _ordersRepo.GetRegisteredOrdersGroupByFromTo();
 
             foreach (var item in groupedOrders)
             {
@@ -153,8 +130,7 @@ namespace Abeslamidze_Kursovaya7.Services
                 }
                 else
                 {
-                    var filteredTransports = FilteFreeTransport().Where(t => t.AssignedOrders.Count == 0)
-                        .OrderByDescending(t => t.Volume);
+                    var filteredTransports = _transportsRepo.GetFree();
 
                     foreach (var transport in filteredTransports)
                     {
@@ -173,7 +149,7 @@ namespace Abeslamidze_Kursovaya7.Services
             }
 
         }
-        private void PutDeliveriesInProgress()
+        private void UpdateDeliveriesStatus()
         {
             foreach (KeyValuePair<Distance, Transport> kvp in _temp)
             {
@@ -187,7 +163,7 @@ namespace Abeslamidze_Kursovaya7.Services
                         transport.Id
                     );
 
-                _inProgressDeliveries.Add(delivery);
+                _deliveriesRepo.Add(delivery);
 
                 transport.Status = TransportStatus.InTransit;
             }
@@ -200,7 +176,16 @@ namespace Abeslamidze_Kursovaya7.Services
                 transport.Load(order);
             }
         }
+        private void UpdateOrders()
+        {
+            var unprocessedOrders = _ordersRepo.GetRegisteredOrders();
 
+            foreach (var order in unprocessedOrders)
+            {
+                order.Status = OrderStatus.InQueue;
+            }
+
+        }
         private void AssignOrders(List<Order> orders)
         {
             foreach (var order in orders)
@@ -208,41 +193,24 @@ namespace Abeslamidze_Kursovaya7.Services
                 order.Status = OrderStatus.Assigned;
             }
         }
-        private void InQueueOrders()
+
+    }
+
+    public class DispatchServiceResult
+    {
+        public DispatchServiceResult(List<Delivery> inProgressDeliveries, List<Order> inQueueOrders, List<Transport> freeTransport)
         {
-            var unprocessedOrders = _orders.Where(o => o.Status == OrderStatus.Registered);
-
-            foreach (var order in unprocessedOrders)
-            {
-                order.Status = OrderStatus.InQueue;
-                _inQueueOrders.Add(order);
-            }
-
+            InProgressDeliveries = inProgressDeliveries;
+            InQueueOrders = inQueueOrders;
+            FreeTransport = freeTransport;
         }
 
-        private List<Order> FilterRegisteredOrders()
-        {
-            return _orders.Where(o => o.Status == OrderStatus.Registered).ToList();
+        public List<Delivery> InProgressDeliveries { get; }
+        public List<Order> InQueueOrders { get; }
+        public List<Transport> FreeTransport { get; }
 
-        }
-
-        private List<Transport> FilteFreeTransport()
-        {
-            return _transports.Where(t => t.Status == TransportStatus.Free).ToList();
-
-        }
-
-        private List<GroupedOrder> GroupOrdersByFromTo()
-        {
-            return FilterRegisteredOrders()
-                .GroupBy(order => new Distance(order.From, order.To))
-                .Select(groupedOrder => new GroupedOrder(
-                    groupedOrder.Key.From,
-                    groupedOrder.Key.To,
-                    groupedOrder.ToList()
-                    )
-                )
-                .ToList();
-        }
+        public int NumOfInProgressDeliveries { get => InProgressDeliveries.Count; }
+        public int NumOfInQueueOrders { get => InQueueOrders.Count; }
+        public int NumOfFreeTransport { get => FreeTransport.Count; }
     }
 }
