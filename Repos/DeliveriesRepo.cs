@@ -17,6 +17,13 @@ namespace Abeslamidze_Kursovaya7.Repos
             return _deliveries;
         }
 
+        public List<Delivery> GetInProgress()
+        {
+            return _deliveries
+                .Where(d => d.Status == DeliveryStatus.InProgress)
+                .ToList();
+        }
+
         public Delivery? GetById(Guid id)
         {
             return _deliveries.FirstOrDefault(d => d.Id == id);

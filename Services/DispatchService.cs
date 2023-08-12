@@ -34,7 +34,12 @@ namespace Abeslamidze_Kursovaya7.Services
             CalculateOrderDeliveryDateAndPrice();
             // необработанные заявки поступают в очередь
             InQueueOrders();
-            return new DispatchServiceResult(_deliveriesRepo.GetAll(), _ordersRepo.GetInQueue(), _transportsRepo.GetFree());
+            return new DispatchServiceResult(
+                _deliveriesRepo.GetInProgress(),
+                _ordersRepo.GetInQueue(),
+                _ordersRepo.GetDeliverableOrders(),
+                _transportsRepo.GetFree()
+               );
         }
 
         public DispatchServiceResult Update()
@@ -55,7 +60,12 @@ namespace Abeslamidze_Kursovaya7.Services
                 }
             }
 
-            return new DispatchServiceResult(_deliveriesRepo.GetAll(), _ordersRepo.GetInQueue(), _transportsRepo.GetFree());
+            return new DispatchServiceResult(
+                _deliveriesRepo.GetInProgress(),
+                _ordersRepo.GetInQueue(),
+                _ordersRepo.GetDeliverableOrders(),
+                _transportsRepo.GetFree()
+               );
         }
         public void CalculateDeliveryDateAndPrice()
         {   
@@ -234,19 +244,25 @@ namespace Abeslamidze_Kursovaya7.Services
 
     public class DispatchServiceResult
     {
-        public DispatchServiceResult(List<Delivery> inProgressDeliveries, List<Order> inQueueOrders, List<Transport> freeTransport)
+        public DispatchServiceResult(List<Delivery> inProgressDeliveries, List<Order> inQueueOrders, List<Order> deliverableOrders, List<Transport> freeTransport)
         {
             InProgressDeliveries = inProgressDeliveries;
+            DeliverableOrders = deliverableOrders;
             InQueueOrders = inQueueOrders;
             FreeTransport = freeTransport;
         }
 
-        public List<Delivery> InProgressDeliveries { get; }
-        public List<Order> InQueueOrders { get; }
-        public List<Transport> FreeTransport { get; }
+        private List<Delivery> InProgressDeliveries { get; }
+        private List<Order>  DeliverableOrders { get; }
+        private List<Order> InQueueOrders { get; }
+        private List<Transport> FreeTransport { get; }
 
         public int NumOfInProgressDeliveries { get => InProgressDeliveries.Count; }
+
+        public int NumOfDeliverableOrders { get => DeliverableOrders.Count; }
         public int NumOfInQueueOrders { get => InQueueOrders.Count; }
         public int NumOfFreeTransport { get => FreeTransport.Count; }
+
+        
     }
 }

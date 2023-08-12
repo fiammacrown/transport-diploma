@@ -69,7 +69,8 @@ namespace Abeslamidze_Kursovaya7
                         Dispatcher.BeginInvoke(() =>
                         {
 
-                              Button_Dispatch.IsEnabled = (result.NumOfFreeTransport > 0);
+                              Button_Dispatch.IsEnabled = (result.NumOfFreeTransport > 0) 
+                            && (result.NumOfDeliverableOrders > 0);
    
                               ViewModel.UpdateState();
                         });
