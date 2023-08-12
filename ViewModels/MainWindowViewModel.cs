@@ -22,6 +22,7 @@ namespace Abeslamidze_Kursovaya7.ViewModels
         }
 
         public ObservableCollection<Order> Orders { get; } = new ObservableCollection<Order>();
+        public ObservableCollection<Transport> Transports { get; } = new ObservableCollection<Transport>();
 
         public void AddNewOrder(Order order)
         {
@@ -47,6 +48,15 @@ namespace Abeslamidze_Kursovaya7.ViewModels
             foreach (var order in orders)
             {
                 Orders.Add(order);
+            }
+
+
+            var transports = _transportsRepo.GetAll();
+
+            Transports.Clear();
+            foreach (var transport in transports)
+            {
+                Transports.Add(transport);
             }
         }
     }

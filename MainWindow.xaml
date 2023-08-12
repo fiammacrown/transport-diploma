@@ -8,7 +8,7 @@
         Title="MainWindow" Height="650" Width="1050" Loaded="Window_Loaded">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="220" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -27,13 +27,19 @@
         <TextBlock FontSize="24" FontWeight="Bold" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">Грузоперевозки</TextBlock>
         <Button FontSize="12" FontWeight="Bold" Grid.Row="1" Grid.Column="0" Click="Button_Click">Зарегистрировать заявку</Button>
         <Button x:Name="Button_Dispatch" FontSize="12" FontWeight="Bold" Grid.Row="2" Grid.Column="0" Click="Button_Click_1" IsEnabled="False">Распределить заявки</Button>
-        <TextBlock FontSize="24" FontWeight="Bold" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">Отчеты</TextBlock>
-        <Button FontSize="12" FontWeight="Bold" Grid.Row="4" Grid.Column="0">Очередь заявок</Button>
-        <Button FontSize="12" FontWeight="Bold" Grid.Row="5" Grid.Column="0">Свободный транспорт</Button>
-        <TextBlock FontSize="24" FontWeight="Bold" Grid.Row="7" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">Диаграммы</TextBlock>
-        <Button FontSize="12" FontWeight="Bold" Grid.Row="8" Grid.Column="0">Количество грузоперевозок по месяцам</Button>
-        <Button FontSize="12" FontWeight="Bold" Grid.Row="9" Grid.Column="0">Объем грузоперевозок по месяцам</Button>
-        <DataGrid Grid.Row="1" Grid.Column="1" Grid.RowSpan="9" ItemsSource="{Binding Orders}" AutoGenerateColumns="True" IsReadOnly="True" RowHeaderWidth="50">
+        <TextBlock FontSize="24" FontWeight="Bold" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">Диаграммы</TextBlock>
+        <Button FontSize="12" FontWeight="Bold" Grid.Row="6" Grid.Column="0">Кол-во грузоперевозок по месяцам</Button>
+        <Button FontSize="12" FontWeight="Bold" Grid.Row="7" Grid.Column="0">Объем грузоперевозок по месяцам</Button>
+        <DataGrid Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" ItemsSource="{Binding Orders}" AutoGenerateColumns="True" IsReadOnly="True" RowHeaderWidth="50">
+            <!--<DataGrid.Columns>
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
+                
+                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
+            </DataGrid.Columns>-->
+        </DataGrid>
+        <TextBlock FontSize="24" FontWeight="Bold" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">Транспорт</TextBlock>
+        <DataGrid Grid.Row="6" Grid.Column="1" Grid.RowSpan="4" ItemsSource="{Binding Transports}" AutoGenerateColumns="True" IsReadOnly="True" RowHeaderWidth="50">
             <!--<DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*"/>
                 <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>

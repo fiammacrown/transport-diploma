@@ -51,7 +51,6 @@ namespace Abeslamidze_Kursovaya7
             MessageBox.Show(message, "Распределение заявок выполнено!");
 
             ViewModel.UpdateState();
-            Button_Dispatch.IsEnabled = false;
         }
 
         private async void Start()

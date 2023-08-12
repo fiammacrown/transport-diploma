@@ -7,12 +7,7 @@ namespace Abeslamidze_Kursovaya7.Repos
 {
     public class OrdersRepo
     {
-        private List<Order> _orders = new List<Order>
-        {
-            new Order(1500, new Location("Брест"), new Location("Минск")),
-            new Order(1000, new Location("Брест"), new Location("Минск")),
-            new Order(1100, new Location("Минск"), new Location("Брест")),
-        };
+        private List<Order> _orders = new List<Order>();
 
         public void Add(Order order)
         {
