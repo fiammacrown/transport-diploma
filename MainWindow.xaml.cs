@@ -1,11 +1,11 @@
 ﻿using System.Windows;
 using Abeslamidze_Kursovaya7.ViewModels;
-using Abeslamidze_Kursovaya7.Services;
-using Abeslamidze_Kursovaya7.Models;
 using Abeslamidze_Kursovaya7.Repos;
 
 using System.Collections.Generic;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Abeslamidze_Kursovaya7
 {
@@ -24,8 +24,7 @@ namespace Abeslamidze_Kursovaya7
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             ViewModel.UpdateState();
-
-            // start runner
+            Start();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -55,15 +54,33 @@ namespace Abeslamidze_Kursovaya7
             Button_Dispatch.IsEnabled = false;
         }
 
-        private void Run()
+        private async void Start()
         {
-            
-            
-            // create new thread with Runner 
-            // run on UI thread
-            this.Dispatcher.Invoke(() => { 
-                ViewModel.UpdateState();
-            });
+            try
+            {
+                await Task.Run(() =>
+                {
+                    while (true)
+                    {
+                        Thread.Sleep(1000);
+
+                        var result = ViewModel.Tick();
+
+                        Dispatcher.BeginInvoke(() =>
+                        {
+
+                              Button_Dispatch.IsEnabled = (result.NumOfFreeTransport > 0);
+   
+                              ViewModel.UpdateState();
+                        });
+                    }
+
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Linq;
 
 using Abeslamidze_Kursovaya7.Repos;
 using Abeslamidze_Kursovaya7.Models;
+using System;
 
 namespace Abeslamidze_Kursovaya7.Services
 {
@@ -27,16 +28,36 @@ namespace Abeslamidze_Kursovaya7.Services
             // пробуем распределить заявки поодиночке начиная с наибольшей по весу
             DispatchOrders();
             // переводим грузоперевозки и транспорт в новый статус
-            UpdateDeliveriesStatus();
+            InProgressDeliveryStatus();
             // рассчитываем дату выполнения и стоимость для грузоперевозок и заявок
-            UpdateDeliveryDateAndPrice();
-            UpdateOrderDeliveryDateAndPrice();
+            CalculateDeliveryDateAndPrice();
+            CalculateOrderDeliveryDateAndPrice();
             // необработанные заявки поступают в очередь
-            UpdateOrders();
+            InQueueOrders();
             return new DispatchServiceResult(_deliveriesRepo.GetAll(), _ordersRepo.GetInQueue(), _transportsRepo.GetFree());
         }
 
-        public void UpdateDeliveryDateAndPrice()
+        public DispatchServiceResult Update()
+        {
+            foreach (var delivery in _deliveriesRepo.GetAll())
+            {
+                if (delivery.EndDate <= DateTime.Now)
+                {
+                    delivery.Status = DeliveryStatus.Done;
+
+                    var transport = _transportsRepo.GetById(delivery.TransportId);
+                    var orders = _ordersRepo.GetByIds(delivery.OrderIds);
+
+                    UnloadTransport(transport!, orders);
+                    transport!.Status = TransportStatus.Free;
+
+                    InDoneOrders(orders);
+                }
+            }
+
+            return new DispatchServiceResult(_deliveriesRepo.GetAll(), _ordersRepo.GetInQueue(), _transportsRepo.GetFree());
+        }
+        public void CalculateDeliveryDateAndPrice()
         {   
             foreach (var delivery in _deliveriesRepo.GetAll())
             {
@@ -54,7 +75,7 @@ namespace Abeslamidze_Kursovaya7.Services
             }       
 
         }
-        public void UpdateOrderDeliveryDateAndPrice() // TODO: rework
+        public void CalculateOrderDeliveryDateAndPrice() 
         {
             foreach (var delivery in _deliveriesRepo.GetAll())
             {
@@ -73,7 +94,7 @@ namespace Abeslamidze_Kursovaya7.Services
 
         private void DispatchOrders()
         {
-            var filteredOrders = _ordersRepo.GetRegisteredOrders();
+            var filteredOrders = _ordersRepo.GetDeliverableOrders();
 
             foreach (var item in filteredOrders)
             {
@@ -112,7 +133,7 @@ namespace Abeslamidze_Kursovaya7.Services
 
         private void DispatchGroupOrders()
         {
-            var groupedOrders = _ordersRepo.GetRegisteredOrdersGroupByFromTo();
+            var groupedOrders = _ordersRepo.GetDeliverableOrdersGroupByFromTo();
 
             foreach (var item in groupedOrders)
             {
@@ -149,7 +170,7 @@ namespace Abeslamidze_Kursovaya7.Services
             }
 
         }
-        private void UpdateDeliveriesStatus()
+        private void InProgressDeliveryStatus()
         {
             foreach (KeyValuePair<Distance, Transport> kvp in _temp)
             {
@@ -176,7 +197,16 @@ namespace Abeslamidze_Kursovaya7.Services
                 transport.Load(order);
             }
         }
-        private void UpdateOrders()
+
+        private void UnloadTransport(Transport transport, List<Order> orders)
+        {
+            foreach (var order in orders)
+            {
+                transport.Unload(order);
+            }
+        }
+
+        private void InQueueOrders()
         {
             var unprocessedOrders = _ordersRepo.GetRegisteredOrders();
 
@@ -193,7 +223,13 @@ namespace Abeslamidze_Kursovaya7.Services
                 order.Status = OrderStatus.Assigned;
             }
         }
-
+        private void InDoneOrders(List<Order> orders)
+        {
+            foreach (var order in orders)
+            {
+                order.Status = OrderStatus.Done;
+            }
+        }
     }
 
     public class DispatchServiceResult

@@ -28,6 +28,11 @@ namespace Abeslamidze_Kursovaya7.ViewModels
            return new DispatchService(_ordersService, _transportsRepo, _deliveriesRepo).Dispatch();
         }
 
+        public DispatchServiceResult Tick()
+        {
+            return new DispatchService(_ordersService, _transportsRepo, _deliveriesRepo).Update();
+        }
+
         public void UpdateState()
         {
             var orders = _ordersService.GetAll();

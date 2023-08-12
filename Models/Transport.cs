@@ -40,6 +40,11 @@ namespace Abeslamidze_Kursovaya7.Models
             _assignedOrders.Add(order);
         }
 
+        public void Unload(Order order)
+        {
+            _currentLoad -= order.Weight;
+            _assignedOrders.Remove(order);
+        }
 
     }
 }

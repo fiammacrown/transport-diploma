@@ -20,9 +20,30 @@ namespace Abeslamidze_Kursovaya7.Repos
             return _orders;
         }
 
-        public List<GroupedOrder> GetRegisteredOrdersGroupByFromTo()
+        public Order? GetById(Guid id)
         {
-            return GetRegisteredOrders()
+            return _orders
+                .FirstOrDefault(o => o.Id == id);
+        }
+
+        public List<Order> GetByIds(List<Guid> ids)
+        {
+            var orders = new List<Order>();
+            foreach (var i in ids)
+            {
+                var order = GetById(i);
+                if (order != null)
+                {
+                    orders.Add(order);
+                }
+               
+            }
+            return orders;
+        }
+
+        public List<GroupedOrder> GetDeliverableOrdersGroupByFromTo()
+        {
+            return GetDeliverableOrders()
                .GroupBy(order => new Distance(order.From, order.To))
                .Select(groupedOrder => new GroupedOrder(
                    groupedOrder.Key.From,
@@ -32,6 +53,14 @@ namespace Abeslamidze_Kursovaya7.Repos
                )
                .OrderByDescending(o => o.TotalWeight).ToList()
                .ToList();
+        }
+        public List<Order> GetDeliverableOrders()
+        {
+            var deliverableStatuses = new List<OrderStatus> { OrderStatus.Registered, OrderStatus.InQueue };
+            return _orders
+                .Where(o => deliverableStatuses.Contains(o.Status) )
+                .OrderByDescending(o => o.Weight)
+                .ToList();
         }
 
         public List<Order> GetRegisteredOrders()
@@ -49,11 +78,6 @@ namespace Abeslamidze_Kursovaya7.Repos
                 .ToList();
         }
 
-        public Order? GetById(Guid id)
-        {
-            return _orders
-                .FirstOrDefault(o => o.Id == id);
-        }
 
     }
 }
