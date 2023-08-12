@@ -6,6 +6,10 @@ namespace Abeslamidze_Kursovaya7.Models;
 
 public class Location
 {
+    public Location()
+    {
+    }
+
     public Location(string name)
     {
         Name = name;
@@ -14,12 +18,12 @@ public class Location
     public string Name { get; }
 
     private Dictionary<string, int> _distanceMap = new Dictionary<string, int>()  {
-            { "Могилев-Витебск", 240 },
-            { "Могилев-Гродно", 285 },
-            { "Могилев-Гомель",  180 },
-            { "Могилев-Брест", 370 },
-            { "Могилев-Минск", 200},
-            { "Витебск-Могилев", 240},
+            {"Могилев-Витебск", 240},
+            {"Могилев-Гродно", 285},
+            {"Могилев-Гомель",  180},
+            {"Могилев-Брест", 370},
+            {"Могилев-Минск", 200},
+            {"Витебск-Могилев", 240},
             {"Витебск-Гродно", 340},
             {"Витебск-Гродно", 340},
             {"Витебск-Гомель", 310},
@@ -47,8 +51,9 @@ public class Location
             {"Минск-Брест", 350},
         };
 
-    public int GetDistance(string key)
+    public int GetDistance(Location from, Location to )
     {
+        string key = from.ToString() + "-" + to.ToString();
         return _distanceMap[key];
     }
 }

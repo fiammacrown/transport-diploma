@@ -9,6 +9,25 @@ using Abeslamidze_Kursovaya7.Models;
 
 namespace Abeslamidze_Kursovaya7.Services
 {
+    public class DispatchServiceResult
+    {
+        public DispatchServiceResult(List<Delivery> inProgressDeliveries, List<Order> inQueueOrders, List<Transport> freeTransport)
+        {
+            InProgressDeliveries = inProgressDeliveries;
+            InQueueOrders = inQueueOrders;
+            FreeTransport = freeTransport;
+        }
+
+        public List<Delivery> InProgressDeliveries { get; }
+        public List<Order> InQueueOrders { get; }
+        public List<Transport> FreeTransport { get; }
+
+        public int NumOfInProgressDeliveries { get => InProgressDeliveries.Count; }
+        public int NumOfInQueueOrders { get => InQueueOrders.Count; }
+        public int NumOfFreeTransport { get => FreeTransport.Count; }
+
+
+    }
     public class DispatchService
     {
         private List<Delivery> _inProgressDeliveries = new List<Delivery>();
@@ -22,35 +41,50 @@ namespace Abeslamidze_Kursovaya7.Services
             _transports = transports;
         }
 
-        public int NumOfInProgressDeliveries { get => _inProgressDeliveries.Count; }
-        public int NumOfFreeTransport { get => FilteFreeTransport().Count; }
-        public int NumOfInQueueOrders { get => _inQueueOrders.Count; }
-        public List<Delivery> Dispatch()
+        public DispatchServiceResult Dispatch()
         {
             DispatchGroupOrders();
             // если групповой заказ превышаем максимальный доступный объем машины
             // пробуем распределить заявки поодиночке начиная с наибольшей по весу
             DispatchOrders();
+            // рассчитываем дату выполнения и стоимость для грузоперевозок и заявок
+            CalculateDeliveryDateAndPrice();
+            CalculateOrderDeliveryDateAndPrice();
             // необработанные заявки поступают в очередь
             InQueueOrders();
-            return _inProgressDeliveries;
+            return new DispatchServiceResult(_inProgressDeliveries, _inQueueOrders, FilteFreeTransport());
         }
 
-        public void CalculateDeliveryPrice(Delivery delivery)
-        {
-            
-        }
-        public void CalculateOrderPrice(Order order)
-        {
+        public void CalculateDeliveryDateAndPrice()
+        {   
+            foreach (var delivery in _inProgressDeliveries)
+            {
+                // срок выполнения = расстояние / скорость
+                int distanceInKm = new Location().GetDistance(delivery.From, delivery.To);
+                double transportSpeedInKmHour = _transports.Where(t => t.Id == delivery.TransportId).Select(t => t.Speed).First();
+                double deliveryTimeInHours = distanceInKm / transportSpeedInKmHour;
+
+                // установить дату доставки используя минуты для ускорения
+                delivery.EndDate = delivery.StartDate.AddMinutes(deliveryTimeInHours);
+
+                // стоимость = расстояние * стоимость перевозки для транспортного средства
+                double transportPricePerKm = _transports.Where(t => t.Id == delivery.TransportId).Select(t => t.PricePerKm).First();
+                delivery.TotalPrice = distanceInKm * transportPricePerKm;
+            }       
 
         }
-
-        public void GetDeliveryDate(Delivery delivery)
+        public void CalculateOrderDeliveryDateAndPrice()
         {
+            foreach (var delivery in _inProgressDeliveries)
+            {
+                foreach (var orderId in delivery.OrderIds)
+                {
+                    Order order = _orders.Where(o => o.Id == orderId).First();
 
-        }
-        public void GetOrderDate(Order order)
-        {
+                    order.DeliveryDate = delivery.EndDate;
+                    order.DeliveryPrice = delivery.TotalPrice / delivery.OrderIds.Count;
+                }
+            }
 
         }
 

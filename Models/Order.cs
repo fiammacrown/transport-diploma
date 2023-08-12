@@ -21,6 +21,7 @@ namespace Abeslamidze_Kursovaya7.Models
         public Location From { get; }  
         public Location To { get; }
         public DateTime IssueDate { get; }
+        public double? DeliveryPrice { get; set; }
         public DateTime? DeliveryDate { get; set;}
         public OrderStatus Status { get; set; }
 
