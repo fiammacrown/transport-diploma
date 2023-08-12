@@ -34,6 +34,7 @@ namespace Abeslamidze_Kursovaya7.Services
             CalculateOrderDeliveryDateAndPrice();
             // необработанные заявки поступают в очередь
             InQueueOrders();
+
             return new DispatchServiceResult(
                 _deliveriesRepo.GetInProgress(),
                 _ordersRepo.GetInQueue(),
@@ -44,7 +45,7 @@ namespace Abeslamidze_Kursovaya7.Services
 
         public DispatchServiceResult Update()
         {
-            foreach (var delivery in _deliveriesRepo.GetAll())
+            foreach (var delivery in _deliveriesRepo.GetInProgress())
             {
                 if (delivery.EndDate <= DateTime.Now)
                 {
@@ -135,6 +136,8 @@ namespace Abeslamidze_Kursovaya7.Services
                             item.Status = OrderStatus.Assigned;
 
                             _temp.Add(key, transport);
+
+                            break;
                         }
 
                     }
@@ -174,6 +177,8 @@ namespace Abeslamidze_Kursovaya7.Services
                             AssignOrders(item.Orders);
 
                             _temp.Add(key, transport);
+
+                            break;
                         }
 
                     }

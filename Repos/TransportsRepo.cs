@@ -11,7 +11,10 @@ namespace Abeslamidze_Kursovaya7.Repos
     {
         private List<Transport> _transports = new List<Transport>
         {
-           new Transport(350, 1500, 25)
+           new Transport(350, 1500, 25),
+           new Transport(550, 500, 15),
+           new Transport(450, 1000, 35)
+
         };
 
 
