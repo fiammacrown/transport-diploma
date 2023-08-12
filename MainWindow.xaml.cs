@@ -36,7 +36,7 @@ namespace Abeslamidze_Kursovaya7
                 var result = registerWindow.DataResult;
                 if (result != null)
                 {
-                    ViewModel.Orders.Add(result);
+                    ViewModel.AddNewOrder(result);
                 }
             }
         }

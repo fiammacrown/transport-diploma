@@ -31,6 +31,7 @@ namespace Abeslamidze_Kursovaya7.Models
         public Location From { get; set; }
         public Location To { get; set; }    
         public double TotalPrice { get; set; }
+        public double TotalWeight { get; set; }
         public DateTime StartDate { get; }
         public DateTime EndDate { get; set; }
         public DeliveryStatus Status { get; set; }

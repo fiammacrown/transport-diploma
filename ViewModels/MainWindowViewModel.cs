@@ -23,6 +23,12 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 
         public ObservableCollection<Order> Orders { get; } = new ObservableCollection<Order>();
 
+        public void AddNewOrder(Order order)
+        {
+            Orders.Add(order);
+            _ordersService.Add(order);
+        }
+
         public DispatchServiceResult Calculate()
         {
            return new DispatchService(_ordersService, _transportsRepo, _deliveriesRepo).Dispatch();

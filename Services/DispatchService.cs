@@ -89,13 +89,15 @@ namespace Abeslamidze_Kursovaya7.Services
         {
             foreach (var delivery in _deliveriesRepo.GetAll())
             {
-                foreach (var orderId in delivery.OrderIds)
+                var orders = _ordersRepo.GetByIds(delivery.OrderIds);
+                delivery.TotalWeight = orders.Sum(o => o.Weight);
+
+                foreach (var order in orders)
                 {
-                    var order = _ordersRepo.GetById(orderId);
                     if (order != null)
                     {
                         order.DeliveryDate = delivery.EndDate;
-                        order.DeliveryPrice = delivery.TotalPrice / delivery.OrderIds.Count;
+                        order.DeliveryPrice = delivery.TotalPrice * ( order.Weight / delivery.TotalWeight );
                     }
                 }
             }

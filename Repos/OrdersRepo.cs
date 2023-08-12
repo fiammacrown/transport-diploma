@@ -14,6 +14,10 @@ namespace Abeslamidze_Kursovaya7.Repos
             new Order(100, new Location("Минск"), new Location("Брест")),
         };
 
+        public void Add(Order order)
+        {
+            _orders.Add(order);
+        }
 
         public List<Order> GetAll()
         {
