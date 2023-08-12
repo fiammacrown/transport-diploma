@@ -43,10 +43,12 @@ namespace Abeslamidze_Kursovaya7.Services
 
         public DispatchServiceResult Dispatch()
         {
-            DispatchGroupOrders();
+            //DispatchGroupOrders();
             // если групповой заказ превышаем максимальный доступный объем машины
             // пробуем распределить заявки поодиночке начиная с наибольшей по весу
             DispatchOrders();
+            // переводим транспорт с распределенными заявками в статус Транзит
+            PutTransportInTransit();
             // рассчитываем дату выполнения и стоимость для грузоперевозок и заявок
             CalculateDeliveryDateAndPrice();
             CalculateOrderDeliveryDateAndPrice();
@@ -90,16 +92,13 @@ namespace Abeslamidze_Kursovaya7.Services
 
         private void DispatchOrders()
         {
-            var filteredOrders = FilterRegisteredOrders().OrderBy(o => o.Weight);
-            var filteredTransports = FilteFreeTransport().OrderBy(t => t.Volume);
-
+            var filteredOrders = FilterRegisteredOrders().OrderByDescending(o => o.Weight);
             var temp = new Dictionary<string, Transport>();
 
             foreach (var item in filteredOrders)
             {
                 string key = item.From.ToString() + "-" + item.To.ToString();
-
-                
+                var filteredTransports = FilteFreeTransport().Where(t => t.AssignedOrders.Count == 0).OrderByDescending(t => t.Volume);
 
                 if (temp.TryGetValue(key, out var value))
                 {
@@ -147,60 +146,71 @@ namespace Abeslamidze_Kursovaya7.Services
             return;
         }
 
-        private void DispatchGroupOrders()
+        //private void DispatchGroupOrders()
+        //{
+        //    var groupedOrders = GroupOrdersByFromTo().OrderBy(g => g.TotalWeight);
+        //    var filteredTransports = FilteFreeTransport().OrderBy(t => t.Volume);
+
+        //    var temp = new Dictionary<string, Transport>();
+
+        //    foreach (var item in groupedOrders)
+        //    {
+
+        //        string key = item.From.ToString() + "-" + item.To.ToString();
+
+        //        if (temp.TryGetValue(key, out var value))
+        //        {
+        //            if (item.TotalWeight <= value.AvailableVolume)
+        //            {
+        //                LoadTransport(value, item.Orders);
+        //                AssignOrders(item.Orders);
+
+        //            }
+        //        }
+        //        else
+        //        {
+        //            foreach (var transport in filteredTransports)
+        //            {
+        //                if (item.TotalWeight <= transport.AvailableVolume)
+        //                {
+        //                    LoadTransport(transport, item.Orders);
+        //                    AssignOrders(item.Orders);
+
+        //                    temp.Add(key, transport);
+        //                }
+
+        //            }
+
+        //        }
+        //    }
+
+        //    foreach (KeyValuePair<string, Transport> kvp in temp)
+        //    {
+        //        string[] words = kvp.Key.Split('-');
+        //        Transport transport = kvp.Value;
+
+        //        var delivery = new Delivery(
+        //                new Location(words[0]),
+        //                new Location(words[1]),
+        //                transport.AssignedOrders,
+        //                transport.Id
+        //            );
+
+        //        _inProgressDeliveries.Add(delivery);
+        //    }
+
+        //    return;
+        //}
+
+        private void PutTransportInTransit()
         {
-            var groupedOrders = GroupOrdersByFromTo().OrderBy(g => g.TotalWeight);
-            var filteredTransports = FilteFreeTransport().OrderBy(t => t.Volume);
-
-            var temp = new Dictionary<string, Transport>();
-
-            foreach (var item in groupedOrders)
+            foreach (var transport in _transports)
             {
-
-                string key = item.From.ToString() + "-" + item.To.ToString();
-
-                if (temp.TryGetValue(key, out var value))
+               if (transport.AssignedOrders.Count > 0)
                 {
-                    if (item.TotalWeight <= value.AvailableVolume)
-                    {
-                        LoadTransport(value, item.Orders);
-                        AssignOrders(item.Orders);
-
-                    }
-                }
-                else
-                {
-                    foreach (var transport in filteredTransports)
-                    {
-                        if (item.TotalWeight <= transport.AvailableVolume)
-                        {
-                            LoadTransport(transport, item.Orders);
-                            AssignOrders(item.Orders);
-
-                            temp.Add(key, transport);
-                        }
-
-                    }
-
+                    transport.Status = TransportStatus.InTransit;
                 }
             }
-
-            foreach (KeyValuePair<string, Transport> kvp in temp)
-            {
-                string[] words = kvp.Key.Split('-');
-                Transport transport = kvp.Value;
-
-                var delivery = new Delivery(
-                        new Location(words[0]),
-                        new Location(words[1]),
-                        transport.AssignedOrders,
-                        transport.Id
-                    );
-
-                _inProgressDeliveries.Add(delivery);
-            }
-
-            return;
         }
 
         private void LoadTransport(Transport transport, List<Order> orders)

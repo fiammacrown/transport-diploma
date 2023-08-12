@@ -25,7 +25,6 @@ public class Location
             {"Могилев-Минск", 200},
             {"Витебск-Могилев", 240},
             {"Витебск-Гродно", 340},
-            {"Витебск-Гродно", 340},
             {"Витебск-Гомель", 310},
             {"Витебск-Брест", 450},
             {"Витебск-Минск", 270},
@@ -55,5 +54,10 @@ public class Location
     {
         string key = from.ToString() + "-" + to.ToString();
         return _distanceMap[key];
+    }
+
+    public override string? ToString()
+    {
+        return Name;
     }
 }

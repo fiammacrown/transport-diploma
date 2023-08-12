@@ -1,6 +1,9 @@
 ﻿using System.Windows;
 using Abeslamidze_Kursovaya7.ViewModels;
+using Abeslamidze_Kursovaya7.Services;
 using Abeslamidze_Kursovaya7.Models;
+
+using System.Collections.Generic;
 
 namespace Abeslamidze_Kursovaya7
 {
@@ -32,10 +35,17 @@ namespace Abeslamidze_Kursovaya7
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            // calculate Delivery 
-            // update data grid with delivery
-            // put undelivered orders in queuq
-            // show message with statistic: quantity of dispatched/ quantity of in queuq
+            var result = ViewModel.Calculate();
+            var message = string.Format("Распределение заявок выполнено!\nСформировано {0} грузоперевозок\n{1} заявок попало в очередь\nДоступно {2} единиц транспорта",
+                result.NumOfInProgressDeliveries,
+                result.NumOfInQueueOrders,
+                result.NumOfFreeTransport );
+            MessageBox.Show(message);
+        }
+
+        private void Run()
+        {
+
         }
     }
 }
