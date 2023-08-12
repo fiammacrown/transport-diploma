@@ -17,7 +17,7 @@ namespace Abeslamidze_Kursovaya7.ViewModels
             { 
                 new Order(50, new Location("Брест"), new Location("Минск")),
                 new Order(100, new Location("Брест"), new Location("Минск")),
-                new Order(150, new Location("Минск"), new Location("Брест")),
+                new Order(100, new Location("Минск"), new Location("Брест")),
             };
             var transports = new List<Transport>
             {

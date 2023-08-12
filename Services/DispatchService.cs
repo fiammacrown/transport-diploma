@@ -25,9 +25,8 @@ namespace Abeslamidze_Kursovaya7.Services
         public int NumOfInProgressDeliveries { get => InProgressDeliveries.Count; }
         public int NumOfInQueueOrders { get => InQueueOrders.Count; }
         public int NumOfFreeTransport { get => FreeTransport.Count; }
-
-
     }
+
     public class DispatchService
     {
         private List<Delivery> _inProgressDeliveries = new List<Delivery>();
@@ -35,6 +34,8 @@ namespace Abeslamidze_Kursovaya7.Services
 
         private List<Order> _orders;
         private List<Transport> _transports;
+
+        private Dictionary<Distance, Transport> _temp = new Dictionary<Distance, Transport>();
         public DispatchService(List<Order> orders, List<Transport> transports)
         {
             _orders = orders;
@@ -43,12 +44,12 @@ namespace Abeslamidze_Kursovaya7.Services
 
         public DispatchServiceResult Dispatch()
         {
-            //DispatchGroupOrders();
+            DispatchGroupOrders();
             // если групповой заказ превышаем максимальный доступный объем машины
             // пробуем распределить заявки поодиночке начиная с наибольшей по весу
             DispatchOrders();
-            // переводим транспорт с распределенными заявками в статус Транзит
-            PutTransportInTransit();
+            // переводим грузоперевозки и транспорт в новый статус
+            PutDeliveriesInProgress();
             // рассчитываем дату выполнения и стоимость для грузоперевозок и заявок
             CalculateDeliveryDateAndPrice();
             CalculateOrderDeliveryDateAndPrice();
@@ -62,7 +63,7 @@ namespace Abeslamidze_Kursovaya7.Services
             foreach (var delivery in _inProgressDeliveries)
             {
                 // срок выполнения = расстояние / скорость
-                int distanceInKm = new Location().GetDistance(delivery.From, delivery.To);
+                int distanceInKm = new Distance(delivery.From, delivery.To).InKm;
                 double transportSpeedInKmHour = _transports.Where(t => t.Id == delivery.TransportId).Select(t => t.Speed).First();
                 double deliveryTimeInHours = distanceInKm / transportSpeedInKmHour;
 
@@ -92,15 +93,14 @@ namespace Abeslamidze_Kursovaya7.Services
 
         private void DispatchOrders()
         {
-            var filteredOrders = FilterRegisteredOrders().OrderByDescending(o => o.Weight);
-            var temp = new Dictionary<string, Transport>();
+            var filteredOrders = FilterRegisteredOrders()
+                .OrderByDescending(o => o.Weight).ToList();
 
             foreach (var item in filteredOrders)
             {
-                string key = item.From.ToString() + "-" + item.To.ToString();
-                var filteredTransports = FilteFreeTransport().Where(t => t.AssignedOrders.Count == 0).OrderByDescending(t => t.Volume);
+                var key = new Distance(item.From, item.To);
 
-                if (temp.TryGetValue(key, out var value))
+                if (_temp.TryGetValue(key, out var value))
                 {
                     if (item.Weight <= value.AvailableVolume)
                     {
@@ -112,6 +112,9 @@ namespace Abeslamidze_Kursovaya7.Services
                 }
                 else
                 {
+                    var filteredTransports = FilteFreeTransport().Where(t => t.AssignedOrders.Count == 0)
+                        .OrderByDescending(t => t.Volume);
+
                     foreach (var transport in filteredTransports)
                     {
                         if (item.Weight <= transport.AvailableVolume)
@@ -120,7 +123,48 @@ namespace Abeslamidze_Kursovaya7.Services
 
                             item.Status = OrderStatus.Assigned;
 
-                            temp.Add(key, transport);
+                            _temp.Add(key, transport);
+                        }
+
+                    }
+
+                }
+            }
+        }
+
+        private void DispatchGroupOrders()
+        {
+            var groupedOrders = GroupOrdersByFromTo()
+                .OrderByDescending(o => o.TotalWeight).ToList();
+
+            foreach (var item in groupedOrders)
+            {
+                var key = new Distance(item.From, item.To);
+
+                if (_temp.TryGetValue(key, out var value))
+                {
+                    if (item.TotalWeight <= value.AvailableVolume)
+                    {
+                        LoadTransport(value, item.Orders);
+
+                        AssignOrders(item.Orders);
+
+                    }
+                }
+                else
+                {
+                    var filteredTransports = FilteFreeTransport().Where(t => t.AssignedOrders.Count == 0)
+                        .OrderByDescending(t => t.Volume);
+
+                    foreach (var transport in filteredTransports)
+                    {
+                        if (item.TotalWeight <= transport.AvailableVolume)
+                        {
+                            LoadTransport(transport, item.Orders);
+
+                            AssignOrders(item.Orders);
+
+                            _temp.Add(key, transport);
                         }
 
                     }
@@ -128,88 +172,24 @@ namespace Abeslamidze_Kursovaya7.Services
                 }
             }
 
-            foreach (KeyValuePair<string, Transport> kvp in temp)
+        }
+        private void PutDeliveriesInProgress()
+        {
+            foreach (KeyValuePair<Distance, Transport> kvp in _temp)
             {
-                string[] words = kvp.Key.Split('-');
+                Distance distance = kvp.Key;
                 Transport transport = kvp.Value;
 
                 var delivery = new Delivery(
-                        new Location(words[0]),
-                        new Location(words[1]),
+                        distance.From,
+                        distance.To,
                         transport.AssignedOrders,
                         transport.Id
                     );
 
                 _inProgressDeliveries.Add(delivery);
-            }
 
-            return;
-        }
-
-        //private void DispatchGroupOrders()
-        //{
-        //    var groupedOrders = GroupOrdersByFromTo().OrderBy(g => g.TotalWeight);
-        //    var filteredTransports = FilteFreeTransport().OrderBy(t => t.Volume);
-
-        //    var temp = new Dictionary<string, Transport>();
-
-        //    foreach (var item in groupedOrders)
-        //    {
-
-        //        string key = item.From.ToString() + "-" + item.To.ToString();
-
-        //        if (temp.TryGetValue(key, out var value))
-        //        {
-        //            if (item.TotalWeight <= value.AvailableVolume)
-        //            {
-        //                LoadTransport(value, item.Orders);
-        //                AssignOrders(item.Orders);
-
-        //            }
-        //        }
-        //        else
-        //        {
-        //            foreach (var transport in filteredTransports)
-        //            {
-        //                if (item.TotalWeight <= transport.AvailableVolume)
-        //                {
-        //                    LoadTransport(transport, item.Orders);
-        //                    AssignOrders(item.Orders);
-
-        //                    temp.Add(key, transport);
-        //                }
-
-        //            }
-
-        //        }
-        //    }
-
-        //    foreach (KeyValuePair<string, Transport> kvp in temp)
-        //    {
-        //        string[] words = kvp.Key.Split('-');
-        //        Transport transport = kvp.Value;
-
-        //        var delivery = new Delivery(
-        //                new Location(words[0]),
-        //                new Location(words[1]),
-        //                transport.AssignedOrders,
-        //                transport.Id
-        //            );
-
-        //        _inProgressDeliveries.Add(delivery);
-        //    }
-
-        //    return;
-        //}
-
-        private void PutTransportInTransit()
-        {
-            foreach (var transport in _transports)
-            {
-               if (transport.AssignedOrders.Count > 0)
-                {
-                    transport.Status = TransportStatus.InTransit;
-                }
+                transport.Status = TransportStatus.InTransit;
             }
         }
 
@@ -255,7 +235,7 @@ namespace Abeslamidze_Kursovaya7.Services
         private List<GroupedOrder> GroupOrdersByFromTo()
         {
             return FilterRegisteredOrders()
-                .GroupBy(order => new { order.From, order.To })
+                .GroupBy(order => new Distance(order.From, order.To))
                 .Select(groupedOrder => new GroupedOrder(
                     groupedOrder.Key.From,
                     groupedOrder.Key.To,
@@ -264,7 +244,5 @@ namespace Abeslamidze_Kursovaya7.Services
                 )
                 .ToList();
         }
-
-
     }
 }

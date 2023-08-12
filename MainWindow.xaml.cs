@@ -36,11 +36,11 @@ namespace Abeslamidze_Kursovaya7
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             var result = ViewModel.Calculate();
-            var message = string.Format("Распределение заявок выполнено!\nСформировано {0} грузоперевозок\n{1} заявок попало в очередь\nДоступно {2} единиц транспорта",
+            var message = string.Format("Сформировано грузоперевозок: {0}\nЗаявки в очереди: {1}\nДоступно единиц транспорта: {2}",
                 result.NumOfInProgressDeliveries,
                 result.NumOfInQueueOrders,
                 result.NumOfFreeTransport );
-            MessageBox.Show(message);
+            MessageBox.Show(message, "Распределение заявок выполнено!");
         }
 
         private void Run()
