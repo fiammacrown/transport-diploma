@@ -4,16 +4,17 @@ using Abeslamidze_Kursovaya7.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Abeslamidze_Kursovaya7.Interfaces;
 
 namespace Abeslamidze_Kursovaya7.ViewModels
 {
     public class MainWindowViewModel : ObservableObject
     {
         private readonly OrdersRepo _ordersService;
-        private readonly TransportsRepo _transportsRepo;
-        private readonly DeliveriesRepo _deliveriesRepo;
+        private readonly ITransportsRepo _transportsRepo;
+        private readonly IDeliveriesRepo _deliveriesRepo;
 
-        public MainWindowViewModel(OrdersRepo ordersService, TransportsRepo transportsRepo, DeliveriesRepo deliveriesRepo)
+        public MainWindowViewModel(OrdersRepo ordersService, ITransportsRepo transportsRepo, IDeliveriesRepo deliveriesRepo)
         {
             _ordersService = ordersService;
             _transportsRepo = transportsRepo;

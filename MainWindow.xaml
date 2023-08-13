@@ -6,46 +6,72 @@
         xmlns:local="clr-namespace:Abeslamidze_Kursovaya7"
         mc:Ignorable="d"
         Title="MainWindow" Height="650" Width="1050" Loaded="Window_Loaded" MinWidth="1050" MinHeight="650">
+
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="220" />
+
+        <Grid x:Name="authView">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="220" />
             <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <TextBlock FontSize="24" FontWeight="Bold" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">Меню</TextBlock>
-        <TextBlock FontSize="24" FontWeight="Bold" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">Грузоперевозки</TextBlock>
-        <Button FontSize="12" FontWeight="Bold" Grid.Row="1" Grid.Column="0" Click="Button_Click">Зарегистрировать заявку</Button>
-        <Button x:Name="Button_Dispatch" FontSize="12" FontWeight="Bold" Grid.Row="2" Grid.Column="0" Click="Button_Click_1" IsEnabled="False">Распределить заявки</Button>
-        <TextBlock FontSize="24" FontWeight="Bold" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">Диаграммы</TextBlock>
-        <Button FontSize="12" FontWeight="Bold" Grid.Row="6" Grid.Column="0">Кол-во грузоперевозок по месяцам</Button>
-        <Button FontSize="12" FontWeight="Bold" Grid.Row="7" Grid.Column="0">Объем грузоперевозок по месяцам</Button>
-        <DataGrid Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" ItemsSource="{Binding Orders}" AutoGenerateColumns="True" IsReadOnly="True" RowHeaderWidth="50">
-            <!--<DataGrid.Columns>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+
+            <Button Grid.Column="1" Grid.Row="3" Content="Login" Click="Button_Click_2"/>
+
+        </Grid>
+
+
+        <Grid x:Name="commonView" Visibility="Hidden">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock FontSize="24" FontWeight="Bold" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">Меню</TextBlock>
+            <TextBlock FontSize="24" FontWeight="Bold" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">Грузоперевозки</TextBlock>
+            <Button FontSize="12" FontWeight="Bold" Grid.Row="1" Grid.Column="0" Click="Button_Click">Зарегистрировать заявку</Button>
+            <Button x:Name="Button_Dispatch" FontSize="12" FontWeight="Bold" Grid.Row="2" Grid.Column="0" Click="Button_Click_1" IsEnabled="False">Распределить заявки</Button>
+            <TextBlock FontSize="24" FontWeight="Bold" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">Диаграммы</TextBlock>
+            <Button FontSize="12" FontWeight="Bold" Grid.Row="6" Grid.Column="0">Кол-во грузоперевозок по месяцам</Button>
+            <Button FontSize="12" FontWeight="Bold" Grid.Row="7" Grid.Column="0">Объем грузоперевозок по месяцам</Button>
+            <DataGrid Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" ItemsSource="{Binding Orders}" AutoGenerateColumns="True" IsReadOnly="True" RowHeaderWidth="50">
+                <!--<DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*"/>
                 <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
                 
                 <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
             </DataGrid.Columns>-->
-        </DataGrid>
-        <TextBlock FontSize="24" FontWeight="Bold" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">Транспорт</TextBlock>
-        <DataGrid Grid.Row="6" Grid.Column="1" Grid.RowSpan="4" ItemsSource="{Binding Transports}" AutoGenerateColumns="True" IsReadOnly="True" RowHeaderWidth="50">
-            <!--<DataGrid.Columns>
+            </DataGrid>
+            <TextBlock FontSize="24" FontWeight="Bold" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">Транспорт</TextBlock>
+            <DataGrid Grid.Row="6" Grid.Column="1" Grid.RowSpan="4" ItemsSource="{Binding Transports}" AutoGenerateColumns="True" IsReadOnly="True" RowHeaderWidth="50">
+                <!--<DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*"/>
                 <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
                 
                 <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
             </DataGrid.Columns>-->
-        </DataGrid>
+            </DataGrid>
+        </Grid>
+
+
     </Grid>
 </Window>

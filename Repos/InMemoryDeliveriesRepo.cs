@@ -1,4 +1,5 @@
-﻿using Abeslamidze_Kursovaya7.Models;
+﻿using Abeslamidze_Kursovaya7.Interfaces;
+using Abeslamidze_Kursovaya7.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Abeslamidze_Kursovaya7.Repos
 {
-    public class DeliveriesRepo
+    public class InMemoryDeliveriesRepo : IDeliveriesRepo
     {
         private List<Delivery> _deliveries = new List<Delivery>();
 

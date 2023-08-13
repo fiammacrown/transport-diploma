@@ -12,11 +12,20 @@ namespace Abeslamidze_Kursovaya7
 
     public partial class MainWindow : Window
     {
+        EntityContext context;
         public MainWindow()
         {
+            context = new EntityContext("DbConnection");
+
             InitializeComponent();
 
-            DataContext = ViewModel = new MainWindowViewModel(new OrdersRepo(), new TransportsRepo(), new DeliveriesRepo());
+            DataContext = ViewModel = new MainWindowViewModel(
+                new OrdersRepo(),
+                //new InMemoryTransportsRepo(),
+                //new InMemoryDeliveriesRepo(),
+                new DatabaseTransportsRepo(context),
+                new DatabaseDeliveriesRepo(context)
+            ); ;
         }
 
         public MainWindowViewModel ViewModel { get; }
@@ -81,6 +90,12 @@ namespace Abeslamidze_Kursovaya7
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            authView.Visibility = Visibility.Hidden;
+            commonView.Visibility = Visibility.Visible;
         }
     }
 }

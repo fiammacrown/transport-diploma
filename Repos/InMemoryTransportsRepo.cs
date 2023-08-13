@@ -1,4 +1,5 @@
-﻿using Abeslamidze_Kursovaya7.Models;
+﻿using Abeslamidze_Kursovaya7.Interfaces;
+using Abeslamidze_Kursovaya7.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Abeslamidze_Kursovaya7.Repos
 {
-    public class TransportsRepo
+    public class InMemoryTransportsRepo : ITransportsRepo
     {
         private List<Transport> _transports = new List<Transport>
         {
@@ -24,7 +25,7 @@ namespace Abeslamidze_Kursovaya7.Repos
 
         public Transport? GetById(Guid id)
         {
-           return _transports.FirstOrDefault(t => t.Id == id);
+            return _transports.FirstOrDefault(t => t.Id == id);
         }
 
 
@@ -40,7 +41,7 @@ namespace Abeslamidze_Kursovaya7.Repos
         public double GetSpeedInKmById(Guid id)
         {
             return _transports
-                .Where(t => t.Id ==id)
+                .Where(t => t.Id == id)
                 .Select(t => t.Speed)
                 .First();
         }
@@ -55,5 +56,5 @@ namespace Abeslamidze_Kursovaya7.Repos
     }
 
 
- 
+
 }

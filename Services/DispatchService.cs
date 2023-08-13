@@ -4,17 +4,18 @@ using System.Linq;
 using Abeslamidze_Kursovaya7.Repos;
 using Abeslamidze_Kursovaya7.Models;
 using System;
+using Abeslamidze_Kursovaya7.Interfaces;
 
 namespace Abeslamidze_Kursovaya7.Services
 {
     public class DispatchService
     {
         private readonly OrdersRepo _ordersRepo;
-        private readonly DeliveriesRepo _deliveriesRepo;
-        private readonly TransportsRepo _transportsRepo;
+        private readonly IDeliveriesRepo _deliveriesRepo;
+        private readonly ITransportsRepo _transportsRepo;
 
         private Dictionary<Distance, Transport> _temp = new Dictionary<Distance, Transport>();
-        public DispatchService(OrdersRepo ordersService, TransportsRepo transportsRepo, DeliveriesRepo deliveriesRepo)
+        public DispatchService(OrdersRepo ordersService, ITransportsRepo transportsRepo, IDeliveriesRepo deliveriesRepo)
         {
             _ordersRepo = ordersService;
             _deliveriesRepo = deliveriesRepo;
