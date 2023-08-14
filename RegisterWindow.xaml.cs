@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using Abeslamidze_Kursovaya7.Interfaces;
 using Abeslamidze_Kursovaya7.Models;
 using Abeslamidze_Kursovaya7.ViewModels;
 
@@ -6,11 +7,12 @@ namespace Abeslamidze_Kursovaya7
 {
     public partial class RegisterWindow : Window
     {
-        public RegisterWindow()
+        public RegisterWindow(ILocationsRepo locationsRepo)
         {
+
             InitializeComponent();
 
-            DataContext = ViewModel = new RegisterWindowViewModel
+            DataContext = ViewModel = new RegisterWindowViewModel(locationsRepo)
             {
                 CloseDelegate = (order) =>
                 {

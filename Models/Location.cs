@@ -1,13 +1,24 @@
-﻿namespace Abeslamidze_Kursovaya7.Models;
+﻿using System;
+
+namespace Abeslamidze_Kursovaya7.Models;
 
 public class Location
 {
+    public Location()
+    {
+    }
+
     public Location(string name)
     {
+        Id = Guid.NewGuid();
         Name = name;
     }
 
-    public string Name { get; }
+    public Guid Id { get; set; }
+    public string Name { get; set;  }
+
+
+    public Order? Order { get; set; }
 
     public override string? ToString()
     {

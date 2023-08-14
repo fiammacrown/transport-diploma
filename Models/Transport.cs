@@ -50,7 +50,7 @@ namespace Abeslamidze_Kursovaya7.Models
         public void Unload(Order order)
         {
            _currentLoad -= order.Weight;
-            _assignedOrders.Remove(order);
+           _assignedOrders.Remove(order);
         }
 
     }

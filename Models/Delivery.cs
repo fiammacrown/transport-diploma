@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -31,18 +32,16 @@ namespace Abeslamidze_Kursovaya7.Models
 
         public Guid Id { get; set;  }
 
+        [NotMapped]
         public List<Guid> OrderIds { get; set; }
         public Guid TransportId { get; set; }
-        [NotMapped]
         public Location From { get; set; }
-        [NotMapped]
         public Location To { get; set; }    
         public double TotalPrice { get; set; }
         public double TotalWeight { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DeliveryStatus Status { get; set; }
-
 
     }
 }

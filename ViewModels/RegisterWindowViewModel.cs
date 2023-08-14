@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
+using Abeslamidze_Kursovaya7.Interfaces;
 using Abeslamidze_Kursovaya7.Models;
+using Abeslamidze_Kursovaya7.Repos;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -17,23 +19,14 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 
         private readonly RelayCommand _saveCommand;
         private readonly RelayCommand _cancelCommand;
-        private readonly List<Location> _locations;
+        private readonly ILocationsRepo _locationsRepo;
 
 
-        public RegisterWindowViewModel()
+        public RegisterWindowViewModel(ILocationsRepo locationsRepo)
         {
             _saveCommand = new RelayCommand(Save, CanSave);
             _cancelCommand = new RelayCommand(Cancel);
-            _locations = new List<Location>
-            {
-                new Location("Брест"),
-                new Location("Минск"),
-                new Location("Гомель"),
-                new Location("Могилев"),
-                new Location("Минск"),
-                new Location("Витебск"),
-                new Location("Гродно"),
-            };
+            _locationsRepo = locationsRepo;
         }
 
         public Action<Order?>? CloseDelegate { get; set; }
@@ -49,7 +42,7 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 
         public List<Location> Locations
         {
-            get => _locations;
+            get => _locationsRepo.GetAll();
         }
 
         public double Weight

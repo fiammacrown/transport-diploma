@@ -10,12 +10,12 @@ namespace Abeslamidze_Kursovaya7.Services
 {
     public class DispatchService
     {
-        private readonly OrdersRepo _ordersRepo;
+        private readonly IOrdersRepo _ordersRepo;
         private readonly IDeliveriesRepo _deliveriesRepo;
         private readonly ITransportsRepo _transportsRepo;
 
         private Dictionary<Distance, Transport> _temp = new Dictionary<Distance, Transport>();
-        public DispatchService(OrdersRepo ordersService, ITransportsRepo transportsRepo, IDeliveriesRepo deliveriesRepo)
+        public DispatchService(IOrdersRepo ordersService, ITransportsRepo transportsRepo, IDeliveriesRepo deliveriesRepo)
         {
             _ordersRepo = ordersService;
             _deliveriesRepo = deliveriesRepo;
@@ -157,7 +157,7 @@ namespace Abeslamidze_Kursovaya7.Services
 
                 if (_temp.TryGetValue(key, out var value))
                 {
-                    if (item.TotalWeight <= value.AvailableVolume)
+                    if (item.Weight <= value.AvailableVolume)
                     {
                         LoadTransport(value, item.Orders);
 
@@ -171,7 +171,7 @@ namespace Abeslamidze_Kursovaya7.Services
 
                     foreach (var transport in filteredTransports)
                     {
-                        if (item.TotalWeight <= transport.AvailableVolume)
+                        if (item.Weight <= transport.AvailableVolume)
                         {
                             LoadTransport(transport, item.Orders);
 

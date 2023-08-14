@@ -10,16 +10,18 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 {
     public class MainWindowViewModel : ObservableObject
     {
-        private readonly OrdersRepo _ordersService;
+        private readonly IOrdersRepo _ordersService;
         private readonly ITransportsRepo _transportsRepo;
         private readonly IDeliveriesRepo _deliveriesRepo;
+        private readonly DispatchService _dispatchService;
 
-        public MainWindowViewModel(OrdersRepo ordersService, ITransportsRepo transportsRepo, IDeliveriesRepo deliveriesRepo)
+        public MainWindowViewModel(IOrdersRepo ordersService, ITransportsRepo transportsRepo, IDeliveriesRepo deliveriesRepo)
         {
             _ordersService = ordersService;
             _transportsRepo = transportsRepo;
             _deliveriesRepo = deliveriesRepo;
 
+            _dispatchService = new DispatchService(_ordersService, _transportsRepo, _deliveriesRepo);
         }
 
         public ObservableCollection<Order> Orders { get; } = new ObservableCollection<Order>();
@@ -33,12 +35,12 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 
         public DispatchServiceResult Calculate()
         {
-           return new DispatchService(_ordersService, _transportsRepo, _deliveriesRepo).Dispatch();
+           return _dispatchService.Dispatch();
         }
 
         public DispatchServiceResult Tick()
         {
-            return new DispatchService(_ordersService, _transportsRepo, _deliveriesRepo).Update();
+            return _dispatchService.Update();
         }
 
         public void UpdateState()

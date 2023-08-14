@@ -13,18 +13,24 @@ namespace Abeslamidze_Kursovaya7
     public partial class MainWindow : Window
     {
         EntityContext context;
+        private DatabaseLocationRepo _locationRepo;
+
         public MainWindow()
         {
             context = new EntityContext("DbConnection");
 
             InitializeComponent();
 
+            _locationRepo = new DatabaseLocationRepo(context);
+
             DataContext = ViewModel = new MainWindowViewModel(
-                new OrdersRepo(),
+                //new InMemoryOrdersRepo(),
                 //new InMemoryTransportsRepo(),
                 //new InMemoryDeliveriesRepo(),
+                new DatabaseOrdersRepo(context),
                 new DatabaseTransportsRepo(context),
                 new DatabaseDeliveriesRepo(context)
+                //new InMemoryDeliveriesRepo()
             ); ;
         }
 
@@ -32,13 +38,14 @@ namespace Abeslamidze_Kursovaya7
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            _locationRepo.GetAll();
             ViewModel.UpdateState();
             Start();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            RegisterWindow registerWindow = new RegisterWindow();
+            RegisterWindow registerWindow = new RegisterWindow(_locationRepo);
 
             if (registerWindow.ShowDialog() == true)
             {

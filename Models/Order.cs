@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
 namespace Abeslamidze_Kursovaya7.Models
@@ -15,16 +17,21 @@ namespace Abeslamidze_Kursovaya7.Models
 
     public class Order
     {
-        public Guid Id { get; }
+        public Guid Id { get; set; }
 
-        public double Weight { get; }
-        public Location From { get; }  
-        public Location To { get; }
-        public DateTime IssueDate { get; }
+        public double Weight { get; set; }
+
+        public Location From { get; set; }
+        public Location To { get; set; }
+        public DateTime IssueDate { get; set; }
         public double? DeliveryPrice { get; set; }
         public DateTime? DeliveryDate { get; set;}
         public OrderStatus Status { get; set; }
 
+
+        public Order()
+        {
+        }
 
         public Order(double weight, Location from, Location to)
         {
@@ -32,15 +39,13 @@ namespace Abeslamidze_Kursovaya7.Models
 
             Weight = weight;
 
-            From = from;    
+            From = from;
 
-            To = to;    
+            To = to; 
 
             Status = OrderStatus.Registered;
 
             IssueDate = DateTime.Now;
-
-
         }
 
     }
@@ -53,10 +58,10 @@ namespace Abeslamidze_Kursovaya7.Models
             Orders = orders;
         }
 
-        public Location To { get; }
-        public Location From { get;  }
+        public Location To { get; set; }
+        public Location From { get; set; }
         public int Count { get => Orders.Count; }
-        public double TotalWeight { get => Orders.Sum(o => o.Weight); }
+        public double Weight { get => Orders.Sum(o => o.Weight); }
         public List<Order> Orders { get; }
 
     }
