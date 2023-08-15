@@ -10,6 +10,12 @@ namespace Abeslamidze_Kursovaya7.Repos
     {
         private List<Order> _orders = new List<Order>();
 
+
+        public void Update(Order order)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Add(Order order)
         {
             _orders.Add(order);
@@ -41,6 +47,10 @@ namespace Abeslamidze_Kursovaya7.Repos
             return orders;
         }
 
+        public List<Order> GetByTransportId(Guid id)
+        {
+            throw new NotImplementedException(); 
+        }
         public List<GroupedOrder> GetDeliverableOrdersGroupByFromTo()
         {
             return GetDeliverableOrders()

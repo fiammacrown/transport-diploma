@@ -24,8 +24,8 @@ namespace Abeslamidze_Kursovaya7.Repos
 
         public Location? GetById(Guid id)
         {
-            //return _transports.FirstOrDefault(t => t.Id == id);
-            return null;
+            return _entityContext.Locations
+                .FirstOrDefault(t => t.Id == id);
         }
     }
 }

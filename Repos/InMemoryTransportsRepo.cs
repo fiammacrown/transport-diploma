@@ -17,6 +17,10 @@ namespace Abeslamidze_Kursovaya7.Repos
            new Transport(450, 1000, 35)
         };
 
+        public void Update(Transport transport)
+        {
+            throw new NotImplementedException();
+        }
 
         public List<Transport> GetAll()
         {
@@ -33,7 +37,7 @@ namespace Abeslamidze_Kursovaya7.Repos
         {
             return _transports
                 .Where(t => t.Status == TransportStatus.Free)
-                .Where(t => t.AssignedOrders.Count == 0)
+                .Where(t => t.AssignedOrders == 0)
                 .OrderByDescending(t => t.Volume)
                 .ToList(); ;
         }
@@ -52,6 +56,11 @@ namespace Abeslamidze_Kursovaya7.Repos
                 .Where(t => t.Id == id)
                 .Select(t => t.PricePerKm)
                 .First();
+        }
+
+        public double GetMaxVolume()
+        {
+            throw new NotImplementedException();
         }
     }
 

@@ -19,22 +19,18 @@ namespace Abeslamidze_Kursovaya7.Models
         {
         }
 
-        public Delivery(Location from, Location to, List<Guid> orderIds, Guid transportId)
+        public Delivery(Location from, Location to,  Transport transport)
         {
             Id = Guid.NewGuid();
             From = from;
             To = to;
-            OrderIds = orderIds;
-            TransportId = transportId;
+            Transport = transport;
             StartDate = DateTime.Now;
             Status = DeliveryStatus.InProgress;
         }
 
         public Guid Id { get; set;  }
-
-        [NotMapped]
-        public List<Guid> OrderIds { get; set; }
-        public Guid TransportId { get; set; }
+        public Transport Transport { get; set; }
         public Location From { get; set; }
         public Location To { get; set; }    
         public double TotalPrice { get; set; }

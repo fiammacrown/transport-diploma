@@ -13,6 +13,10 @@ namespace Abeslamidze_Kursovaya7.Repos
     {
         private List<Delivery> _deliveries = new List<Delivery>();
 
+        public void Update(Delivery delivery)
+        {
+            throw new NotImplementedException();
+        }
         public List<Delivery> GetAll()
         {
             return _deliveries;

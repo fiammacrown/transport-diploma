@@ -18,26 +18,36 @@ namespace Abeslamidze_Kursovaya7.Repos
 
         public void Add(Delivery delivery)
         {
-            // TODO:
+            _entityContext.Deliveries.Add(delivery);
+            _entityContext.SaveChanges();
         }
 
+        public void Update(Delivery updated)
+        {
+            var existing = GetById(updated.Id);
+            if (existing != null)
+            {
+                _entityContext.Entry(existing).CurrentValues.SetValues(updated);
+                _entityContext.SaveChanges();
+            }
+        }
         public List<Delivery> GetAll()
         {
-            // TODO: check
             _entityContext.Deliveries.Load();
             return _entityContext.Deliveries.Local.ToList();
         }
 
         public Delivery? GetById(Guid id)
         {
-            // TODO:
-            return null;
+            return _entityContext.Deliveries
+                .FirstOrDefault(d => d.Id == id); ;
         }
 
         public List<Delivery> GetInProgress()
         {
-            // TODO:
-            return new List<Delivery>();
+            return _entityContext.Deliveries
+                .Where(d => d.Status == DeliveryStatus.InProgress)
+                .ToList();
         }
     }
 }

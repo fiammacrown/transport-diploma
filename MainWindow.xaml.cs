@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Abeslamidze_Kursovaya7.Interfaces;
 
 namespace Abeslamidze_Kursovaya7
 {
@@ -13,7 +14,8 @@ namespace Abeslamidze_Kursovaya7
     public partial class MainWindow : Window
     {
         EntityContext context;
-        private DatabaseLocationRepo _locationRepo;
+        private ILocationsRepo _locationRepo;
+        private ITransportsRepo _transportRepo;
 
         public MainWindow()
         {
@@ -22,15 +24,15 @@ namespace Abeslamidze_Kursovaya7
             InitializeComponent();
 
             _locationRepo = new DatabaseLocationRepo(context);
+            _transportRepo = new DatabaseTransportsRepo(context); 
 
             DataContext = ViewModel = new MainWindowViewModel(
                 //new InMemoryOrdersRepo(),
                 //new InMemoryTransportsRepo(),
                 //new InMemoryDeliveriesRepo(),
                 new DatabaseOrdersRepo(context),
-                new DatabaseTransportsRepo(context),
+                _transportRepo,
                 new DatabaseDeliveriesRepo(context)
-                //new InMemoryDeliveriesRepo()
             ); ;
         }
 
@@ -45,7 +47,7 @@ namespace Abeslamidze_Kursovaya7
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            RegisterWindow registerWindow = new RegisterWindow(_locationRepo);
+            RegisterWindow registerWindow = new RegisterWindow(_locationRepo, _transportRepo);
 
             if (registerWindow.ShowDialog() == true)
             {

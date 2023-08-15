@@ -16,6 +16,15 @@ namespace Abeslamidze_Kursovaya7.Repos
             _entityContext = entityContext;
         }
 
+        public void Update(Transport updated)
+        {
+            var existing = GetById(updated.Id);
+            if (existing != null)
+            {
+                _entityContext.Entry(existing).CurrentValues.SetValues(updated);
+                _entityContext.SaveChanges();
+            }
+        }
 
         public List<Transport> GetAll()
         {
@@ -25,37 +34,41 @@ namespace Abeslamidze_Kursovaya7.Repos
 
         public Transport? GetById(Guid id)
         {
-            //return _transports.FirstOrDefault(t => t.Id == id);
-            return null;
+            return _entityContext.Transports
+                .FirstOrDefault(t => t.Id == id);
         }
 
 
         public List<Transport> GetFree()
         {
-            //return _transports
-            //    .Where(t => t.Status == TransportStatus.Free)
-            //    .Where(t => t.AssignedOrders.Count == 0)
-            //    .OrderByDescending(t => t.Volume)
-            //    .ToList(); ;
-            return new List<Transport>();
+            return _entityContext.Transports
+                .Where(t => t.Status == TransportStatus.Free)
+                .Where(t => t.AssignedOrders == 0)
+                .OrderByDescending(t => t.Volume)
+                .ToList(); ;
         }
 
         public double GetSpeedInKmById(Guid id)
         {
-            //return _transports
-            //    .Where(t => t.Id == id)
-            //    .Select(t => t.Speed)
-            //    .First();
-            return 0;
+            return _entityContext.Transports
+                .Where(t => t.Id == id)
+                .Select(t => t.Speed)
+                .First();
         }
 
         public double GetPricePerKmById(Guid id)
         {
-            //return _transports
-            //    .Where(t => t.Id == id)
-            //    .Select(t => t.PricePerKm)
-            //    .First();
-            return 0;
+            return _entityContext.Transports
+                .Where(t => t.Id == id)
+                .Select(t => t.PricePerKm)
+                .First();
+        }
+
+        public double GetMaxVolume()
+        {
+            return _entityContext.Transports
+                .Select(t => t.Volume)
+                .Max();
         }
     }
 

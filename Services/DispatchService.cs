@@ -51,12 +51,15 @@ namespace Abeslamidze_Kursovaya7.Services
                 if (delivery.EndDate <= DateTime.Now)
                 {
                     delivery.Status = DeliveryStatus.Done;
+                    _deliveriesRepo.Update(delivery);
 
-                    var transport = _transportsRepo.GetById(delivery.TransportId);
-                    var orders = _ordersRepo.GetByIds(delivery.OrderIds);
+                    var transport = delivery.Transport;
+                    var orders = _ordersRepo.GetByTransportId(transport.Id);
 
-                    UnloadTransport(transport!, orders);
+                    UnloadTransport(transport, orders);
+
                     transport!.Status = TransportStatus.Free;
+                    _transportsRepo.Update(transport);
 
                     InDoneOrders(orders);
                 }
@@ -71,36 +74,38 @@ namespace Abeslamidze_Kursovaya7.Services
         }
         public void CalculateDeliveryDateAndPrice()
         {   
-            foreach (var delivery in _deliveriesRepo.GetAll())
+            foreach (var delivery in _deliveriesRepo.GetInProgress())
             {
                 // срок выполнения = расстояние / скорость
                 int distanceInKm = new Distance(delivery.From, delivery.To).InKm;
-                double transportSpeedInKmHour = _transportsRepo.GetSpeedInKmById(delivery.TransportId);
+                double transportSpeedInKmHour = _transportsRepo.GetSpeedInKmById(delivery.Transport.Id);
                 double deliveryTimeInHours = distanceInKm / transportSpeedInKmHour;
 
                 // установить дату доставки используя минуты для ускорения
                 delivery.EndDate = delivery.StartDate.AddMinutes(deliveryTimeInHours);
 
                 // стоимость = расстояние * стоимость перевозки для транспортного средства
-                double transportPricePerKm = _transportsRepo.GetPricePerKmById(delivery.TransportId);
+                double transportPricePerKm = _transportsRepo.GetPricePerKmById(delivery.Transport.Id);
                 delivery.TotalPrice = distanceInKm * transportPricePerKm;
+
+                _deliveriesRepo.Update(delivery);
             }       
 
         }
         public void CalculateOrderDeliveryDateAndPrice() 
         {
-            foreach (var delivery in _deliveriesRepo.GetAll())
+            foreach (var delivery in _deliveriesRepo.GetInProgress())
             {
-                var orders = _ordersRepo.GetByIds(delivery.OrderIds);
+                var orders = _ordersRepo.GetByTransportId(delivery.Transport.Id);
+
                 delivery.TotalWeight = orders.Sum(o => o.Weight);
 
                 foreach (var order in orders)
                 {
-                    if (order != null)
-                    {
-                        order.DeliveryDate = delivery.EndDate;
-                        order.DeliveryPrice = delivery.TotalPrice * ( order.Weight / delivery.TotalWeight );
-                    }
+                    order.DeliveryDate = delivery.EndDate;
+                    order.DeliveryPrice = delivery.TotalPrice * ( order.Weight / delivery.TotalWeight );
+
+                    _ordersRepo.Update( order );
                 }
             }
 
@@ -120,7 +125,7 @@ namespace Abeslamidze_Kursovaya7.Services
                     {
                         value.Load(item);
 
-                        item.Status = OrderStatus.Assigned;
+                        AssignOrder(item, value);
 
                     }
                 }
@@ -134,7 +139,7 @@ namespace Abeslamidze_Kursovaya7.Services
                         {
                             transport.Load(item);
 
-                            item.Status = OrderStatus.Assigned;
+                            AssignOrder(item, transport);
 
                             _temp.Add(key, transport);
 
@@ -161,8 +166,7 @@ namespace Abeslamidze_Kursovaya7.Services
                     {
                         LoadTransport(value, item.Orders);
 
-                        AssignOrders(item.Orders);
-
+                        AssignOrders(item.Orders, value);
                     }
                 }
                 else
@@ -175,7 +179,7 @@ namespace Abeslamidze_Kursovaya7.Services
                         {
                             LoadTransport(transport, item.Orders);
 
-                            AssignOrders(item.Orders);
+                            AssignOrders(item.Orders, transport);
 
                             _temp.Add(key, transport);
 
@@ -195,16 +199,17 @@ namespace Abeslamidze_Kursovaya7.Services
                 Distance distance = kvp.Key;
                 Transport transport = kvp.Value;
 
+
                 var delivery = new Delivery(
                         distance.From,
                         distance.To,
-                        transport.AssignedOrders,
-                        transport.Id
+                        transport
                     );
 
                 _deliveriesRepo.Add(delivery);
 
                 transport.Status = TransportStatus.InTransit;
+                _transportsRepo.Update(transport);
             }
         }
 
@@ -231,14 +236,25 @@ namespace Abeslamidze_Kursovaya7.Services
             foreach (var order in unprocessedOrders)
             {
                 order.Status = OrderStatus.InQueue;
+                _ordersRepo.Update(order);
             }
 
         }
-        private void AssignOrders(List<Order> orders)
+        private void AssignOrder(Order order, Transport transport)
+        {
+            order.Status = OrderStatus.Assigned;
+            order.Transport = transport;
+           _ordersRepo.Update(order);
+            
+        }
+
+        private void AssignOrders(List<Order> orders, Transport transport)
         {
             foreach (var order in orders)
             {
                 order.Status = OrderStatus.Assigned;
+                order.Transport = transport;
+                _ordersRepo.Update(order);
             }
         }
         private void InDoneOrders(List<Order> orders)
@@ -246,6 +262,7 @@ namespace Abeslamidze_Kursovaya7.Services
             foreach (var order in orders)
             {
                 order.Status = OrderStatus.Done;
+                _ordersRepo.Update(order);
             }
         }
     }

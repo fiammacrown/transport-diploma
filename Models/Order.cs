@@ -19,6 +19,7 @@ namespace Abeslamidze_Kursovaya7.Models
     {
         public Guid Id { get; set; }
 
+        public Transport Transport { get; set; }
         public double Weight { get; set; }
 
         public Location From { get; set; }

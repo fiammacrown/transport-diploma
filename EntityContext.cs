@@ -1,4 +1,5 @@
 ﻿using Abeslamidze_Kursovaya7.Models;
+using System;
 using System.Configuration;
 using System.Data.Entity;
 using System.Reflection.Metadata;
@@ -24,32 +25,8 @@ namespace Abeslamidze_Kursovaya7
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<Order>()
-            //    .HasKey(o => o.FromId);
-
-            //modelBuilder.Entity<Order>()
-            //    .HasRequired(o => o.From)
-            //    .WithOptional(l => l.Order);
-
-            //modelBuilder.Entity<Order>()
-            //    .HasOne(o => o.From)
-            //    .WithMany()
-            //    .HasForeignKey(o => o.FromId);
-
-            //modelBuilder.Entity<Order>()
-            //    .HasOne(o => o.To)
-            //    .WithMany()
-            //    .HasForeignKey(o => o.ToId);
-
-            //modelBuilder.Entity<Delivery>()
-            //    .HasOne(o => o.From)
-            //    .WithMany()
-            //    .HasForeignKey(o => o.FromId);
-
-            //modelBuilder.Entity<Delivery>()
-            //    .HasOne(o => o.To)
-            //    .WithMany()
-            //    .HasForeignKey(o => o.ToId);
+            modelBuilder.Properties<DateTime>().Configure(
+                c => c.HasColumnType("datetime2"));
         }
     }
 

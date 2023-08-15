@@ -7,12 +7,12 @@ namespace Abeslamidze_Kursovaya7
 {
     public partial class RegisterWindow : Window
     {
-        public RegisterWindow(ILocationsRepo locationsRepo)
+        public RegisterWindow(ILocationsRepo locationsRepo, ITransportsRepo transportsRepo)
         {
 
             InitializeComponent();
 
-            DataContext = ViewModel = new RegisterWindowViewModel(locationsRepo)
+            DataContext = ViewModel = new RegisterWindowViewModel(locationsRepo, transportsRepo)
             {
                 CloseDelegate = (order) =>
                 {
