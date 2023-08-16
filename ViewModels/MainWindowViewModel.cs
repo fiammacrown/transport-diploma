@@ -4,48 +4,62 @@ using Abeslamidze_Kursovaya7.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Abeslamidze_Kursovaya7.Interfaces;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Abeslamidze_Kursovaya7.ViewModels
 {
     public class MainWindowViewModel : ObservableObject
     {
-        private readonly IOrdersRepo _ordersService;
-        private readonly ITransportsRepo _transportsRepo;
-        private readonly IDeliveriesRepo _deliveriesRepo;
+        private UnitOfWork unitOfWork = new UnitOfWork();
+
         private readonly DispatchService _dispatchService;
 
-        public MainWindowViewModel(IOrdersRepo ordersService, ITransportsRepo transportsRepo, IDeliveriesRepo deliveriesRepo)
+        public MainWindowViewModel()
         {
-            _ordersService = ordersService;
-            _transportsRepo = transportsRepo;
-            _deliveriesRepo = deliveriesRepo;
-
-            _dispatchService = new DispatchService(_ordersService, _transportsRepo, _deliveriesRepo);
+            _dispatchService = new DispatchService(unitOfWork);
         }
+       
+        public LoginViewModel Login { get; } = new LoginViewModel();
 
         public ObservableCollection<Order> Orders { get; } = new ObservableCollection<Order>();
+
+        public ObservableCollection<Delivery> Deliveries { get; } = new ObservableCollection<Delivery>();
         public ObservableCollection<Transport> Transports { get; } = new ObservableCollection<Transport>();
 
         public void AddNewOrder(Order order)
         {
             Orders.Add(order);
-            _ordersService.Add(order);
+            unitOfWork.OrderRepository.Add(order);
         }
 
         public DispatchServiceResult Calculate()
         {
-           return _dispatchService.Dispatch();
+           _dispatchService.Dispatch();
+           _dispatchService.Start();
+
+            return new DispatchServiceResult(
+                unitOfWork.DeliveryRepository.GetInProgress(),
+                unitOfWork.OrderRepository.GetInQueue(),
+                unitOfWork.OrderRepository.GetDeliverableOrders(),
+                unitOfWork.TransportRepository.GetFree()
+                );
         }
 
         public DispatchServiceResult Tick()
         {
-            return _dispatchService.Update();
+            _dispatchService.Update();
+
+            return new DispatchServiceResult(
+               unitOfWork.DeliveryRepository.GetInProgress(),
+               unitOfWork.OrderRepository.GetInQueue(),
+               unitOfWork.OrderRepository.GetDeliverableOrders(),
+               unitOfWork.TransportRepository.GetFree()
+               );
         }
 
         public void UpdateState()
         {
-            var orders = _ordersService.GetAll();
+            var orders = unitOfWork.OrderRepository.GetAll();
 
             Orders.Clear();
             foreach (var order in orders)
@@ -53,8 +67,15 @@ namespace Abeslamidze_Kursovaya7.ViewModels
                 Orders.Add(order);
             }
 
+            var deliveries = unitOfWork.DeliveryRepository.GetAll();
 
-            var transports = _transportsRepo.GetAll();
+            Deliveries.Clear();
+            foreach (var delivery in deliveries)
+            {
+                Deliveries.Add(delivery);
+            }
+
+            var transports = unitOfWork.TransportRepository.GetAll();
 
             Transports.Clear();
             foreach (var transport in transports)

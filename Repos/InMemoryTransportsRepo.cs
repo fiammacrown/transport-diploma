@@ -37,7 +37,6 @@ namespace Abeslamidze_Kursovaya7.Repos
         {
             return _transports
                 .Where(t => t.Status == TransportStatus.Free)
-                .Where(t => t.AssignedOrders == 0)
                 .OrderByDescending(t => t.Volume)
                 .ToList(); ;
         }
@@ -62,6 +61,12 @@ namespace Abeslamidze_Kursovaya7.Repos
         {
             throw new NotImplementedException();
         }
+
+        public void Save()
+        {
+            throw new NotImplementedException();
+        }
+
     }
 
 

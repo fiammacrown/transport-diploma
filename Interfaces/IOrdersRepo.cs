@@ -6,15 +6,15 @@ namespace Abeslamidze_Kursovaya7.Interfaces
 {
     public interface IOrdersRepo
     {
+        void Save();
         void Add(Order order);
         void Update(Order order);
         List<Order> GetAll();
         Order? GetById(Guid id);
         List<Order> GetByIds(List<Guid> ids);
-        List<Order> GetByTransportId(Guid id);
         List<Order> GetDeliverableOrders();
-        List<GroupedOrder> GetDeliverableOrdersGroupByFromTo();
-        List<Order> GetInQueue();
         List<Order> GetRegisteredOrders();
+        List<Order> GetInQueue();
+
     }
 }

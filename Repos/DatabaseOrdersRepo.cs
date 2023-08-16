@@ -26,13 +26,14 @@ namespace Abeslamidze_Kursovaya7.Repos
 
         public void Update(Order updated)
         {
-            var existing = GetById(updated.Id);
-            if (existing != null)
-            {
-                _entityContext.Entry(existing).CurrentValues.SetValues(updated);
-                _entityContext.SaveChanges();
-            }
+            _entityContext.Entry(updated).State = EntityState.Modified;
         }
+
+        public void Save()
+        {
+            _entityContext.SaveChanges();
+        }
+
         public List<Order> GetAll()
         {
             _entityContext.Orders.Load();
@@ -50,30 +51,11 @@ namespace Abeslamidze_Kursovaya7.Repos
                 .ToList();
         }
 
-        public List<Order> GetByTransportId(Guid transportId)
-        {
-            return _entityContext.Orders
-                .Where(o => o.Transport.Id == transportId)
-                .ToList();
-        }
         public List<Order> GetDeliverableOrders()
         {
             var deliverableStatuses = new List<OrderStatus> { OrderStatus.Registered, OrderStatus.InQueue };
             return _entityContext.Orders
                 .Where(o => deliverableStatuses.Contains(o.Status))
-                .OrderByDescending(o => o.Weight)
-                .ToList();
-        }
-        public List<GroupedOrder> GetDeliverableOrdersGroupByFromTo()
-        {
-            return GetDeliverableOrders()
-                .GroupBy(order => new Distance(order.From, order.To))
-                .Select(groupedOrder => new GroupedOrder(
-                    groupedOrder.Key.From,
-                    groupedOrder.Key.To,
-                    groupedOrder.ToList()
-                    )
-                )
                 .OrderByDescending(o => o.Weight)
                 .ToList();
         }

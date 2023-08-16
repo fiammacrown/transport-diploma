@@ -18,12 +18,11 @@ namespace Abeslamidze_Kursovaya7.Repos
 
         public void Update(Transport updated)
         {
-            var existing = GetById(updated.Id);
-            if (existing != null)
-            {
-                _entityContext.Entry(existing).CurrentValues.SetValues(updated);
-                _entityContext.SaveChanges();
-            }
+            _entityContext.Entry(updated).State = EntityState.Modified;
+        }
+        public void Save()
+        {
+            _entityContext.SaveChanges();
         }
 
         public List<Transport> GetAll()
@@ -43,7 +42,6 @@ namespace Abeslamidze_Kursovaya7.Repos
         {
             return _entityContext.Transports
                 .Where(t => t.Status == TransportStatus.Free)
-                .Where(t => t.AssignedOrders == 0)
                 .OrderByDescending(t => t.Volume)
                 .ToList(); ;
         }

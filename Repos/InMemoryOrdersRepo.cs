@@ -51,19 +51,19 @@ namespace Abeslamidze_Kursovaya7.Repos
         {
             throw new NotImplementedException(); 
         }
-        public List<GroupedOrder> GetDeliverableOrdersGroupByFromTo()
-        {
-            return GetDeliverableOrders()
-               .GroupBy(order => new Distance(order.From, order.To))
-               .Select(groupedOrder => new GroupedOrder(
-                   groupedOrder.Key.From,
-                   groupedOrder.Key.To,
-                   groupedOrder.ToList()
-                   )
-               )
-               .OrderByDescending(o => o.Weight)
-               .ToList();
-        }
+        //public List<GroupedOrder> GetDeliverableOrdersGroupByFromTo()
+        //{
+        //    return GetDeliverableOrders()
+        //       .GroupBy(order => new Distance(order.From, order.To))
+        //       .Select(groupedOrder => new GroupedOrder(
+        //           groupedOrder.Key.From,
+        //           groupedOrder.Key.To,
+        //           groupedOrder.ToList()
+        //           )
+        //       )
+        //       .OrderByDescending(o => o.Weight)
+        //       .ToList();
+        //}
         public List<Order> GetDeliverableOrders()
         {
             var deliverableStatuses = new List<OrderStatus> { OrderStatus.Registered, OrderStatus.InQueue };
@@ -86,6 +86,11 @@ namespace Abeslamidze_Kursovaya7.Repos
             return _orders
                 .Where(o => o.Status == OrderStatus.InQueue)
                 .ToList();
+        }
+
+        public void Save()
+        {
+            throw new NotImplementedException();
         }
 
 

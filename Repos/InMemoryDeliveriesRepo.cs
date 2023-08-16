@@ -28,6 +28,15 @@ namespace Abeslamidze_Kursovaya7.Repos
                 .Where(d => d.Status == DeliveryStatus.InProgress)
                 .ToList();
         }
+        public List<Delivery> GetNew()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Save()
+        {
+            throw new NotImplementedException();
+        }
 
         public Delivery? GetById(Guid id)
         {
@@ -38,5 +47,7 @@ namespace Abeslamidze_Kursovaya7.Repos
         {
             _deliveries.Add(delivery);
         }
+
+
     }
 }

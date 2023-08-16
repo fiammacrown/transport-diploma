@@ -19,18 +19,18 @@ namespace Abeslamidze_Kursovaya7.Repos
         public void Add(Delivery delivery)
         {
             _entityContext.Deliveries.Add(delivery);
-            _entityContext.SaveChanges();
         }
 
         public void Update(Delivery updated)
         {
-            var existing = GetById(updated.Id);
-            if (existing != null)
-            {
-                _entityContext.Entry(existing).CurrentValues.SetValues(updated);
-                _entityContext.SaveChanges();
-            }
+            _entityContext.Entry(updated).State = EntityState.Modified;
         }
+
+        public void Save()
+        {
+            _entityContext.SaveChanges();
+        }
+
         public List<Delivery> GetAll()
         {
             _entityContext.Deliveries.Load();
@@ -47,6 +47,13 @@ namespace Abeslamidze_Kursovaya7.Repos
         {
             return _entityContext.Deliveries
                 .Where(d => d.Status == DeliveryStatus.InProgress)
+                .ToList();
+        }
+
+        public List<Delivery> GetNew()
+        {
+            return _entityContext.Deliveries
+                .Where(d => d.Status == DeliveryStatus.New)
                 .ToList();
         }
     }

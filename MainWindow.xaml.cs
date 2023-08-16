@@ -13,41 +13,25 @@ namespace Abeslamidze_Kursovaya7
 
     public partial class MainWindow : Window
     {
-        EntityContext context;
-        private ILocationsRepo _locationRepo;
-        private ITransportsRepo _transportRepo;
 
         public MainWindow()
         {
-            context = new EntityContext("DbConnection");
-
             InitializeComponent();
 
-            _locationRepo = new DatabaseLocationRepo(context);
-            _transportRepo = new DatabaseTransportsRepo(context); 
-
-            DataContext = ViewModel = new MainWindowViewModel(
-                //new InMemoryOrdersRepo(),
-                //new InMemoryTransportsRepo(),
-                //new InMemoryDeliveriesRepo(),
-                new DatabaseOrdersRepo(context),
-                _transportRepo,
-                new DatabaseDeliveriesRepo(context)
-            ); ;
+            DataContext = ViewModel = new MainWindowViewModel();
         }
 
         public MainWindowViewModel ViewModel { get; }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _locationRepo.GetAll();
             ViewModel.UpdateState();
             Start();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            RegisterWindow registerWindow = new RegisterWindow(_locationRepo, _transportRepo);
+            RegisterWindow registerWindow = new RegisterWindow();
 
             if (registerWindow.ShowDialog() == true)
             {
@@ -99,12 +83,6 @@ namespace Abeslamidze_Kursovaya7
             {
                 MessageBox.Show(ex.Message);
             }
-        }
-
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            authView.Visibility = Visibility.Hidden;
-            commonView.Visibility = Visibility.Visible;
         }
     }
 }
