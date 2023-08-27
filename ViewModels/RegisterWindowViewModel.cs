@@ -20,19 +20,17 @@ namespace Abeslamidze_Kursovaya7.ViewModels
         private readonly RelayCommand _saveCommand;
         private readonly RelayCommand _cancelCommand;
 
-        private UnitOfWork _unitOfWork;
-
-        public RegisterWindowViewModel(UnitOfWork u)
+        public RegisterWindowViewModel()
         {
             _saveCommand = new RelayCommand(Save, CanSave);
             _cancelCommand = new RelayCommand(Cancel);
-
-            _unitOfWork = u;
 
 
         }
 
         public Action<Order?>? CloseDelegate { get; set; }
+        public List<Location> AvailableLocations { get; set; }
+        public double MaxAvailableTransportVolume { get; set; }
 
 
         public string this[string columnName]
@@ -45,7 +43,7 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 
         public List<Location> Locations
         {
-            get => _unitOfWork.LocationRepository.GetAll();
+            get => AvailableLocations;
         }
 
         public double Weight
@@ -103,7 +101,7 @@ namespace Abeslamidze_Kursovaya7.ViewModels
             switch (propertyName)
             {
                 case nameof(Weight):
-                    if (Weight <= 0 || Weight > _unitOfWork.TransportRepository.GetMaxVolume())
+                    if (Weight <= 0 || Weight > MaxAvailableTransportVolume)
                     {
                         validationMessage = Error;
                     }

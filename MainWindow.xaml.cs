@@ -10,16 +10,15 @@ using Abeslamidze_Kursovaya7.Interfaces;
 
 namespace Abeslamidze_Kursovaya7
 {
-
     public partial class MainWindow : Window
     {
+       
         private UnitOfWork unitOfWork = new UnitOfWork();
-        private UnitOfWork unitOfWorkBackground = new UnitOfWork();
         public MainWindow()
         {
             InitializeComponent();
 
-            DataContext = ViewModel = new MainWindowViewModel(unitOfWork, unitOfWorkBackground);
+            DataContext = ViewModel = new MainWindowViewModel(unitOfWork);
         }
 
         public MainWindowViewModel ViewModel { get; }
@@ -32,7 +31,10 @@ namespace Abeslamidze_Kursovaya7
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            RegisterWindow registerWindow = new RegisterWindow(unitOfWork);
+            RegisterWindow registerWindow = new RegisterWindow();
+
+            registerWindow.ViewModel.AvailableLocations = ViewModel.AvailableLocations;
+            registerWindow.ViewModel.MaxAvailableTransportVolume = ViewModel.MaxAvailableTransportVolume;
 
             if (registerWindow.ShowDialog() == true)
             {
@@ -52,7 +54,7 @@ namespace Abeslamidze_Kursovaya7
 
             ViewModel.DispatchInProgress = false;
 
-            var message = string.Format("Сформировано грузоперевозок: {0}\nЗаявки в очереди: {1}\nДоступно единиц транспорта: {2}",
+            var message = string.Format("Сформировано грузоперевозок: {0}\nЗаявки, помещенные в очереди: {1}\nДоступно единиц транспорта: {2}",
                 result.NumOfInProgressDeliveries,
                 result.NumOfInQueueOrders,
                 result.NumOfFreeTransport );

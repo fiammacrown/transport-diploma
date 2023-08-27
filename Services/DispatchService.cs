@@ -8,6 +8,9 @@ namespace Abeslamidze_Kursovaya7.Services
     {
         public UnitOfWork unitOfWork;
 
+        public int NumOfInProgressDeliveries = 0;
+        public int NumOfInQueueOrders = 0;
+
         private Dictionary<Distance, Transport>  _temp = new Dictionary<Distance, Transport>();
 
         public DispatchService(UnitOfWork u)
@@ -16,10 +19,17 @@ namespace Abeslamidze_Kursovaya7.Services
 
         }
 
-        public void Dispatch()
+        public DispatchServiceResult Dispatch()
         {
             DispatchOrders();
             unitOfWork.Save();
+
+            return new DispatchServiceResult(
+                NumOfInProgressDeliveries,
+                NumOfInQueueOrders,
+                unitOfWork.OrderRepository.GetDeliverableOrders().Count,
+                unitOfWork.TransportRepository.GetFree().Count
+            );
 
         }
 
@@ -30,10 +40,15 @@ namespace Abeslamidze_Kursovaya7.Services
 
         }
 
-        public void Update()
+        public DispatchServiceResult Update()
         {
             UpdateDeliveries();
             unitOfWork.Save();
+
+            return new DispatchServiceResult(
+                unitOfWork.OrderRepository.GetDeliverableOrders().Count,
+                unitOfWork.TransportRepository.GetFree().Count
+            );
         }
 
         public void UpdateDeliveries()
@@ -78,6 +93,8 @@ namespace Abeslamidze_Kursovaya7.Services
                          value.Id
                         );
 
+                        NumOfInProgressDeliveries += 1;
+
                         unitOfWork.DeliveryRepository.Add(newDelivery);
 
                         value.Load(order);
@@ -108,6 +125,8 @@ namespace Abeslamidze_Kursovaya7.Services
                                 transport.Id
                             );
 
+                            NumOfInProgressDeliveries += 1;
+
                             unitOfWork.DeliveryRepository.Add(newDelivery);
 
                             transport.Assign();
@@ -133,6 +152,9 @@ namespace Abeslamidze_Kursovaya7.Services
                 if (order.Status != OrderStatus.Assigned)
                 {
                     order.InQueue();
+
+                    NumOfInQueueOrders += 1;
+
                     unitOfWork.OrderRepository.Update(order);
                 }
             }
@@ -159,24 +181,24 @@ namespace Abeslamidze_Kursovaya7.Services
 
     public class DispatchServiceResult
     {
-        public DispatchServiceResult(List<Delivery> inProgressDeliveries, List<Order> inQueueOrders, List<Order> deliverableOrders, List<Transport> freeTransport)
+        public DispatchServiceResult(int inProgressDeliveries, int inQueueOrders, int deliverableOrders, int freeTransport)
         {
-            InProgressDeliveries = inProgressDeliveries;
-            DeliverableOrders = deliverableOrders;
-            InQueueOrders = inQueueOrders;
-            FreeTransport = freeTransport;
+            NumOfInProgressDeliveries = inProgressDeliveries;
+            NumOfDeliverableOrders = deliverableOrders;
+            NumOfInQueueOrders = inQueueOrders;
+            NumOfFreeTransport = freeTransport;
         }
 
-        private List<Delivery> InProgressDeliveries { get; }
-        private List<Order> DeliverableOrders { get; }
-        private List<Order> InQueueOrders { get; }
-        private List<Transport> FreeTransport { get; }
+        public DispatchServiceResult(int deliverableOrders, int freeTransport)
+        {
+            NumOfDeliverableOrders = deliverableOrders;
+            NumOfFreeTransport = freeTransport;
+        }
 
-        public int NumOfInProgressDeliveries { get => InProgressDeliveries.Count; }
-
-        public int NumOfDeliverableOrders { get => DeliverableOrders.Count; }
-        public int NumOfInQueueOrders { get => InQueueOrders.Count; }
-        public int NumOfFreeTransport { get => FreeTransport.Count; }
+        public int NumOfInProgressDeliveries { get; }
+        public int NumOfDeliverableOrders { get; }
+        public int NumOfInQueueOrders { get; }
+        public int NumOfFreeTransport { get; }
 
 
     }

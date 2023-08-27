@@ -12,17 +12,14 @@ namespace Abeslamidze_Kursovaya7.ViewModels
     {
         public bool DispatchInProgress = false;
 
-        private readonly UnitOfWork _unitOfWork;
-        private readonly UnitOfWork _unitOfWorkBackground;
-        private readonly DispatchService _dispatchService;
-        //private readonly DispatchService _dispatchServiceBackground;
+        public List<Location> AvailableLocations;
+        public double MaxAvailableTransportVolume;
 
-        public MainWindowViewModel(UnitOfWork u, UnitOfWork ub)
+        private readonly UnitOfWork _unitOfWork;
+
+        public MainWindowViewModel(UnitOfWork u)
         {
             _unitOfWork = u;
-            _unitOfWorkBackground = ub;
-            _dispatchService = new DispatchService(u);
-            //_dispatchServiceBackground = new DispatchService(ub);
         }
        
         public LoginViewModel Login { get; } = new LoginViewModel();
@@ -44,37 +41,26 @@ namespace Abeslamidze_Kursovaya7.ViewModels
         public DispatchServiceResult Dispatch()
         {
 
-           _dispatchService.Dispatch();
-           _dispatchService.Start();
+           var result = new DispatchService(_unitOfWork).Dispatch();
+           new DispatchService(_unitOfWork).Start();
 
-            return new DispatchServiceResult(
-                _unitOfWork.DeliveryRepository.GetInProgress(),
-                _unitOfWork.OrderRepository.GetInQueue(),
-                _unitOfWork.OrderRepository.GetDeliverableOrders(),
-                _unitOfWork.TransportRepository.GetFree()
-                );
+            return result;
         }
 
         public DispatchServiceResult Update()
         {
-            // загружаем в бэкграунд контекст актуальные данные
-            //_unitOfWorkBackground.OrderRepository.GetAll();
-            //_unitOfWorkBackground.DeliveryRepository.GetAll();
-            //_unitOfWorkBackground.TransportRepository.GetAll();
 
-            _dispatchService.Update();
+            var result = new DispatchService(_unitOfWork).Update();
 
-            return new DispatchServiceResult(
-               _unitOfWork.DeliveryRepository.GetInProgress(),
-               _unitOfWork.OrderRepository.GetInQueue(),
-               _unitOfWork.OrderRepository.GetDeliverableOrders(),
-               _unitOfWork.TransportRepository.GetFree()
-               );
+            return result;
         }
 
         public void Initialize()
         {
-            _unitOfWork.LocationRepository.GetAll();
+            
+            AvailableLocations = _unitOfWork.LocationRepository.GetAll();
+            MaxAvailableTransportVolume = _unitOfWork.TransportRepository.GetMaxVolume();
+
             UpdateState();
         }
 

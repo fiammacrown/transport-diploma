@@ -1,5 +1,5 @@
-﻿using System.Windows;
-using Abeslamidze_Kursovaya7.Interfaces;
+﻿using System.Collections.Generic;
+using System.Windows;
 using Abeslamidze_Kursovaya7.Models;
 using Abeslamidze_Kursovaya7.ViewModels;
 
@@ -7,12 +7,12 @@ namespace Abeslamidze_Kursovaya7
 {
     public partial class RegisterWindow : Window
     {
-        public RegisterWindow(UnitOfWork u)
+        public RegisterWindow()
         {
 
             InitializeComponent();
 
-            DataContext = ViewModel = new RegisterWindowViewModel(u)
+            DataContext = ViewModel = new RegisterWindowViewModel()
             {
                 CloseDelegate = (order) =>
                 {
@@ -23,7 +23,7 @@ namespace Abeslamidze_Kursovaya7
             };
         }
 
-        private RegisterWindowViewModel ViewModel { get; }
+        public RegisterWindowViewModel ViewModel { get; }
 
         public Order? DataResult { get; private set; }
     }
