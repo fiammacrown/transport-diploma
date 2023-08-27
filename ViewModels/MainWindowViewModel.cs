@@ -10,13 +10,19 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 {
     public class MainWindowViewModel : ObservableObject
     {
-        private UnitOfWork unitOfWork = new UnitOfWork();
+        public bool DispatchInProgress = false;
 
+        private readonly UnitOfWork _unitOfWork;
+        private readonly UnitOfWork _unitOfWorkBackground;
         private readonly DispatchService _dispatchService;
+        //private readonly DispatchService _dispatchServiceBackground;
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(UnitOfWork u, UnitOfWork ub)
         {
-            _dispatchService = new DispatchService(unitOfWork);
+            _unitOfWork = u;
+            _unitOfWorkBackground = ub;
+            _dispatchService = new DispatchService(u);
+            //_dispatchServiceBackground = new DispatchService(ub);
         }
        
         public LoginViewModel Login { get; } = new LoginViewModel();
@@ -29,37 +35,52 @@ namespace Abeslamidze_Kursovaya7.ViewModels
         public void AddNewOrder(Order order)
         {
             Orders.Add(order);
-            unitOfWork.OrderRepository.Add(order);
+
+            _unitOfWork.OrderRepository.Add(order);
+            _unitOfWork.Save();
+                
         }
 
-        public DispatchServiceResult Calculate()
+        public DispatchServiceResult Dispatch()
         {
+
            _dispatchService.Dispatch();
            _dispatchService.Start();
 
             return new DispatchServiceResult(
-                unitOfWork.DeliveryRepository.GetInProgress(),
-                unitOfWork.OrderRepository.GetInQueue(),
-                unitOfWork.OrderRepository.GetDeliverableOrders(),
-                unitOfWork.TransportRepository.GetFree()
+                _unitOfWork.DeliveryRepository.GetInProgress(),
+                _unitOfWork.OrderRepository.GetInQueue(),
+                _unitOfWork.OrderRepository.GetDeliverableOrders(),
+                _unitOfWork.TransportRepository.GetFree()
                 );
         }
 
-        public DispatchServiceResult Tick()
+        public DispatchServiceResult Update()
         {
+            // загружаем в бэкграунд контекст актуальные данные
+            //_unitOfWorkBackground.OrderRepository.GetAll();
+            //_unitOfWorkBackground.DeliveryRepository.GetAll();
+            //_unitOfWorkBackground.TransportRepository.GetAll();
+
             _dispatchService.Update();
 
             return new DispatchServiceResult(
-               unitOfWork.DeliveryRepository.GetInProgress(),
-               unitOfWork.OrderRepository.GetInQueue(),
-               unitOfWork.OrderRepository.GetDeliverableOrders(),
-               unitOfWork.TransportRepository.GetFree()
+               _unitOfWork.DeliveryRepository.GetInProgress(),
+               _unitOfWork.OrderRepository.GetInQueue(),
+               _unitOfWork.OrderRepository.GetDeliverableOrders(),
+               _unitOfWork.TransportRepository.GetFree()
                );
+        }
+
+        public void Initialize()
+        {
+            _unitOfWork.LocationRepository.GetAll();
+            UpdateState();
         }
 
         public void UpdateState()
         {
-            var orders = unitOfWork.OrderRepository.GetAll();
+            var orders = _unitOfWork.OrderRepository.GetAll();
 
             Orders.Clear();
             foreach (var order in orders)
@@ -67,7 +88,7 @@ namespace Abeslamidze_Kursovaya7.ViewModels
                 Orders.Add(order);
             }
 
-            var deliveries = unitOfWork.DeliveryRepository.GetAll();
+            var deliveries = _unitOfWork.DeliveryRepository.GetAll();
 
             Deliveries.Clear();
             foreach (var delivery in deliveries)
@@ -75,7 +96,7 @@ namespace Abeslamidze_Kursovaya7.ViewModels
                 Deliveries.Add(delivery);
             }
 
-            var transports = unitOfWork.TransportRepository.GetAll();
+            var transports = _unitOfWork.TransportRepository.GetAll();
 
             Transports.Clear();
             foreach (var transport in transports)

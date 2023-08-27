@@ -25,9 +25,36 @@ namespace Abeslamidze_Kursovaya7
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Properties<DateTime>().Configure(
                 c => c.HasColumnType("datetime2"));
+
+            modelBuilder.Entity<Order>()
+               .HasRequired(o => o.From)
+               .WithMany()
+               .HasForeignKey(o => o.FromId)
+               .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Order>()
+                .HasRequired(o => o.To)
+                .WithMany()
+                .HasForeignKey(o => o.ToId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Delivery>()
+              .HasRequired(o => o.Order)
+              .WithMany()
+              .HasForeignKey(o => o.OrderId)
+              .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Delivery>()
+                .HasRequired(o => o.Transport)
+                .WithMany()
+                .HasForeignKey(o => o.TransportId)
+                .WillCascadeOnDelete(false);
         }
+ 
     }
 
     public class DataBaseInitializer : DropCreateDatabaseIfModelChanges<EntityContext>

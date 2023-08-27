@@ -19,7 +19,11 @@ namespace Abeslamidze_Kursovaya7.Models
     {
         public Guid Id { get; set; }
         public double Weight { get; set; }
+        public Guid FromId { get; set; }
+        [ForeignKey("FromId")]
         public Location From { get; set; }
+        public Guid ToId { get; set; }
+        [ForeignKey("ToId")]
         public Location To { get; set; }
         public OrderStatus Status { get; set; }
 
@@ -28,15 +32,15 @@ namespace Abeslamidze_Kursovaya7.Models
         {
         }
 
-        public Order(double weight, Location from, Location to)
+        public Order(double weight, Guid fromId, Guid toId)
         {
             Id = Guid.NewGuid();
 
             Weight = weight;
 
-            From = from;
+            FromId = fromId;
 
-            To = to; 
+            ToId = toId; 
 
             Status = OrderStatus.Registered;
         }

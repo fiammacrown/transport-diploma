@@ -13,25 +13,26 @@ namespace Abeslamidze_Kursovaya7
 
     public partial class MainWindow : Window
     {
-
+        private UnitOfWork unitOfWork = new UnitOfWork();
+        private UnitOfWork unitOfWorkBackground = new UnitOfWork();
         public MainWindow()
         {
             InitializeComponent();
 
-            DataContext = ViewModel = new MainWindowViewModel();
+            DataContext = ViewModel = new MainWindowViewModel(unitOfWork, unitOfWorkBackground);
         }
 
         public MainWindowViewModel ViewModel { get; }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewModel.UpdateState();
-            Start();
+            ViewModel.Initialize();
+            ActivateDispatchMonitoring();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            RegisterWindow registerWindow = new RegisterWindow();
+            RegisterWindow registerWindow = new RegisterWindow(unitOfWork);
 
             if (registerWindow.ShowDialog() == true)
             {
@@ -45,7 +46,12 @@ namespace Abeslamidze_Kursovaya7
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            var result = ViewModel.Calculate();
+            ViewModel.DispatchInProgress = true;
+
+            var result = ViewModel.Dispatch();
+
+            ViewModel.DispatchInProgress = false;
+
             var message = string.Format("Сформировано грузоперевозок: {0}\nЗаявки в очереди: {1}\nДоступно единиц транспорта: {2}",
                 result.NumOfInProgressDeliveries,
                 result.NumOfInQueueOrders,
@@ -55,7 +61,7 @@ namespace Abeslamidze_Kursovaya7
             ViewModel.UpdateState();
         }
 
-        private async void Start()
+        private async void ActivateDispatchMonitoring()
         {
             try
             {
@@ -65,16 +71,20 @@ namespace Abeslamidze_Kursovaya7
                     {
                         Thread.Sleep(1000);
 
-                        var result = ViewModel.Tick();
-
-                        Dispatcher.BeginInvoke(() =>
+                        if (!ViewModel.DispatchInProgress)
                         {
+                            var result = ViewModel.Update();
 
-                              Button_Dispatch.IsEnabled = (result.NumOfFreeTransport > 0) 
-                            && (result.NumOfDeliverableOrders > 0);
-   
-                              ViewModel.UpdateState();
-                        });
+                            Dispatcher.BeginInvoke(() =>
+                            {
+
+                                Button_Dispatch.IsEnabled = (result.NumOfFreeTransport > 0)
+                              && (result.NumOfDeliverableOrders > 0);
+
+                                ViewModel.UpdateState();
+                            });
+                        }
+                       
                     }
 
                 });

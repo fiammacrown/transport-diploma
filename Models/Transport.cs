@@ -10,13 +10,12 @@ namespace Abeslamidze_Kursovaya7.Models
     public enum TransportStatus
     {
         InTransit,
+        Assigned,
         Free
     }
 
     public class Transport
     {
-        private double _currentLoad = 0;
-
         public Transport()
         {
         }
@@ -33,16 +32,17 @@ namespace Abeslamidze_Kursovaya7.Models
         public Guid Id { get; set; }
         public double Speed { get; set; }
         public double Volume { get; set; }
-        public double AvailableVolume { get => Volume - _currentLoad; set { } }
+        public double CurrentLoad { get; set; }
+        public double AvailableVolume { get => Volume - CurrentLoad; set { } }
         public double PricePerKm { get; set; }
         public TransportStatus Status { get; set; }
 
 
         public void Load(Order order)
         {
-            if ((_currentLoad + order.Weight) <= AvailableVolume)
+            if ((CurrentLoad + order.Weight) <= Volume)
             {
-                _currentLoad += order.Weight;
+                CurrentLoad += order.Weight;
             }
             else
             {
@@ -52,9 +52,9 @@ namespace Abeslamidze_Kursovaya7.Models
 
         public void Unload(Order order)
         {
-            if ((_currentLoad - order.Weight) >= 0)
-            { 
-                _currentLoad -= order.Weight;
+            if ((CurrentLoad - order.Weight) >= 0)
+            {
+                CurrentLoad -= order.Weight;
             }
             else
             {
@@ -62,9 +62,14 @@ namespace Abeslamidze_Kursovaya7.Models
             };
         }
 
-        public void Done()
+        public void Free()
         {
             Status = TransportStatus.Free;
+        }
+
+        public void Assign()
+        {
+            Status = TransportStatus.Assigned;
         }
 
         public void InTransit()

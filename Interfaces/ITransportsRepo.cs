@@ -6,7 +6,6 @@ namespace Abeslamidze_Kursovaya7.Interfaces
 {
     public interface ITransportsRepo
     {
-        void Save();
         void Update(Transport transport);
         List<Transport> GetAll();
         Transport? GetById(Guid id);

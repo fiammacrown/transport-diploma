@@ -16,33 +16,34 @@ namespace Abeslamidze_Kursovaya7.Models
     }
     public class Delivery
     {
-        private Distance _distance;
         public Delivery()
         {
         }
 
-        public Delivery(Location from, Location to,  Order order, Transport transport)
+        public Delivery(Distance distance, Guid orderId, Guid transportId)
         {
             Id = Guid.NewGuid();
-            Transport = transport;
-            Order = order;
+            TransportId = transportId;
+            OrderId = orderId;
+            Distance = distance;
 
-            From = from;
-            To = to;
-
-            _distance = new Distance(From, To);
-           
             StartDate = null;
-            EndDate = StartDate?.AddMinutes(_distance.InKm / Transport.Speed);
-            Price = _distance.InKm * Transport.PricePerKm;
+            EndDate = null;
+            Price = null;
             Status = DeliveryStatus.New;
         }
 
         public Guid Id { get; set;  }
+        public Guid OrderId { get; set; }
+        [ForeignKey("OrderId")]
         public Order Order { get; set; }
+       
+        public Guid TransportId { get; set; }
+        [ForeignKey("TransportId")]
         public Transport Transport { get; set; }
-        public Location From { get; set; }
-        public Location To { get; set; }    
+
+        [NotMapped]
+        public Distance Distance { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public double? Price { get; set; }
@@ -51,6 +52,8 @@ namespace Abeslamidze_Kursovaya7.Models
         public void InProgress(DateTime date)
         {
             StartDate = date;
+            EndDate = StartDate?.AddMinutes(Distance.InKm / Transport!.Speed);
+            Price = Distance.InKm * Transport?.PricePerKm;
             Status = DeliveryStatus.InProgress;
         }
 

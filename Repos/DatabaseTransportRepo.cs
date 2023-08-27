@@ -20,10 +20,6 @@ namespace Abeslamidze_Kursovaya7.Repos
         {
             _entityContext.Entry(updated).State = EntityState.Modified;
         }
-        public void Save()
-        {
-            _entityContext.SaveChanges();
-        }
 
         public List<Transport> GetAll()
         {

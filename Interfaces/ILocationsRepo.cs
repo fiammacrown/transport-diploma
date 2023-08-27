@@ -11,5 +11,6 @@ namespace Abeslamidze_Kursovaya7.Interfaces
     {
         List<Location> GetAll();
         Location? GetById(Guid id);
+
     }
 }

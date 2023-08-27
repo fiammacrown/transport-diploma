@@ -62,22 +62,26 @@
             <Button Grid.Row="6" Grid.Column="0" FontSize="12" FontWeight="Bold">Кол-во грузоперевозок по месяцам</Button>
             <Button Grid.Row="7" Grid.Column="0" FontSize="12" FontWeight="Bold">Объем грузоперевозок по месяцам</Button>
             <TextBlock Grid.Row="0" Grid.Column="1" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Заявки</TextBlock>
-            <DataGrid Grid.Row="1" Grid.Column="1" Grid.RowSpan="3" ItemsSource="{Binding Orders}" AutoGenerateColumns="True" IsReadOnly="True" RowHeaderWidth="50">
-                <!--<DataGrid.Columns>
+            <DataGrid Grid.Row="1" Grid.Column="1" Grid.RowSpan="3" ItemsSource="{Binding Orders}" AutoGenerateColumns="False" IsReadOnly="True" RowHeaderWidth="50">
+                <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*"/>
-                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
-                
-                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
-            </DataGrid.Columns>-->
+                    <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" Width="*"/>
+                    <DataGridTextColumn Header="From" Binding="{Binding From}" Width="*"/>
+                    <DataGridTextColumn Header="To" Binding="{Binding To}" Width="*"/>
+                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
+                </DataGrid.Columns>
             </DataGrid>
             <TextBlock Grid.Row="4" Grid.Column="1" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Грузоперевозки</TextBlock>
-            <DataGrid Grid.Row="5" Grid.Column="1" Grid.RowSpan="3" ItemsSource="{Binding Deliveries}" AutoGenerateColumns="True" IsReadOnly="True" RowHeaderWidth="50">
-                <!--<DataGrid.Columns>
-                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*"/>
-                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
-                
-                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
-            </DataGrid.Columns>-->
+            <DataGrid Grid.Row="5" Grid.Column="1" Grid.RowSpan="3" ItemsSource="{Binding Deliveries}" AutoGenerateColumns="False" IsReadOnly="True" RowHeaderWidth="50">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*"/>
+                    <DataGridTextColumn Header="Order" Binding="{Binding Order}" Width="*"/>
+                    <DataGridTextColumn Header="Transport" Binding="{Binding Transport}" Width="*"/>
+                    <DataGridTextColumn Header="Price" Binding="{Binding Price}" Width="*"/>
+                    <DataGridTextColumn Header="Start Date" Binding="{Binding StartDate}" Width="*"/>
+                    <DataGridTextColumn Header="End Date" Binding="{Binding EndDate}" Width="*"/>
+                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
+                </DataGrid.Columns>
             </DataGrid>
             <TextBlock Grid.Row="8" Grid.Column="1" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Транспорт</TextBlock>
             <DataGrid Grid.Row="9" Grid.Column="1" Grid.RowSpan="4" ItemsSource="{Binding Transports}" AutoGenerateColumns="True" IsReadOnly="True" RowHeaderWidth="50">

@@ -1,18 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-
-using Abeslamidze_Kursovaya7.Repos;
 using Abeslamidze_Kursovaya7.Models;
 using System;
-using Abeslamidze_Kursovaya7.Interfaces;
-using Abeslamidze_Kursovaya7.ViewModels;
-using System.Windows.Controls;
 
 namespace Abeslamidze_Kursovaya7.Services
 {
     public class DispatchService
     {
         public UnitOfWork unitOfWork;
+
+        private Dictionary<Distance, Transport>  _temp = new Dictionary<Distance, Transport>();
+
         public DispatchService(UnitOfWork u)
         {
             unitOfWork = u;
@@ -24,10 +21,6 @@ namespace Abeslamidze_Kursovaya7.Services
             DispatchOrders();
             unitOfWork.Save();
 
-            var a = unitOfWork.DeliveryRepository.GetNew();
-            var b = unitOfWork.OrderRepository.GetInQueue();
-            var d = unitOfWork.TransportRepository.GetFree();
-
         }
 
         public void Start()
@@ -35,20 +28,12 @@ namespace Abeslamidze_Kursovaya7.Services
             StartDeliveries();
             unitOfWork.Save();
 
-            var a = unitOfWork.DeliveryRepository.GetInProgress();
-            var b = unitOfWork.OrderRepository.GetInQueue();
-            var d = unitOfWork.TransportRepository.GetFree();
-
         }
 
         public void Update()
         {
             UpdateDeliveries();
             unitOfWork.Save();
-
-            var a = unitOfWork.DeliveryRepository.GetInProgress();
-            var b = unitOfWork.OrderRepository.GetInQueue();
-            var d = unitOfWork.TransportRepository.GetFree();
         }
 
         public void UpdateDeliveries()
@@ -61,7 +46,7 @@ namespace Abeslamidze_Kursovaya7.Services
                     delivery.Done();
                     delivery.Order.Done();
                     delivery.Transport.Unload(delivery.Order);
-                    delivery.Transport.Done();
+                    delivery.Transport.Free();
 
                     unitOfWork.DeliveryRepository.Update(delivery);
                     unitOfWork.OrderRepository.Update(delivery.Order);
@@ -79,30 +64,70 @@ namespace Abeslamidze_Kursovaya7.Services
             var freeTransport = unitOfWork.TransportRepository.GetFree();
 
             foreach (var order in deliverableOrders)
-            { 
-                foreach (var transport in freeTransport)
+            {
+                var distance = new Distance(order.From, order.To);
+
+                // проверяем уже распределенный транспорт по тому же маршруту
+                if (_temp.TryGetValue(distance, out var value))
                 {
-                    if (order.Weight <= transport.AvailableVolume)
+                    if (order.Weight <= value.AvailableVolume)
                     {
-                        unitOfWork.DeliveryRepository.Add(new Delivery(
-                            order.From,
-                            order.To,
-                            order,
-                            transport)
+                        var newDelivery = new Delivery(
+                         distance,
+                         order.Id,
+                         value.Id
                         );
 
-                        transport.Load(order);
-                        unitOfWork.TransportRepository.Update(transport);
+                        unitOfWork.DeliveryRepository.Add(newDelivery);
+
+                        value.Load(order);
+                        unitOfWork.TransportRepository.Update(value);
 
                         order.Assign();
                         unitOfWork.OrderRepository.Update(order);
 
                         break;
                     }
+                }
+
+                else
+                {
+                    foreach (var transport in freeTransport)
+                    {   
+                        if (transport.Status == TransportStatus.Assigned)
+                        {
+                            continue;
+                        }
+
+                        if (order.Weight <= transport.AvailableVolume)
+                        {
+
+                            var newDelivery = new Delivery(
+                                distance,
+                                order.Id,
+                                transport.Id
+                            );
+
+                            unitOfWork.DeliveryRepository.Add(newDelivery);
+
+                            transport.Assign();
+                            transport.Load(order);
+                            unitOfWork.TransportRepository.Update(transport);
+
+                            order.Assign();
+                            unitOfWork.OrderRepository.Update(order);
+
+                            _temp.Add(distance, transport);
+
+                            break;
+                        }
 
                     }
 
                 }
+
+            }
+
             foreach (var order in deliverableOrders)
             {
                 if (order.Status != OrderStatus.Assigned)

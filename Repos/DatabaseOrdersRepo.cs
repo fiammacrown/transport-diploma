@@ -21,17 +21,11 @@ namespace Abeslamidze_Kursovaya7.Repos
         public void Add(Order order)
         {
             _entityContext.Orders.Add(order);
-            _entityContext.SaveChanges();
         }
 
         public void Update(Order updated)
         {
             _entityContext.Entry(updated).State = EntityState.Modified;
-        }
-
-        public void Save()
-        {
-            _entityContext.SaveChanges();
         }
 
         public List<Order> GetAll()

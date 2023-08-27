@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Abeslamidze_Kursovaya7.Models;
 
@@ -14,11 +15,9 @@ public class Location
         Name = name;
     }
 
+    [Key]
     public Guid Id { get; set; }
     public string Name { get; set;  }
-
-
-    public Order? Order { get; set; }
 
     public override string? ToString()
     {

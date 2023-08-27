@@ -2,24 +2,18 @@
 using Abeslamidze_Kursovaya7.Models;
 using Abeslamidze_Kursovaya7.Repos;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
-namespace Abeslamidze_Kursovaya7.ViewModels
+namespace Abeslamidze_Kursovaya7
 {
     public class UnitOfWork : IDisposable
     {
         private readonly EntityContext context = new EntityContext("DbConnection");
+        private readonly DbContextLock dbContextLock = new DbContextLock();
 
         private IDeliveriesRepo? deliveriesRepo;
         private ITransportsRepo? transportsRepo;
         private ILocationsRepo? locationsRepo;
         private IOrdersRepo? ordersRepo;
-
         public IDeliveriesRepo DeliveryRepository
         {
             get
@@ -74,10 +68,22 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 
         public void Save()
         {
-            context.SaveChanges();
+            if (!dbContextLock.IsLocked)
+            {
+                dbContextLock.Lock();
+                try
+                {
+                    context.SaveChanges();
+                }
+                finally
+                {
+                    dbContextLock.Unlock();
+                }
+            }
         }
 
         private bool disposed = false;
+
 
         protected virtual void Dispose(bool disposing)
         {
@@ -94,6 +100,7 @@ namespace Abeslamidze_Kursovaya7.ViewModels
         public void Dispose()
         {
             Dispose(true);
+            dbContextLock.Dispose();
             GC.SuppressFinalize(this);
         }
     }

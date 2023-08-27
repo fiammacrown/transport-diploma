@@ -6,7 +6,6 @@ namespace Abeslamidze_Kursovaya7.Interfaces
 {
     public interface IOrdersRepo
     {
-        void Save();
         void Add(Order order);
         void Update(Order order);
         List<Order> GetAll();
