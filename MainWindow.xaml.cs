@@ -7,6 +7,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Abeslamidze_Kursovaya7.Interfaces;
+using System.Windows.Controls;
+using Abeslamidze_Kursovaya7.Models;
 
 namespace Abeslamidze_Kursovaya7
 {
@@ -26,7 +28,52 @@ namespace Abeslamidze_Kursovaya7
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             ViewModel.Initialize();
-            ActivateDispatchMonitoring();
+            //ActivateDispatchMonitoring();
+        }
+
+        private void DataGridOrders_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedOrder = (Order)DataGrid_Orders.SelectedItem;
+
+            if (selectedOrder != null && selectedOrder.Status == OrderStatus.Registered)
+            {
+                Button_Edit.IsEnabled = true;
+            }
+
+            else
+            {
+                Button_Edit.IsEnabled = false;
+            }
+        }
+
+        private void EditSelected_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedOrder = (Order)DataGrid_Orders.SelectedItem;
+            if (selectedOrder != null)
+            {
+                RegisterWindow registerWindow = new RegisterWindow();
+
+
+                registerWindow.ViewModel.AvailableLocations = ViewModel.AvailableLocations;
+                registerWindow.ViewModel.MaxAvailableTransportVolume = ViewModel.MaxAvailableTransportVolume;
+
+                registerWindow.ViewModel.Weight = selectedOrder.Weight;
+                registerWindow.ViewModel.From = selectedOrder.From;
+                registerWindow.ViewModel.To = selectedOrder.To;
+
+                registerWindow.ViewModel.CurrentOrder = selectedOrder;
+
+                if (registerWindow.ShowDialog() == true)
+                {
+                    var result = registerWindow.DataResult;
+                    if (result != null)
+                    {
+                        ViewModel.UpdateOrder(result);
+                        ViewModel.UpdateState();
+
+                    }
+                }
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

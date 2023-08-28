@@ -2,6 +2,8 @@
 using Abeslamidze_Kursovaya7.Models;
 using Abeslamidze_Kursovaya7.Repos;
 using System;
+using System.Data.Entity.Infrastructure;
+using System.Linq;
 
 namespace Abeslamidze_Kursovaya7
 {
@@ -73,6 +75,25 @@ namespace Abeslamidze_Kursovaya7
                 dbContextLock.Lock();
                 try
                 {
+                    // Попытка обновления сущности
+                    context.SaveChanges();
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    // Обработка конфликта
+                    var entry = ex.Entries.Single();
+                    var databaseValues = entry.GetDatabaseValues();
+                    if (databaseValues != null)
+                    {
+                        // Перезагрузка сущности из базы данных
+                        entry.OriginalValues.SetValues(databaseValues);
+                    }
+                    else
+                    {
+                        // Сущность была удалена в базе данных
+                        // Ваша логика обработки удаления
+                    }
+                    // Попытка обновления сущности снова
                     context.SaveChanges();
                 }
                 finally

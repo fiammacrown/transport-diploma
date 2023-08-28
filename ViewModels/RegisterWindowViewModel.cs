@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Abeslamidze_Kursovaya7.Interfaces;
 using Abeslamidze_Kursovaya7.Models;
@@ -25,12 +26,13 @@ namespace Abeslamidze_Kursovaya7.ViewModels
             _saveCommand = new RelayCommand(Save, CanSave);
             _cancelCommand = new RelayCommand(Cancel);
 
-
         }
 
         public Action<Order?>? CloseDelegate { get; set; }
         public List<Location> AvailableLocations { get; set; }
         public double MaxAvailableTransportVolume { get; set; }
+        public Order CurrentOrder { get; set; }
+
 
 
         public string this[string columnName]
@@ -120,7 +122,20 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 
         private void Save()
         {
-            var order = new Order(Weight, From!.Id, To!.Id);
+            Order order;
+
+            if (CurrentOrder != null)
+            {
+                order = CurrentOrder;
+                order.Weight = Weight;
+                order.From = From!;
+                order.To = To!;
+
+            }
+            else 
+            {
+                order = new Order(Weight, From!.Id, To!.Id);
+            }
 
             CloseDelegate?.Invoke(order);
         }

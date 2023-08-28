@@ -45,7 +45,7 @@
                   ItemsSource="{Binding Locations}"
                   SelectedItem="{Binding To, Mode=TwoWay, ValidatesOnDataErrors=True}"
                   ItemTemplate="{StaticResource LocationItemTemplate}" />
-        <Button Grid.Row="8" Grid.Column="0" Content="Создать" Command="{Binding SaveCommand}" />
+        <Button Grid.Row="8" Grid.Column="0" Content="Сохранить" Command="{Binding SaveCommand}" />
         <Button Grid.Row="8" Grid.Column="1" Content="Отмена" Command="{Binding CancelCommand}" />
     </Grid>
 </Window>

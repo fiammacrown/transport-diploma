@@ -38,6 +38,13 @@ namespace Abeslamidze_Kursovaya7.ViewModels
                 
         }
 
+        public void UpdateOrder(Order order) 
+        {
+            _unitOfWork.OrderRepository.Update(order);
+            _unitOfWork.Save();
+
+        }
+
         public DispatchServiceResult Dispatch()
         {
 

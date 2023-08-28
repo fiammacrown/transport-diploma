@@ -56,13 +56,14 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Grid.Column="0" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Меню</TextBlock>
-            <Button Grid.Row="1" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="Button_Click">Зарегистрировать заявку</Button>
-            <Button x:Name="Button_Dispatch" Grid.Row="2" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="Button_Click_1" IsEnabled="False">Распределить заявки</Button>
+            <Button x:Name="Button_Register" Grid.Row="1" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="Button_Click">Зарегистрировать заявку</Button>
+            <Button x:Name="Button_Dispatch" Grid.Row="3" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="Button_Click_1" IsEnabled="False">Распределить заявки</Button>
+            <Button x:Name="Button_Edit"  Grid.Row="2" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="EditSelected_Click" IsEnabled="False">Редактировать заявку</Button>
             <TextBlock Grid.Row="5" Grid.Column="0" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Диаграммы</TextBlock>
             <Button Grid.Row="6" Grid.Column="0" FontSize="12" FontWeight="Bold">Кол-во грузоперевозок по месяцам</Button>
             <Button Grid.Row="7" Grid.Column="0" FontSize="12" FontWeight="Bold">Объем грузоперевозок по месяцам</Button>
             <TextBlock Grid.Row="0" Grid.Column="1" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Заявки</TextBlock>
-            <DataGrid Grid.Row="1" Grid.Column="1" Grid.RowSpan="3" ItemsSource="{Binding Orders}" AutoGenerateColumns="False" IsReadOnly="True" RowHeaderWidth="50">
+            <DataGrid  x:Name="DataGrid_Orders" Grid.Row="1" Grid.Column="1" Grid.RowSpan="3" ItemsSource="{Binding Orders}" AutoGenerateColumns="False" IsReadOnly="True" RowHeaderWidth="50"  SelectionChanged="DataGridOrders_SelectionChanged">
                 <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*"/>
                     <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" Width="*"/>
