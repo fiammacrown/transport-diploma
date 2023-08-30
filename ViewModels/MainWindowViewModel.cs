@@ -45,21 +45,65 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 
         }
 
-        public DispatchServiceResult Dispatch()
+        public void DeleteOrder(Order order)
         {
+            _unitOfWork.OrderRepository.Delete(order);
+            _unitOfWork.Save();
 
-           var result = new DispatchService(_unitOfWork).Dispatch();
-           new DispatchService(_unitOfWork).Start();
-
-            return result;
         }
 
-        public DispatchServiceResult Update()
+        public DispatchServiceResult? Dispatch()
         {
+            var d = new DispatchService(_unitOfWork);
+            if (d.Dispatch())
+            {
+                _unitOfWork.Save();
 
-            var result = new DispatchService(_unitOfWork).Update();
+                var r = new DispatchServiceResult();
 
-            return result;
+                r.NumOfNewDeliveries = d.NumOfNewDeliveries;
+                r.NumOfInQueueOrders = d.NumOfInQueueOrders;
+                r.NumOfAssignedOrders = d.NumOfAssignedOrders;
+                r.NumOfAssignedTransport = d.NumOfAssignedTransport;
+
+                return r;
+            }
+
+            return null;
+        }
+        public DispatchServiceResult? Start()
+        {
+            var d = new DispatchService(_unitOfWork);
+            if (d.Start())
+            {
+                _unitOfWork.Save();
+
+                var r = new DispatchServiceResult();
+
+                r.NumOfInProgressDeliveries = d.NumOfInProgressDeliveries;
+
+                return r;
+            }
+
+            return null;
+            
+        }
+
+        public DispatchServiceResult? Update()
+        {
+            var d = new DispatchService(_unitOfWork);
+            if (d.Update())
+            {
+                _unitOfWork.Save();
+
+                var r = new DispatchServiceResult();
+
+                r.NumOfDoneDeliveries = d.NumOfDoneDeliveries;
+
+                return r;
+            }
+
+            return null;
         }
 
         public void Initialize()

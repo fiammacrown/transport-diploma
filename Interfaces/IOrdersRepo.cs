@@ -8,6 +8,7 @@ namespace Abeslamidze_Kursovaya7.Interfaces
     {
         void Add(Order order);
         void Update(Order order);
+        void Delete(Order order);
         List<Order> GetAll();
         Order? GetById(Guid id);
         List<Order> GetByIds(List<Guid> ids);

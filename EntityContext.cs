@@ -53,6 +53,7 @@ namespace Abeslamidze_Kursovaya7
                 .WithMany()
                 .HasForeignKey(o => o.TransportId)
                 .WillCascadeOnDelete(false);
+
         }
  
     }

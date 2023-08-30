@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Abeslamidze_Kursovaya7.Interfaces;
 using System.Windows.Controls;
 using Abeslamidze_Kursovaya7.Models;
+using System.Data.Entity;
 
 namespace Abeslamidze_Kursovaya7
 {
@@ -28,7 +29,7 @@ namespace Abeslamidze_Kursovaya7
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             ViewModel.Initialize();
-            //ActivateDispatchMonitoring();
+            ActivateDispatchMonitoring();
         }
 
         private void DataGridOrders_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -38,11 +39,13 @@ namespace Abeslamidze_Kursovaya7
             if (selectedOrder != null && selectedOrder.Status == OrderStatus.Registered)
             {
                 Button_Edit.IsEnabled = true;
+                Button_Delete.IsEnabled = true;
             }
 
             else
             {
                 Button_Edit.IsEnabled = false;
+                Button_Delete.IsEnabled = false;
             }
         }
 
@@ -75,6 +78,20 @@ namespace Abeslamidze_Kursovaya7
                 }
             }
         }
+        private void DeleteSelected_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedOrder = (Order)DataGrid_Orders.SelectedItem;
+            if (selectedOrder != null)
+            {
+                MessageBoxResult result = MessageBox.Show("Удалить заявку?", "Подтверждение удаления", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    ViewModel.DeleteOrder(selectedOrder);
+                    ViewModel.UpdateState();
+                }
+            }
+        }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -95,19 +112,53 @@ namespace Abeslamidze_Kursovaya7
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            var winTitle = "Распределение заявок";
+
             ViewModel.DispatchInProgress = true;
 
             var result = ViewModel.Dispatch();
 
             ViewModel.DispatchInProgress = false;
 
-            var message = string.Format("Сформировано грузоперевозок: {0}\nЗаявки, помещенные в очереди: {1}\nДоступно единиц транспорта: {2}",
-                result.NumOfInProgressDeliveries,
-                result.NumOfInQueueOrders,
-                result.NumOfFreeTransport );
-            MessageBox.Show(message, "Распределение заявок выполнено!");
+            if (result != null)
+            {
+                var message = string.Format("Сформировано грузоперевозок: {0}\nЗаявки, помещенные в очереди: {1}\nЗадействовано единиц транспорта: {2}",
+                   result.NumOfNewDeliveries,
+                   result.NumOfInQueueOrders,
+                   result.NumOfAssignedTransport);
 
-            ViewModel.UpdateState();
+                MessageBox.Show(message, winTitle);
+
+                ViewModel.UpdateState();
+
+            }
+            else
+            {
+                MessageBox.Show("Распределение заявок не может быть выполнено!\nНет зарегистированных заявок или доступного транспорта!", winTitle);
+            }
+
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            var winTitle = "Начать выполнение";
+            var result = ViewModel.Start();
+
+            if (result != null)
+            {
+                var message = string.Format("Начато выполнение {0} грузоперевозок!",
+                   result.NumOfInProgressDeliveries);
+
+                MessageBox.Show(message, winTitle);
+
+                ViewModel.UpdateState();
+
+            }
+            else
+            {
+                MessageBox.Show("Нет сформированных грузоперевозок!", winTitle);
+            }
+       
         }
 
         private async void ActivateDispatchMonitoring()
@@ -124,14 +175,17 @@ namespace Abeslamidze_Kursovaya7
                         {
                             var result = ViewModel.Update();
 
-                            Dispatcher.BeginInvoke(() =>
+                            if (result != null && result.NumOfDoneDeliveries > 0)
                             {
+                                Dispatcher.BeginInvoke(() =>
+                                {
+                                    var message = string.Format("Завершено {0} грузоперевозок!", result.NumOfDoneDeliveries);
 
-                                Button_Dispatch.IsEnabled = (result.NumOfFreeTransport > 0)
-                              && (result.NumOfDeliverableOrders > 0);
-
-                                ViewModel.UpdateState();
-                            });
+                                    MessageBox.Show(message, "Инфо");
+                                    ViewModel.UpdateState();
+                                });
+                            }
+                           
                         }
                        
                     }

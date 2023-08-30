@@ -8,8 +8,18 @@ namespace Abeslamidze_Kursovaya7.Services
     {
         public UnitOfWork unitOfWork;
 
+        public int NumOfNewDeliveries = 0;
         public int NumOfInProgressDeliveries = 0;
+        public int NumOfDoneDeliveries = 0;
+
         public int NumOfInQueueOrders = 0;
+        public int NumOfAssignedOrders = 0;
+        public int NumOfInProgressOrders = 0;
+        public int NumOfDoneOrders = 0;
+
+        public int NumOfAssignedTransport = 0;
+        public int NumOfIntransitTransport = 0;
+        public int NumOfFreeTransport = 0;
 
         private Dictionary<Distance, Transport>  _temp = new Dictionary<Distance, Transport>();
 
@@ -19,41 +29,51 @@ namespace Abeslamidze_Kursovaya7.Services
 
         }
 
-        public DispatchServiceResult Dispatch()
+        public bool Dispatch()
         {
-            DispatchOrders();
-            unitOfWork.Save();
+            var deliverableOrders = unitOfWork.OrderRepository.GetDeliverableOrders();
+            var freeTransport = unitOfWork.TransportRepository.GetFree();
 
-            return new DispatchServiceResult(
-                NumOfInProgressDeliveries,
-                NumOfInQueueOrders,
-                unitOfWork.OrderRepository.GetDeliverableOrders().Count,
-                unitOfWork.TransportRepository.GetFree().Count
-            );
+            if (deliverableOrders.Count == 0 || freeTransport.Count == 0)
+            {
+                return false;
+            }
+
+            DispatchOrders(deliverableOrders, freeTransport);
+
+            return true;
 
         }
 
-        public void Start()
+        public bool Start()
         {
-            StartDeliveries();
-            unitOfWork.Save();
+            var newDeliveries = unitOfWork.DeliveryRepository.GetNew();
+            if (newDeliveries.Count == 0)
+            {
+                return false;
+            }
+
+            StartDeliveries(newDeliveries);
+            return true;
 
         }
 
-        public DispatchServiceResult Update()
-        {
-            UpdateDeliveries();
-            unitOfWork.Save();
-
-            return new DispatchServiceResult(
-                unitOfWork.OrderRepository.GetDeliverableOrders().Count,
-                unitOfWork.TransportRepository.GetFree().Count
-            );
-        }
-
-        public void UpdateDeliveries()
+        public bool Update()
         {
             var inProgressDeliveries = unitOfWork.DeliveryRepository.GetInProgress();
+
+            if (inProgressDeliveries.Count == 0)
+            {
+                return false;
+            }
+
+            UpdateDeliveries(inProgressDeliveries);
+
+            return true;
+        }
+
+        public void UpdateDeliveries(List<Delivery> inProgressDeliveries)
+        {
             foreach (var delivery in inProgressDeliveries)
             {
                 if (delivery.EndDate <= DateTime.Now)
@@ -67,17 +87,18 @@ namespace Abeslamidze_Kursovaya7.Services
                     unitOfWork.OrderRepository.Update(delivery.Order);
                     unitOfWork.TransportRepository.Update(delivery.Transport);
 
+                    NumOfDoneDeliveries += 1;
+                    NumOfDoneOrders += 1;
+                    NumOfFreeTransport += 1;
+
 
                 }
             }
 
         }
 
-        private void DispatchOrders()
+        private void DispatchOrders(List<Order> deliverableOrders, List<Transport> freeTransport)
         {
-            var deliverableOrders = unitOfWork.OrderRepository.GetDeliverableOrders();
-            var freeTransport = unitOfWork.TransportRepository.GetFree();
-
             foreach (var order in deliverableOrders)
             {
                 var distance = new Distance(order.From, order.To);
@@ -93,8 +114,6 @@ namespace Abeslamidze_Kursovaya7.Services
                          value.Id
                         );
 
-                        NumOfInProgressDeliveries += 1;
-
                         unitOfWork.DeliveryRepository.Add(newDelivery);
 
                         value.Load(order);
@@ -102,6 +121,9 @@ namespace Abeslamidze_Kursovaya7.Services
 
                         order.Assign();
                         unitOfWork.OrderRepository.Update(order);
+
+                        NumOfNewDeliveries += 1;
+                        NumOfAssignedOrders += 1;
 
                         break;
                     }
@@ -125,8 +147,6 @@ namespace Abeslamidze_Kursovaya7.Services
                                 transport.Id
                             );
 
-                            NumOfInProgressDeliveries += 1;
-
                             unitOfWork.DeliveryRepository.Add(newDelivery);
 
                             transport.Assign();
@@ -137,6 +157,11 @@ namespace Abeslamidze_Kursovaya7.Services
                             unitOfWork.OrderRepository.Update(order);
 
                             _temp.Add(distance, transport);
+
+                            NumOfNewDeliveries += 1;
+                            NumOfAssignedOrders += 1;
+
+                            NumOfAssignedTransport += 1;
 
                             break;
                         }
@@ -153,21 +178,22 @@ namespace Abeslamidze_Kursovaya7.Services
                 {
                     order.InQueue();
 
-                    NumOfInQueueOrders += 1;
-
                     unitOfWork.OrderRepository.Update(order);
+
+                    NumOfInQueueOrders += 1;
                 }
             }
         }      
         
-        private void StartDeliveries()
+        private void StartDeliveries(List<Delivery> newDeliveries)
         {
+            
             DateTime start = DateTime.Now;
-
-            var newDeliveries = unitOfWork.DeliveryRepository.GetNew();
 
             foreach (var delivery in newDeliveries)
             {
+                delivery.Distance = new Distance(delivery.Order.From, delivery.Order.To);
+
                 delivery.InProgress(start);
                 delivery.Order.InProgress();
                 delivery.Transport.InTransit();
@@ -175,30 +201,24 @@ namespace Abeslamidze_Kursovaya7.Services
                 unitOfWork.DeliveryRepository.Update(delivery);
                 unitOfWork.OrderRepository.Update(delivery.Order);
                 unitOfWork.TransportRepository.Update(delivery.Transport);
+
+                NumOfInProgressDeliveries += 1;
+                NumOfInProgressOrders += 1;
             }
         }
     }
 
     public class DispatchServiceResult
     {
-        public DispatchServiceResult(int inProgressDeliveries, int inQueueOrders, int deliverableOrders, int freeTransport)
-        {
-            NumOfInProgressDeliveries = inProgressDeliveries;
-            NumOfDeliverableOrders = deliverableOrders;
-            NumOfInQueueOrders = inQueueOrders;
-            NumOfFreeTransport = freeTransport;
-        }
 
-        public DispatchServiceResult(int deliverableOrders, int freeTransport)
-        {
-            NumOfDeliverableOrders = deliverableOrders;
-            NumOfFreeTransport = freeTransport;
-        }
-
-        public int NumOfInProgressDeliveries { get; }
-        public int NumOfDeliverableOrders { get; }
-        public int NumOfInQueueOrders { get; }
-        public int NumOfFreeTransport { get; }
+        public int NumOfNewDeliveries { get; set; }
+        public int NumOfInProgressDeliveries { get; set; }
+        public int NumOfDoneDeliveries { get; set; }
+        public int NumOfAssignedOrders { get; set; }
+        public int NumOfInQueueOrders { get; set; }
+        public int NumOfInProgressOrders { get; set; }
+        public int NumOfDoneOrders{ get; set; }
+        public int NumOfAssignedTransport { get; set; }
 
 
     }

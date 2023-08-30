@@ -22,6 +22,10 @@ namespace Abeslamidze_Kursovaya7.Repos
         {
             _entityContext.Orders.Add(order);
         }
+        public void Delete(Order order)
+        {
+            _entityContext.Orders.Remove(order);
+        }
 
         public void Update(Order updated)
         {

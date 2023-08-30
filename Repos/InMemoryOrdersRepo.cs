@@ -16,6 +16,12 @@ namespace Abeslamidze_Kursovaya7.Repos
             throw new NotImplementedException();
         }
 
+        public void Delete(Order order)
+        {
+            throw new NotImplementedException();
+        }
+
+
         public void Add(Order order)
         {
             _orders.Add(order);

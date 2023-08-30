@@ -57,11 +57,13 @@
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Grid.Column="0" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Меню</TextBlock>
             <Button x:Name="Button_Register" Grid.Row="1" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="Button_Click">Зарегистрировать заявку</Button>
-            <Button x:Name="Button_Dispatch" Grid.Row="3" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="Button_Click_1" IsEnabled="False">Распределить заявки</Button>
+            <Button x:Name="Button_Dispatch" Grid.Row="5" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="Button_Click_1" IsEnabled="True">Распределить заявки</Button>
+            <Button x:Name="Button_Start" Grid.Row="6" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="Button_Click_2" IsEnabled="True">Начать выполнение</Button>
             <Button x:Name="Button_Edit"  Grid.Row="2" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="EditSelected_Click" IsEnabled="False">Редактировать заявку</Button>
-            <TextBlock Grid.Row="5" Grid.Column="0" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Диаграммы</TextBlock>
-            <Button Grid.Row="6" Grid.Column="0" FontSize="12" FontWeight="Bold">Кол-во грузоперевозок по месяцам</Button>
-            <Button Grid.Row="7" Grid.Column="0" FontSize="12" FontWeight="Bold">Объем грузоперевозок по месяцам</Button>
+            <Button x:Name="Button_Delete"  Grid.Row="3" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="DeleteSelected_Click" IsEnabled="False">Удалить заявку</Button>
+            <TextBlock Grid.Row="8" Grid.Column="0" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Диаграммы</TextBlock>
+            <Button Grid.Row="9" Grid.Column="0" FontSize="12" FontWeight="Bold">Кол-во грузоперевозок по месяцам</Button>
+            <Button Grid.Row="10" Grid.Column="0" FontSize="12" FontWeight="Bold">Объем грузоперевозок по месяцам</Button>
             <TextBlock Grid.Row="0" Grid.Column="1" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Заявки</TextBlock>
             <DataGrid  x:Name="DataGrid_Orders" Grid.Row="1" Grid.Column="1" Grid.RowSpan="3" ItemsSource="{Binding Orders}" AutoGenerateColumns="False" IsReadOnly="True" RowHeaderWidth="50"  SelectionChanged="DataGridOrders_SelectionChanged">
                 <DataGrid.Columns>

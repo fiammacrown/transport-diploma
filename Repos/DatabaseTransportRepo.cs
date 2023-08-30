@@ -42,6 +42,14 @@ namespace Abeslamidze_Kursovaya7.Repos
                 .ToList(); ;
         }
 
+        public List<Transport> GetInTransit()
+        {
+            return _entityContext.Transports
+                .Where(t => t.Status == TransportStatus.InTransit)
+                .OrderByDescending(t => t.Volume)
+                .ToList(); ;
+        }
+
         public double GetSpeedInKmById(Guid id)
         {
             return _entityContext.Transports

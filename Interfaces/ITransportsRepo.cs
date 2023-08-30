@@ -10,6 +10,7 @@ namespace Abeslamidze_Kursovaya7.Interfaces
         List<Transport> GetAll();
         Transport? GetById(Guid id);
         List<Transport> GetFree();
+        List<Transport> GetInTransit();
         double GetPricePerKmById(Guid id);
         double GetSpeedInKmById(Guid id);
         double GetMaxVolume();

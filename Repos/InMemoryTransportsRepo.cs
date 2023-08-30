@@ -32,6 +32,13 @@ namespace Abeslamidze_Kursovaya7.Repos
             return _transports.FirstOrDefault(t => t.Id == id);
         }
 
+        public List<Transport> GetInTransit()
+        {
+            return _transports
+                .Where(t => t.Status == TransportStatus.InTransit)
+                .OrderByDescending(t => t.Volume)
+                .ToList(); ;
+        }
 
         public List<Transport> GetFree()
         {
