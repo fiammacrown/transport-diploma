@@ -97,6 +97,56 @@ namespace Abeslamidze_Kursovaya7
             }
         }
 
+        private void Diagram1_Click(object sender, RoutedEventArgs e)
+        {
+            var data = GenerateRandomData();
+
+            DiagramWindow diagramWindow = new DiagramWindow(new DeliveryCountDiagramViewModel(data));
+
+            diagramWindow.ShowDialog();
+        }
+
+
+        private void Diagram2_Click(object sender, RoutedEventArgs e)
+        {
+            var data = GenerateRandomData();
+
+            DiagramWindow diagramWindow = new DiagramWindow(new DeliveryTotalPriceDiagramViewModel(data));
+
+            diagramWindow.ShowDialog();
+        }
+
+        private List<Delivery> GenerateRandomData()
+        {
+            var data = new List<Delivery>();
+
+            Random random = new Random();
+
+            for (int i = 1; i <= 12; i++)
+            {
+                int num = random.Next(1, 10);
+                for (int j = 0; j < num; j++)
+                {
+                    int day = random.Next(1, 29);
+
+                    double minValue = 150.0;
+                    double maxValue = 1500.0;
+
+                    double price = random.NextDouble() * (maxValue - minValue) + minValue;
+
+                    var delivery = new Delivery();
+
+                    delivery.StartDate = new DateTime(2023, i, day);
+                    delivery.Price = price;
+
+                    data.Add(delivery);
+
+                }
+            }
+
+            return data;
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             RegisterWindow registerWindow = new RegisterWindow();

@@ -1,10 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Abeslamidze_Kursovaya7.ViewModels
 {
@@ -12,11 +7,7 @@ namespace Abeslamidze_Kursovaya7.ViewModels
     {
         private const string AdminPin = "boo";
 
-#if DEBUG
-        private bool _isAuthorized = true;
-#else
         private bool _isAuthorized = false;
-#endif
         private RelayCommand? _loginCommand;
 
         public bool IsAuthorized

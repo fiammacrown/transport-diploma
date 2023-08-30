@@ -6,19 +6,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Abeslamidze_Kursovaya7"
         mc:Ignorable="d"
-        Title="MainWindow" Height="700" Width="1050" Loaded="Window_Loaded" MinWidth="1050" MinHeight="700">
+        Title="ООО Грузоперевозки - Абесламидзе - Курсовая" Height="700" Width="1050" Loaded="Window_Loaded" MinWidth="1050" MinHeight="700">
 
     <Window.Resources>
         <c:BoolToVisibilityConverter x:Key="BoolToHiddenConverter" TrueValue="Visible" FalseValue="Hidden" />
     </Window.Resources>
-    
+
     <Grid>
 
         <Grid Visibility="{Binding Login.IsAuthorized, Converter={StaticResource BoolToHiddenConverter}, ConverterParameter=Reverse}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="220" />
-            <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -62,20 +62,53 @@
             <Button x:Name="Button_Edit"  Grid.Row="2" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="EditSelected_Click" IsEnabled="False">Редактировать заявку</Button>
             <Button x:Name="Button_Delete"  Grid.Row="3" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="DeleteSelected_Click" IsEnabled="False">Удалить заявку</Button>
             <TextBlock Grid.Row="8" Grid.Column="0" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Диаграммы</TextBlock>
-            <Button Grid.Row="9" Grid.Column="0" FontSize="12" FontWeight="Bold">Кол-во грузоперевозок по месяцам</Button>
-            <Button Grid.Row="10" Grid.Column="0" FontSize="12" FontWeight="Bold">Объем грузоперевозок по месяцам</Button>
+            <Button x:Name="Button_Diagram1"  Grid.Row="9" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="Diagram1_Click">Кол-во грузоперевозок по месяцам</Button>
+            <Button x:Name="Button_Diagram2" Grid.Row="10" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="Diagram2_Click">Объем грузоперевозок по месяцам</Button>
             <TextBlock Grid.Row="0" Grid.Column="1" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Заявки</TextBlock>
-            <DataGrid  x:Name="DataGrid_Orders" Grid.Row="1" Grid.Column="1" Grid.RowSpan="3" ItemsSource="{Binding Orders}" AutoGenerateColumns="False" IsReadOnly="True" RowHeaderWidth="50"  SelectionChanged="DataGridOrders_SelectionChanged">
+            <DataGrid x:Name="DataGrid_Orders"
+                      Grid.Row="1"
+                      Grid.Column="1"
+                      Grid.RowSpan="3"
+                      ItemsSource="{Binding Orders}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      HeadersVisibility="Column"
+                      SelectionMode="Single"
+                      RowHeaderWidth="50"
+                      SelectionChanged="DataGridOrders_SelectionChanged">
                 <DataGrid.Columns>
-                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*"/>
+                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*"/>
                     <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" Width="*"/>
                     <DataGridTextColumn Header="From" Binding="{Binding From}" Width="*"/>
                     <DataGridTextColumn Header="To" Binding="{Binding To}" Width="*"/>
                     <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
                 </DataGrid.Columns>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Status}" Value="InProgress">
+                                <Setter Property="Background" Value="DodgerBlue" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Status}" Value="Assigned">
+                                <Setter Property="Background" Value="Yellow" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Status}" Value="Registered">
+                                <Setter Property="Background" Value="LawnGreen" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
             </DataGrid>
             <TextBlock Grid.Row="4" Grid.Column="1" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Грузоперевозки</TextBlock>
-            <DataGrid x:Name="DataGrid_Deliveries" Grid.Row="5" Grid.Column="1" Grid.RowSpan="3" ItemsSource="{Binding Deliveries}" AutoGenerateColumns="False" IsReadOnly="True" RowHeaderWidth="50">
+            <DataGrid x:Name="DataGrid_Deliveries"
+                      Grid.Row="5"
+                      Grid.Column="1"
+                      Grid.RowSpan="3"
+                      ItemsSource="{Binding Deliveries}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      HeadersVisibility="Column"
+                      RowHeaderWidth="50">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*"/>
                     <DataGridTextColumn Header="Order" Binding="{Binding Order}" Width="*"/>
@@ -85,15 +118,42 @@
                     <DataGridTextColumn Header="End Date" Binding="{Binding EndDate}" Width="*"/>
                     <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
                 </DataGrid.Columns>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="IsHitTestVisible" Value="False"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Status}" Value="InProgress">
+                                <Setter Property="Background" Value="Yellow" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Status}" Value="New">
+                                <Setter Property="Background" Value="LawnGreen" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
             </DataGrid>
             <TextBlock Grid.Row="8" Grid.Column="1" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Транспорт</TextBlock>
-            <DataGrid Grid.Row="9" Grid.Column="1" Grid.RowSpan="4" ItemsSource="{Binding Transports}" AutoGenerateColumns="True" IsReadOnly="True" RowHeaderWidth="50">
-                <!--<DataGrid.Columns>
-                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*"/>
-                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
-                
-                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
-            </DataGrid.Columns>-->
+            <DataGrid Grid.Row="9"
+                      Grid.Column="1"
+                      Grid.RowSpan="4"
+                      ItemsSource="{Binding Transports}"
+                      AutoGenerateColumns="True"
+                      IsReadOnly="True"
+                      HeadersVisibility="Column"
+                      RowHeaderWidth="50">
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="IsHitTestVisible" Value="False"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Status}" Value="Assigned">
+                                <Setter Property="Background" Value="Yellow" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Status}" Value="InTransit">
+                                <Setter Property="Background" Value="LawnGreen" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
             </DataGrid>
         </Grid>
 
