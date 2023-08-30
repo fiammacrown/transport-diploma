@@ -75,7 +75,7 @@
                 </DataGrid.Columns>
             </DataGrid>
             <TextBlock Grid.Row="4" Grid.Column="1" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Грузоперевозки</TextBlock>
-            <DataGrid Grid.Row="5" Grid.Column="1" Grid.RowSpan="3" ItemsSource="{Binding Deliveries}" AutoGenerateColumns="False" IsReadOnly="True" RowHeaderWidth="50">
+            <DataGrid x:Name="DataGrid_Deliveries" Grid.Row="5" Grid.Column="1" Grid.RowSpan="3" ItemsSource="{Binding Deliveries}" AutoGenerateColumns="False" IsReadOnly="True" RowHeaderWidth="50">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*"/>
                     <DataGridTextColumn Header="Order" Binding="{Binding Order}" Width="*"/>

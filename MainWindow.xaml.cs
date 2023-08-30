@@ -10,6 +10,7 @@ using Abeslamidze_Kursovaya7.Interfaces;
 using System.Windows.Controls;
 using Abeslamidze_Kursovaya7.Models;
 using System.Data.Entity;
+using System.ComponentModel;
 
 namespace Abeslamidze_Kursovaya7
 {
@@ -22,6 +23,9 @@ namespace Abeslamidze_Kursovaya7
             InitializeComponent();
 
             DataContext = ViewModel = new MainWindowViewModel(unitOfWork);
+
+            DataGrid_Deliveries.Items.SortDescriptions.Add(new SortDescription("Status", ListSortDirection.Ascending));
+            DataGrid_Orders.Items.SortDescriptions.Add(new SortDescription("Status", ListSortDirection.Ascending));
         }
 
         public MainWindowViewModel ViewModel { get; }

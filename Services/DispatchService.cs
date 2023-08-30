@@ -114,6 +114,7 @@ namespace Abeslamidze_Kursovaya7.Services
                          value.Id
                         );
 
+                        newDelivery.CalculatePrice(value);
                         unitOfWork.DeliveryRepository.Add(newDelivery);
 
                         value.Load(order);
@@ -147,6 +148,7 @@ namespace Abeslamidze_Kursovaya7.Services
                                 transport.Id
                             );
 
+                            newDelivery.CalculatePrice(transport);
                             unitOfWork.DeliveryRepository.Add(newDelivery);
 
                             transport.Assign();
@@ -192,9 +194,9 @@ namespace Abeslamidze_Kursovaya7.Services
 
             foreach (var delivery in newDeliveries)
             {
-                delivery.Distance = new Distance(delivery.Order.From, delivery.Order.To);
+                var distance = new Distance(delivery.Order.From, delivery.Order.To);
 
-                delivery.InProgress(start);
+                delivery.InProgress(distance, start);
                 delivery.Order.InProgress();
                 delivery.Transport.InTransit();
 

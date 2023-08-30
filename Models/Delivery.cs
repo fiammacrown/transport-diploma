@@ -49,11 +49,15 @@ namespace Abeslamidze_Kursovaya7.Models
         public double? Price { get; set; }
         public DeliveryStatus Status { get; set; }
 
-        public void InProgress(DateTime date)
+        public void CalculatePrice(Transport transport)
+        {
+            Price = Distance.InKm * transport.PricePerKm;
+        }
+
+        public void InProgress(Distance distance, DateTime date)
         {
             StartDate = date;
-            EndDate = StartDate?.AddMinutes(Distance.InKm / Transport!.Speed);
-            Price = Distance.InKm * Transport?.PricePerKm;
+            EndDate = StartDate?.AddMinutes(distance.InKm / Transport!.Speed);
             Status = DeliveryStatus.InProgress;
         }
 
