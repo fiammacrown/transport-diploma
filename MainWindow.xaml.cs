@@ -1,15 +1,11 @@
 ﻿using System.Windows;
 using Abeslamidze_Kursovaya7.ViewModels;
-using Abeslamidze_Kursovaya7.Repos;
-
 using System.Collections.Generic;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Abeslamidze_Kursovaya7.Interfaces;
 using System.Windows.Controls;
 using Abeslamidze_Kursovaya7.Models;
-using System.Data.Entity;
 using System.ComponentModel;
 
 namespace Abeslamidze_Kursovaya7
@@ -17,13 +13,15 @@ namespace Abeslamidze_Kursovaya7
     public partial class MainWindow : Window
     {
        
-        private UnitOfWork unitOfWork = new UnitOfWork();
+        private readonly UnitOfWork _unitOfWork = new UnitOfWork();
+
         public MainWindow()
         {
             InitializeComponent();
 
-            DataContext = ViewModel = new MainWindowViewModel(unitOfWork);
+            DataContext = ViewModel = new MainWindowViewModel(_unitOfWork);
 
+            // set default sorting by status for data grids
             DataGrid_Deliveries.Items.SortDescriptions.Add(new SortDescription("Status", ListSortDirection.Ascending));
             DataGrid_Orders.Items.SortDescriptions.Add(new SortDescription("Status", ListSortDirection.Ascending));
         }

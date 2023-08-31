@@ -13,27 +13,9 @@
     </Window.Resources>
 
     <Grid>
-
-        <Grid Visibility="{Binding Login.IsAuthorized, Converter={StaticResource BoolToHiddenConverter}, ConverterParameter=Reverse}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="220" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="40" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
-            <TextBlock Grid.Row="1" Grid.Column="1" Text="PIN:" />
-            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Login.Pin, Mode=TwoWay}" />
-
-            <Button Grid.Row="3" Grid.Column="1" Content="Login" Command="{Binding Login.LoginCommand}"/>
-
-        </Grid>
+        <local:LoginView
+            DataContext="{Binding Login}"
+            Visibility="{Binding IsAuthorized, Converter={StaticResource BoolToHiddenConverter}, ConverterParameter=Reverse}" />
 
 
         <Grid Visibility="{Binding Login.IsAuthorized, Converter={StaticResource BoolToHiddenConverter}}">
@@ -55,6 +37,7 @@
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
+            <Button Grid.Row="0" Grid.Column="1" Content="Выйти" Command="{Binding Login.LogoutCommand}" Width="100" Height="30" HorizontalAlignment="Right" />
             <TextBlock Grid.Row="0" Grid.Column="0" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Меню</TextBlock>
             <Button x:Name="Button_Register" Grid.Row="1" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="Button_Click">Зарегистрировать заявку</Button>
             <Button x:Name="Button_Dispatch" Grid.Row="5" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="Button_Click_1" IsEnabled="True">Распределить заявки</Button>
