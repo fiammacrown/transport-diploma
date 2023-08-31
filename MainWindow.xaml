@@ -78,6 +78,9 @@
                             <DataTrigger Binding="{Binding Status}" Value="Registered">
                                 <Setter Property="Background" Value="LawnGreen" />
                             </DataTrigger>
+                            <DataTrigger Binding="{Binding Status}" Value="InQueue">
+                                <Setter Property="Background" Value="OrangeRed" />
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </DataGrid.RowStyle>
@@ -106,7 +109,7 @@
                         <Setter Property="IsHitTestVisible" Value="False"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Status}" Value="InProgress">
-                                <Setter Property="Background" Value="Yellow" />
+                                <Setter Property="Background" Value="DodgerBlue" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Status}" Value="New">
                                 <Setter Property="Background" Value="LawnGreen" />
@@ -132,7 +135,7 @@
                                 <Setter Property="Background" Value="Yellow" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Status}" Value="InTransit">
-                                <Setter Property="Background" Value="LawnGreen" />
+                                <Setter Property="Background" Value="DodgerBlue" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
