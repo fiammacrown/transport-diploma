@@ -73,7 +73,6 @@ namespace Abeslamidze_Kursovaya7
                 new Location("Минск"),
                 new Location("Гомель"),
                 new Location("Могилев"),
-                new Location("Минск"),
                 new Location("Витебск"),
                 new Location("Гродно"),
             });
