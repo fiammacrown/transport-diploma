@@ -11,10 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Transport.DAL\Transport.DAL.csproj" />
     <ProjectReference Include="..\Transport.DTOs\Transport.DTOs.csproj" />
   </ItemGroup>

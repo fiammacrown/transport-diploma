@@ -18,7 +18,7 @@ namespace Abeslamidze_Kursovaya7
 
         public DbSet<Order> Orders { get; set; }
 
-        public DbSet<Transport> Transports { get; set; }
+        public DbSet<Models.Transport> Transports { get; set; }
 
         public DbSet<Delivery> Deliveries { get; set; }
 
@@ -62,10 +62,10 @@ namespace Abeslamidze_Kursovaya7
     {
         protected override void Seed(EntityContext context)
         {
-            context.Transports.AddRange(new Transport[] {
-                new Transport(350, 1500, 25),
-                new Transport(550, 500, 15),
-                new Transport(450, 1000, 35)
+            context.Transports.AddRange(new Models.Transport[] {
+                new Models.Transport(350, 1500, 25),
+                new Models.Transport(550, 500, 15),
+                new Models.Transport(450, 1000, 35)
             });
 
             context.Locations.AddRange(new Location[] {
