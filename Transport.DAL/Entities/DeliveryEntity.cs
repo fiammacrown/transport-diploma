@@ -11,7 +11,7 @@ public enum DeliveryStatus
 
 public class DeliveryEntity
 {
-    public DeliveryEntity()
+	public DeliveryEntity()
     {
     }
 
@@ -30,11 +30,9 @@ public class DeliveryEntity
 
     public Guid Id { get; set;  }
     public Guid OrderId { get; set; }
-    [ForeignKey("OrderId")]
     public OrderEntity Order { get; set; }
    
     public Guid TransportId { get; set; }
-    [ForeignKey("TransportId")]
     public TransportEntity Transport { get; set; }
 
     [NotMapped]

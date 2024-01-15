@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Transport.DAL.Entities;
 
@@ -13,22 +14,11 @@ public enum OrderStatus
 
 public class OrderEntity
 {
-    public Guid Id { get; set; }
-    public double Weight { get; set; }
-    public Guid FromId { get; set; }
-    [ForeignKey("FromId")]
-    public LocationEntity From { get; set; }
-    public Guid ToId { get; set; }
-    [ForeignKey("ToId")]
-    public LocationEntity To { get; set; }
-    public OrderStatus Status { get; set; }
+	public OrderEntity()
+	{
+	}
 
-
-    public OrderEntity()
-    {
-    }
-
-    public OrderEntity(double weight, Guid fromId, Guid toId)
+	public OrderEntity(double weight, Guid fromId, Guid toId)
     {
         Id = Guid.NewGuid();
 
@@ -41,7 +31,15 @@ public class OrderEntity
         Status = OrderStatus.Registered;
     }
 
-    public void Assign()
+	public Guid Id { get; set; }
+	public double Weight { get; set; }
+	public Guid FromId { get; set; }
+	public LocationEntity From { get; set; }
+	public Guid ToId { get; set; }
+	public LocationEntity To { get; set; }
+	public OrderStatus Status { get; set; }
+
+	public void Assign()
     {
         Status = OrderStatus.Assigned;
     }

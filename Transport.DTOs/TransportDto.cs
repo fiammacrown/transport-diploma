@@ -6,7 +6,7 @@ public class TransportDto
 	public double Speed { get; set; }
 	public double Volume { get; set; }
 	public double CurrentLoad { get; set; }
-	public double AvailableVolume { get => Volume - CurrentLoad; set { } }
+	public double AvailableVolume { get; set; }
 	public double PricePerKm { get; set; }
-	//public TransportStatus Status { get; set; }
+	public string Status { get; set; }
 }

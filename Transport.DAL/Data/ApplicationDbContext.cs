@@ -31,54 +31,46 @@ public class ApplicationDbContext : DbContext
 	{
 		base.OnModelCreating(modelBuilder);
 
-		//modelBuilder.Properties<DateTime>().Configure(
-		//	c => c.HasColumnType("datetime2"));
+		modelBuilder.Entity<OrderEntity>()
+		   .HasOne(o => o.From)
+		   .WithMany()
+		   .HasForeignKey(o => o.FromId)
+		   .OnDelete(DeleteBehavior.ClientSetNull);
 
-		//modelBuilder.Entity<OrderEntity>()
-		//   .HasRequired(o => o.From)
-		//   .WithMany()
-		//   .HasForeignKey(o => o.FromId)
-		//   .WillCascadeOnDelete(false);
+		modelBuilder.Entity<OrderEntity>()
+			.HasOne(o => o.To)
+			.WithMany()
+			.HasForeignKey(o => o.ToId)
+			.OnDelete(DeleteBehavior.ClientSetNull);
 
-		//    modelBuilder.Entity<OrderEntity>()
-		//        .HasRequired(o => o.To)
-		//        .WithMany()
-		//        .HasForeignKey(o => o.ToId)
-		//        .WillCascadeOnDelete(false);
+		modelBuilder.Entity<DeliveryEntity>()
+			.HasOne(o => o.Order)
+			.WithMany()
+			.HasForeignKey(o => o.OrderId)
+			.OnDelete(DeleteBehavior.ClientSetNull);
 
-		//    modelBuilder.Entity<DeliveryEntity>()
-		//      .HasRequired(o => o.Order)
-		//      .WithMany()
-		//      .HasForeignKey(o => o.OrderId)
-		//      .WillCascadeOnDelete(false);
+		modelBuilder.Entity<DeliveryEntity>()
+			.HasOne(o => o.Transport)
+			.WithMany()
+			.HasForeignKey(o => o.TransportId)
+			.OnDelete(DeleteBehavior.ClientSetNull);
 
-		//    modelBuilder.Entity<DeliveryEntity>()
-		//        .HasRequired(o => o.Transport)
-		//        .WithMany()
-		//        .HasForeignKey(o => o.TransportId)
-		//        .WillCascadeOnDelete(false);
+		modelBuilder.Entity<TransportEntity>().HasData(
+			new TransportEntity(350, 1500, 25),
+			new TransportEntity(550, 500, 15),
+			new TransportEntity(450, 1000, 35)
+		);
+
+		modelBuilder.Entity<LocationEntity>().HasData(
+			new LocationEntity("Брест"),
+			new LocationEntity("Минск"),
+			new LocationEntity("Гомель"),
+			new LocationEntity("Могилев"),
+			new LocationEntity("Витебск"),
+			new LocationEntity("Гродно")
+		);
+
+
 	}
 }
 
-
-// TODO: Move to migrations
-//public class DataBaseInitializer : DropCreateDatabaseIfModelChanges<EntityContext>
-//{
-//    protected override void Seed(EntityContext context)
-//    {
-//        context.Transports.AddRange(new Transport[] {
-//            new Transport(350, 1500, 25),
-//            new Transport(550, 500, 15),
-//            new Transport(450, 1000, 35)
-//        });
-
-//        context.Locations.AddRange(new Location[] {
-//            new Location("Брест"),
-//            new Location("Минск"),
-//            new Location("Гомель"),
-//            new Location("Могилев"),
-//            new Location("Витебск"),
-//            new Location("Гродно"),
-//        });
-//    }
-//}
