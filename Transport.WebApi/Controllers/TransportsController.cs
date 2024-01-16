@@ -23,7 +23,7 @@ public class TransportsController : ControllerBase
 
 		var dbTransports = await _context.Transports.ToListAsync();
 
-		var trasnports = dbTransports.Select(x => new TransportDto
+		var transports = dbTransports.Select(x => new TransportDto
 		{
 			Id = x.Id,
 			Speed = x.Speed,
@@ -34,6 +34,6 @@ public class TransportsController : ControllerBase
 			Status = x.Status.ToString(),
 		});
 
-		return Ok(trasnports);
+		return Ok(transports);
 	}
 }
