@@ -4,7 +4,9 @@ namespace Transport.DAL.Interfaces;
 
 public interface ILocationsRepo
 {
-    List<LocationEntity> GetAll();
+    Task<List<LocationEntity>> GetAllAsync();
+
+    LocationEntity? GetByName(string name);
     LocationEntity? GetById(Guid id);
 
 }

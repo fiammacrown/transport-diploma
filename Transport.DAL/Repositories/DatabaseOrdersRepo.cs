@@ -25,15 +25,15 @@ public class DatabaseOrdersRepo : IOrdersRepo
 
     public void Update(OrderEntity updated)
     {
-        //_entityContext.Entry(updated).State = EntityState.Modified;
+        _entityContext.Entry(updated).State = EntityState.Modified;
     }
 
-    public List<OrderEntity> GetAll()
+    public Task<List<OrderEntity>> GetAllAsync()
     {
-        //_entityContext.Orders.Load();
-        _entityContext.Locations.Load();
-        return _entityContext.Orders.ToList();
+        //_entityContext.Locations.Load();
+        return _entityContext.Orders.ToListAsync();
     }
+
     public OrderEntity? GetById(Guid id)
     {
         return _entityContext.Orders

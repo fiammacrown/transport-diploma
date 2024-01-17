@@ -7,7 +7,7 @@ public interface IOrdersRepo
     void Add(OrderEntity order);
     void Update(OrderEntity order);
     void Delete(OrderEntity order);
-    List<OrderEntity> GetAll();
+    Task<List<OrderEntity>> GetAllAsync();
     OrderEntity? GetById(Guid id);
     List<OrderEntity> GetByIds(List<Guid> ids);
     List<OrderEntity> GetDeliverableOrders();

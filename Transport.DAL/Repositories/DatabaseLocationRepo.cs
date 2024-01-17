@@ -1,4 +1,5 @@
-﻿using Transport.DAL.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Transport.DAL.Data;
 using Transport.DAL.Entities;
 using Transport.DAL.Interfaces;
 
@@ -13,15 +14,21 @@ public class DatabaseLocationRepo : ILocationsRepo
         _entityContext = entityContext;
     }
 
-    public List<LocationEntity> GetAll()
+    public Task<List<LocationEntity>> GetAllAsync()
     {
-        //_entityContext.Locations.Load();
-        return _entityContext.Locations.Local.ToList();
+        return _entityContext.Locations.ToListAsync();
     }
+
 
     public LocationEntity? GetById(Guid id)
     {
         return _entityContext.Locations
             .FirstOrDefault(t => t.Id == id);
     }
+
+	public LocationEntity? GetByName(string name)
+	{
+		return _entityContext.Locations
+			.FirstOrDefault(t => t.Name == name);
+	}
 }
