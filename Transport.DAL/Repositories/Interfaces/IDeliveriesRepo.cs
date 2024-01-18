@@ -6,7 +6,7 @@ public interface IDeliveriesRepo
 { 
     void Add(DeliveryEntity delivery);
     void Update(DeliveryEntity delivery);
-    List<DeliveryEntity> GetAll();
+    Task<List<DeliveryEntity>> GetAllAsync();
     DeliveryEntity? GetById(Guid id);
     List<DeliveryEntity> GetInProgress();
     List<DeliveryEntity> GetNew();

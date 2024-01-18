@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
 using Transport.DAL;
-using Transport.DAL.Data;
 using Transport.DAL.Entities;
 using Transport.DTOs;
 using Transport.WebApi.Services;

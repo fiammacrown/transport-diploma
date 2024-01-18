@@ -5,7 +5,7 @@ namespace Transport.DAL.Interfaces;
 public interface ITransportsRepo
 {
     void Update(TransportEntity transport);
-    List<TransportEntity> GetAll();
+	Task<List<TransportEntity>> GetAllAsync();
     TransportEntity? GetById(Guid id);
     List<TransportEntity> GetFree();
     List<TransportEntity> GetInTransit();

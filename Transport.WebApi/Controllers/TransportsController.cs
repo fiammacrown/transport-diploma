@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Transport.DAL;
 using Transport.DAL.Data;
-using Transport.DAL.Entities;
 using Transport.DTOs;
 
 namespace Transport.WebApi.Controllers;
@@ -11,10 +11,13 @@ namespace Transport.WebApi.Controllers;
 public class TransportsController : ControllerBase
 {
 	private readonly ApplicationDbContext _context;
+	private readonly UnitOfWork _unitOfWork;
 
-	public TransportsController(ApplicationDbContext context)
+
+	public TransportsController(ApplicationDbContext context, UnitOfWork unitOfWork)
 	{
 		_context = context;
+		_unitOfWork = unitOfWork;
 	}
 
 	[HttpGet]
@@ -36,4 +39,15 @@ public class TransportsController : ControllerBase
 
 		return Ok(transports);
 	}
+
+
+	[HttpGet]
+	[Route("GetMaxVolume")]
+	public ActionResult<double> GetMaxVolume()
+	{
+		var maxVolume = _unitOfWork.TransportRepository.GetMaxVolume();
+
+		return Ok(maxVolume);
+	}
+
 }

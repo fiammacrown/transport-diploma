@@ -1,4 +1,5 @@
-﻿using Transport.DAL.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Transport.DAL.Data;
 using Transport.DAL.Entities;
 using Transport.DAL.Interfaces;
 
@@ -15,14 +16,14 @@ public class DatabaseTransportsRepo : ITransportsRepo
 
     public void Update(TransportEntity updated)
     {
-        //_entityContext.Entry(updated).State = EntityState.Modified;
+        _entityContext.Entry(updated).State = EntityState.Modified;
     }
 
-    public List<TransportEntity> GetAll()
-    {
+	public Task<List<TransportEntity>> GetAllAsync()
+	{
         //_entityContext.Transports.Load();
-        return _entityContext.Transports.Local.ToList();
-    }
+        return _entityContext.Transports.ToListAsync();
+	}
 
     public TransportEntity? GetById(Guid id)
     {

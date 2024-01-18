@@ -17,6 +17,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 );
 
 builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<DispatchService>();
 
 builder.Services.AddScoped<IDeliveriesRepo, DatabaseDeliveriesRepo>();
 builder.Services.AddScoped<ITransportsRepo, DatabaseTransportsRepo>();
