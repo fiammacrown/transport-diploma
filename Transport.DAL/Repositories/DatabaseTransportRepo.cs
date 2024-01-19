@@ -48,7 +48,15 @@ public class DatabaseTransportsRepo : ITransportsRepo
             .ToList(); ;
     }
 
-    public double GetSpeedInKmById(Guid id)
+	public List<TransportEntity> GetAssigned()
+	{
+		return _entityContext.Transports
+			.Where(t => t.Status == TransportStatus.Assigned)
+			.OrderByDescending(t => t.Volume)
+			.ToList(); ;
+	}
+
+	public double GetSpeedInKmById(Guid id)
     {
         return _entityContext.Transports
             .Where(t => t.Id == id)

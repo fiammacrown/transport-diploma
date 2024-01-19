@@ -9,7 +9,8 @@ public interface ITransportsRepo
     TransportEntity? GetById(Guid id);
     List<TransportEntity> GetFree();
     List<TransportEntity> GetInTransit();
-    double GetPricePerKmById(Guid id);
+	List<TransportEntity> GetAssigned();
+	double GetPricePerKmById(Guid id);
     double GetSpeedInKmById(Guid id);
     double GetMaxVolume();
 }

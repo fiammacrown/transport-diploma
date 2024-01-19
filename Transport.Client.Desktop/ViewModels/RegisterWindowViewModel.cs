@@ -2,21 +2,18 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows.Controls;
 using System.Windows.Input;
-using Abeslamidze_Kursovaya7.Interfaces;
-using Abeslamidze_Kursovaya7.Models;
-using Abeslamidze_Kursovaya7.Repos;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Transport.DTOs;
 
 namespace Abeslamidze_Kursovaya7.ViewModels
 {
-    public class RegisterWindowViewModel : ObservableObject, IDataErrorInfo
+	public class RegisterWindowViewModel : ObservableObject, IDataErrorInfo
     {
         private double _weight = 0;
-        private Location? _from = null;
-        private Location? _to = null;
+        private string? _from = null;
+        private string? _to = null;
 
         private readonly RelayCommand _saveCommand;
         private readonly RelayCommand _cancelCommand;
@@ -28,10 +25,10 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 
         }
 
-        public Action<Order?>? CloseDelegate { get; set; }
-        public List<Location> AvailableLocations { get; set; }
+        public Action<NewOrderDto?>? CloseDelegate { get; set; }
+        public List<LocationDto> AvailableLocations { get; set; }
         public double MaxAvailableTransportVolume { get; set; }
-        public Order CurrentOrder { get; set; }
+        public NewOrderDto CurrentOrder { get; set; }
 
 
 
@@ -43,9 +40,9 @@ namespace Abeslamidze_Kursovaya7.ViewModels
             }
         }
 
-        public List<Location> Locations
+        public List<string> Locations
         {
-            get => AvailableLocations;
+            get => AvailableLocations.Select(x => x.Name).ToList();
         }
 
         public double Weight
@@ -60,7 +57,7 @@ namespace Abeslamidze_Kursovaya7.ViewModels
             }
         }
 
-        public Location? From
+        public string? From
         {
 
             get => _from;
@@ -73,7 +70,7 @@ namespace Abeslamidze_Kursovaya7.ViewModels
             }
         }
 
-        public Location? To
+        public string? To
         {
             get => _to;
             set
@@ -110,7 +107,7 @@ namespace Abeslamidze_Kursovaya7.ViewModels
                     break;
                 case nameof(From):
                 case nameof(To):
-                    if (To?.Name == From?.Name)
+                    if (To == From)
                     {
                         validationMessage = Error;
                     }
@@ -122,7 +119,7 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 
         private void Save()
         {
-            Order order;
+            NewOrderDto order;
 
             if (CurrentOrder != null)
             {
@@ -134,7 +131,12 @@ namespace Abeslamidze_Kursovaya7.ViewModels
             }
             else 
             {
-                order = new Order(Weight, From!.Id, To!.Id);
+                order = new NewOrderDto
+                {
+                    Weight = Weight,
+                    From = From,
+                    To = To
+                };
             }
 
             CloseDelegate?.Invoke(order);

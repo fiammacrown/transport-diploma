@@ -13,5 +13,6 @@ public interface IOrdersRepo
     List<OrderEntity> GetDeliverableOrders();
     List<OrderEntity> GetRegisteredOrders();
     List<OrderEntity> GetInQueue();
+	List<OrderEntity> GetAssigned();
 
 }

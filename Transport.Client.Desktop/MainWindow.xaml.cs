@@ -5,21 +5,22 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using Abeslamidze_Kursovaya7.Models;
 using System.ComponentModel;
+using Abeslamidze_Kursovaya7.Services;
+using Transport.DTOs;
 
 namespace Abeslamidze_Kursovaya7
 {
     public partial class MainWindow : Window
     {
        
-        private readonly UnitOfWork _unitOfWork = new UnitOfWork();
+        private readonly ApiService _apiService = new ApiService();
 
         public MainWindow()
         {
             InitializeComponent();
 
-            DataContext = ViewModel = new MainWindowViewModel(_unitOfWork);
+            DataContext = ViewModel = new MainWindowViewModel(_apiService);
 
             // set default sorting by status for data grids
             DataGrid_Deliveries.Items.SortDescriptions.Add(new SortDescription("Status", ListSortDirection.Ascending));
@@ -28,17 +29,17 @@ namespace Abeslamidze_Kursovaya7
 
         public MainWindowViewModel ViewModel { get; }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewModel.Initialize();
-            ActivateDispatchMonitoring();
+            await ViewModel.Initialize();
+            //ActivateDispatchMonitoring();
         }
 
         private void DataGridOrders_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selectedOrder = (Order)DataGrid_Orders.SelectedItem;
+            var selectedOrder = (OrderDto)DataGrid_Orders.SelectedItem;
 
-            if (selectedOrder != null && selectedOrder.Status == OrderStatus.Registered)
+            if (selectedOrder != null && selectedOrder.Status == "Registered") //TODO fix
             {
                 Button_Edit.IsEnabled = true;
                 Button_Delete.IsEnabled = true;
@@ -51,13 +52,12 @@ namespace Abeslamidze_Kursovaya7
             }
         }
 
-        private void EditSelected_Click(object sender, RoutedEventArgs e)
+        private async void EditSelected_Click(object sender, RoutedEventArgs e)
         {
-            var selectedOrder = (Order)DataGrid_Orders.SelectedItem;
+            var selectedOrder = (OrderDto)DataGrid_Orders.SelectedItem;
             if (selectedOrder != null)
             {
                 RegisterWindow registerWindow = new RegisterWindow();
-
 
                 registerWindow.ViewModel.AvailableLocations = ViewModel.AvailableLocations;
                 registerWindow.ViewModel.MaxAvailableTransportVolume = ViewModel.MaxAvailableTransportVolume;
@@ -66,31 +66,38 @@ namespace Abeslamidze_Kursovaya7
                 registerWindow.ViewModel.From = selectedOrder.From;
                 registerWindow.ViewModel.To = selectedOrder.To;
 
-                registerWindow.ViewModel.CurrentOrder = selectedOrder;
+                registerWindow.ViewModel.CurrentOrder = new NewOrderDto
+                {
+                    Weight = selectedOrder.Weight,
+                    From = selectedOrder.From,
+                    To = selectedOrder.To,
+				};
 
                 if (registerWindow.ShowDialog() == true)
                 {
                     var result = registerWindow.DataResult;
                     if (result != null)
                     {
-                        ViewModel.UpdateOrder(result);
-                        ViewModel.UpdateState();
-
+						selectedOrder.Weight = result.Weight;
+						selectedOrder.From = result.From;
+						selectedOrder.To = result.To;
+                        await ViewModel.UpdateOrder(selectedOrder);
+                        await ViewModel.UpdateState();
                     }
                 }
             }
         }
-        private void DeleteSelected_Click(object sender, RoutedEventArgs e)
+        private async void DeleteSelected_Click(object sender, RoutedEventArgs e)
         {
-            var selectedOrder = (Order)DataGrid_Orders.SelectedItem;
+            var selectedOrder = (OrderDto)DataGrid_Orders.SelectedItem;
             if (selectedOrder != null)
             {
                 MessageBoxResult result = MessageBox.Show("Удалить заявку?", "Подтверждение удаления", MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    ViewModel.DeleteOrder(selectedOrder);
-                    ViewModel.UpdateState();
+                    await ViewModel.DeleteOrder(selectedOrder);
+                    await ViewModel.UpdateState();
                 }
             }
         }
@@ -114,9 +121,9 @@ namespace Abeslamidze_Kursovaya7
             diagramWindow.ShowDialog();
         }
 
-        private List<Delivery> GenerateRandomData()
+        private List<DeliveryDto> GenerateRandomData()
         {
-            var data = new List<Delivery>();
+            var data = new List<DeliveryDto>();
 
             Random random = new Random();
 
@@ -132,7 +139,7 @@ namespace Abeslamidze_Kursovaya7
 
                     double price = random.NextDouble() * (maxValue - minValue) + minValue;
 
-                    var delivery = new Delivery();
+                    var delivery = new DeliveryDto();
 
                     delivery.StartDate = new DateTime(2023, i, day);
                     delivery.Price = price;
@@ -145,7 +152,7 @@ namespace Abeslamidze_Kursovaya7
             return data;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
             RegisterWindow registerWindow = new RegisterWindow();
 
@@ -157,18 +164,18 @@ namespace Abeslamidze_Kursovaya7
                 var result = registerWindow.DataResult;
                 if (result != null)
                 {
-                    ViewModel.AddNewOrder(result);
+                    await ViewModel.AddNewOrder(result);
                 }
             }
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
             var winTitle = "Распределение заявок";
 
             ViewModel.DispatchInProgress = true;
 
-            var result = ViewModel.Dispatch();
+            var result = await ViewModel.Dispatch();
 
             ViewModel.DispatchInProgress = false;
 
@@ -181,7 +188,7 @@ namespace Abeslamidze_Kursovaya7
 
                 MessageBox.Show(message, winTitle);
 
-                ViewModel.UpdateState();
+                await ViewModel.UpdateState();
 
             }
             else
@@ -191,10 +198,10 @@ namespace Abeslamidze_Kursovaya7
 
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private async void Button_Click_2(object sender, RoutedEventArgs e)
         {
             var winTitle = "Начать выполнение";
-            var result = ViewModel.Start();
+            var result = await ViewModel.Start();
 
             if (result != null)
             {
@@ -203,8 +210,7 @@ namespace Abeslamidze_Kursovaya7
 
                 MessageBox.Show(message, winTitle);
 
-                ViewModel.UpdateState();
-
+                await ViewModel.UpdateState();
             }
             else
             {
@@ -213,41 +219,41 @@ namespace Abeslamidze_Kursovaya7
        
         }
 
-        private async void ActivateDispatchMonitoring()
-        {
-            try
-            {
-                await Task.Run(() =>
-                {
-                    while (true)
-                    {
-                        Thread.Sleep(1000);
+        //private async void ActivateDispatchMonitoring()
+        //{
+        //    try
+        //    {
+        //        await Task.Run(() =>
+        //        {
+        //            while (true)
+        //            {
+        //                Thread.Sleep(1000);
 
-                        if (!ViewModel.DispatchInProgress)
-                        {
-                            var result = ViewModel.Update();
+        //                if (!ViewModel.DispatchInProgress)
+        //                {
+        //                    var result = ViewModel.Update();
 
-                            if (result != null && result.NumOfDoneDeliveries > 0)
-                            {
-                                Dispatcher.BeginInvoke(() =>
-                                {
-                                    var message = string.Format("Завершено {0} грузоперевозок!", result.NumOfDoneDeliveries);
+        //                    if (result != null && result.NumOfDoneDeliveries > 0)
+        //                    {
+        //                        Dispatcher.BeginInvoke(() =>
+        //                        {
+        //                            var message = string.Format("Завершено {0} грузоперевозок!", result.NumOfDoneDeliveries);
 
-                                    MessageBox.Show(message, "Инфо");
-                                    ViewModel.UpdateState();
-                                });
-                            }
+        //                            MessageBox.Show(message, "Инфо");
+        //                            ViewModel.UpdateState();
+        //                        });
+        //                    }
                            
-                        }
+        //                }
                        
-                    }
+        //            }
 
-                });
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //}
     }
 }

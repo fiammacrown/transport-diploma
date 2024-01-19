@@ -60,7 +60,14 @@ public class DatabaseOrdersRepo : IOrdersRepo
             .Where(o => o.Status == OrderStatus.InQueue)
             .ToList();
     }
-    public List<OrderEntity> GetRegisteredOrders()
+
+	public List<OrderEntity> GetAssigned()
+	{
+		return _entityContext.Orders
+			.Where(o => o.Status == OrderStatus.Assigned)
+			.ToList();
+	}
+	public List<OrderEntity> GetRegisteredOrders()
     {
         return _entityContext.Orders
             .Where(o => o.Status == OrderStatus.Registered)

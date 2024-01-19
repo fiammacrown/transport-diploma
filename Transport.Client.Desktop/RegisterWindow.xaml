@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:c="clr-namespace:Abeslamidze_Kursovaya7.Converters"
-        xmlns:m="clr-namespace:Abeslamidze_Kursovaya7.Models"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:Abeslamidze_Kursovaya7"
         mc:Ignorable="d"
@@ -12,9 +11,9 @@
 
     <Window.Resources>
         <c:StringToDoubleConverter x:Key="StringToDouble" />
-        <DataTemplate x:Key="LocationItemTemplate">
+        <!--<DataTemplate x:Key="LocationItemTemplate">
             <TextBlock Text="{Binding Name}" />
-        </DataTemplate>
+        </DataTemplate>-->
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -38,13 +37,15 @@
                   IsReadOnly="True"
                   ItemsSource="{Binding Locations}"
                   SelectedItem="{Binding From, Mode=TwoWay, ValidatesOnDataErrors=True}"
-                  ItemTemplate="{StaticResource LocationItemTemplate}" />
+                  />
+        <!--ItemTemplate="{StaticResource LocationItemTemplate}"-->
         <Label Content="Место доставки"  FontSize="16"  Grid.Row="3" Grid.Column="0" />
         <ComboBox Grid.Row="3" Grid.Column="1"
                   IsReadOnly="True"
                   ItemsSource="{Binding Locations}"
                   SelectedItem="{Binding To, Mode=TwoWay, ValidatesOnDataErrors=True}"
-                  ItemTemplate="{StaticResource LocationItemTemplate}" />
+                   />
+        <!--ItemTemplate="{StaticResource LocationItemTemplate}"-->
         <Button Grid.Row="8" Grid.Column="0" Content="Сохранить" Command="{Binding SaveCommand}" />
         <Button Grid.Row="8" Grid.Column="1" Content="Отмена" Command="{Binding CancelCommand}" />
     </Grid>

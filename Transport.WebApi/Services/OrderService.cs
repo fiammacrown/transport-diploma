@@ -13,7 +13,7 @@ public class OrderService
 		_unitOfWork = unitOfWork;
 	}
 
-	public OrderEntity CreateOrder(OrderDto newOrder)
+	public OrderEntity CreateOrder(NewOrderDto newOrder)
 	{
 		if (!ValidateOrder(newOrder))
 		{
@@ -54,7 +54,7 @@ public class OrderService
 		_unitOfWork.OrderRepository.Delete(dbOrder);
 		_unitOfWork.Save();
 	}
-	public OrderEntity UpdateOrder(Guid id, OrderDto newOrder)
+	public OrderEntity UpdateOrder(Guid id, NewOrderDto newOrder)
 	{
 		if (!ValidateOrder(newOrder))
 		{
@@ -84,7 +84,7 @@ public class OrderService
 
 	}
 
-	public bool ValidateOrder(OrderDto order)
+	public bool ValidateOrder(NewOrderDto order)
 	{
 		if (order.Weight <= 0)
 		{

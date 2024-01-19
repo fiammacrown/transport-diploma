@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Transport.DTOs;
+﻿namespace Transport.DTOs;
 
 public class DeliveryDto
 {

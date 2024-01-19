@@ -20,7 +20,7 @@ public class OrdersController : ControllerBase
 	}
 
 	[HttpPost]
-	public ActionResult<OrderDto> CreateOrder([FromBody] OrderDto order)
+	public ActionResult<OrderDto> CreateOrder([FromBody] NewOrderDto order)
 	{
 		try
 		{
@@ -29,8 +29,11 @@ public class OrdersController : ControllerBase
 
 			var createdOrder = _orderService.CreateOrder(order);
 
-			return CreatedAtAction(nameof(GetOrder),
-				new { id = createdOrder.Id }, createdOrder);
+			return CreatedAtAction(
+				nameof(GetOrder),
+				new { id = createdOrder.Id },
+				Mapper.Map(createdOrder)
+			);
 		}
 		catch (Exception)
 		{
@@ -38,6 +41,7 @@ public class OrdersController : ControllerBase
 				"Error creating new order");
 		}
 	}
+
 	[HttpGet("{id}")]
 	public async Task<ActionResult<OrderDto>> GetOrder(Guid id)
 	{
@@ -74,8 +78,34 @@ public class OrdersController : ControllerBase
 		return Ok(orders);
 	}
 
+	[HttpGet]
+	[Route("InQueue")]
+	public async Task<ActionResult<IEnumerable<OrderDto>>> GetInQueueOrders()
+	{
+		await _unitOfWork.LocationRepository.GetAllAsync();
+
+		var dbOrders = _unitOfWork.OrderRepository.GetInQueue();
+
+		var orders = dbOrders.Select(Mapper.Map);
+
+		return Ok(orders);
+	}
+
+	[HttpGet]
+	[Route("Assigned")]
+	public async Task<ActionResult<IEnumerable<OrderDto>>> GetAssignedOrders()
+	{
+		await _unitOfWork.LocationRepository.GetAllAsync();
+
+		var dbOrders = _unitOfWork.OrderRepository.GetAssigned();
+
+		var orders = dbOrders.Select(Mapper.Map);
+
+		return Ok(orders);
+	}
+
 	[HttpPut("{id}")]
-	public ActionResult<OrderDto> UpdateOrder(Guid id, [FromBody] OrderDto orderDto)
+	public ActionResult<OrderDto> UpdateOrder(Guid id, [FromBody] NewOrderDto orderDto)
 	{
 		var dbOrder = _orderService.UpdateOrder(id, orderDto);
 

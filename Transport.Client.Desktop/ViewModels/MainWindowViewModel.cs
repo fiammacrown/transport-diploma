@@ -1,86 +1,91 @@
-﻿using Abeslamidze_Kursovaya7.Repos;
-using Abeslamidze_Kursovaya7.Models;
-using Abeslamidze_Kursovaya7.Services;
+﻿using Abeslamidze_Kursovaya7.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.Input;
+using System.Threading.Tasks;
+using Transport.DTOs;
 
 namespace Abeslamidze_Kursovaya7.ViewModels
 {
-    public class MainWindowViewModel : ObservableObject
+	public class MainWindowViewModel : ObservableObject
     {
         public bool DispatchInProgress = false;
 
-        public List<Location> AvailableLocations;
+        public List<LocationDto> AvailableLocations;
         public double MaxAvailableTransportVolume;
 
-        private readonly UnitOfWork _unitOfWork;
+        private readonly ApiService _apiService;
 
-        public MainWindowViewModel(UnitOfWork u)
+        public MainWindowViewModel(ApiService a)
         {
-            _unitOfWork = u;
+			_apiService = a;
         }
        
         public LoginViewModel Login { get; } = new LoginViewModel();
 
-        public ObservableCollection<Order> Orders { get; } = new ObservableCollection<Order>();
+        public ObservableCollection<OrderDto> Orders { get; } = new ObservableCollection<OrderDto>();
 
-        public ObservableCollection<Delivery> Deliveries { get; } = new ObservableCollection<Delivery>();
-        public ObservableCollection<Transport> Transports { get; } = new ObservableCollection<Transport>();
+        public ObservableCollection<DeliveryDto> Deliveries { get; } = new ObservableCollection<DeliveryDto>();
 
-        public void AddNewOrder(Order order)
+        public ObservableCollection<TransportDto> Transports { get; } = new ObservableCollection<TransportDto>();
+
+        public async Task AddNewOrder(NewOrderDto order)
         {
-            Orders.Add(order);
+            await _apiService.CreateOrder(order);
+			await UpdateState();
+		}
 
-            _unitOfWork.OrderRepository.Add(order);
-            _unitOfWork.Save();
-                
-        }
-
-        public void UpdateOrder(Order order) 
+        public async Task UpdateOrder(OrderDto order)
         {
-            _unitOfWork.OrderRepository.Update(order);
-            _unitOfWork.Save();
+			await _apiService.UpdateOrder(order);
+		}
 
-        }
-
-        public void DeleteOrder(Order order)
+        public async Task DeleteOrder(OrderDto order)
         {
-            _unitOfWork.OrderRepository.Delete(order);
-            _unitOfWork.Save();
+			await _apiService.DeleteOrder(order.Id);
+		}
 
-        }
+		public class DispatchServiceResult
+		{
+			public int NumOfNewDeliveries { get; set; }
+			public int NumOfInProgressDeliveries { get; set; }
+			public int NumOfDoneDeliveries { get; set; }
+			public int NumOfAssignedOrders { get; set; }
+			public int NumOfInQueueOrders { get; set; }
+			public int NumOfInProgressOrders { get; set; }
+			public int NumOfDoneOrders { get; set; }
+			public int NumOfAssignedTransport { get; set; }
+		}
 
-        public DispatchServiceResult? Dispatch()
+		public async Task<DispatchServiceResult?> Dispatch()
         {
-            var d = new DispatchService(_unitOfWork);
-            if (d.Dispatch())
+            var deliveries = await _apiService.DispatchDeliveries();
+            if (deliveries.Count > 0)
             {
-                _unitOfWork.Save();
+                var r = new DispatchServiceResult
+                {
+                    NumOfNewDeliveries = deliveries.Count,
+                    // TODO fix
+                    NumOfInQueueOrders = 0,
+                    NumOfAssignedOrders = 0,
+                    NumOfAssignedTransport = 0,
+            };
 
-                var r = new DispatchServiceResult();
-
-                r.NumOfNewDeliveries = d.NumOfNewDeliveries;
-                r.NumOfInQueueOrders = d.NumOfInQueueOrders;
-                r.NumOfAssignedOrders = d.NumOfAssignedOrders;
-                r.NumOfAssignedTransport = d.NumOfAssignedTransport;
-
-                return r;
+				return r;
             }
 
             return null;
         }
-        public DispatchServiceResult? Start()
+        public async Task<DispatchServiceResult?> Start()
         {
-            var d = new DispatchService(_unitOfWork);
-            if (d.Start())
+			var deliveries = await _apiService.StartDeliveries();
+			if (deliveries.Count > 0)
             {
-                _unitOfWork.Save();
-
-                var r = new DispatchServiceResult();
-
-                r.NumOfInProgressDeliveries = d.NumOfInProgressDeliveries;
+                var r = new DispatchServiceResult 
+                {
+					NumOfInProgressDeliveries = deliveries.Count
+				};
 
                 return r;
             }
@@ -89,35 +94,32 @@ namespace Abeslamidze_Kursovaya7.ViewModels
             
         }
 
-        public DispatchServiceResult? Update()
+        public async Task Update(Guid deliveryId)
         {
-            var d = new DispatchService(_unitOfWork);
-            if (d.Update())
-            {
-                _unitOfWork.Save();
+			await _apiService.UpdateDelivery(deliveryId);
+            return;
 
-                var r = new DispatchServiceResult();
+		}
 
-                r.NumOfDoneDeliveries = d.NumOfDoneDeliveries;
+        public async Task Initialize()
+        {
+			AvailableLocations = new List<LocationDto> { };
 
-                return r;
-            }
+			var dbLocations = await _apiService.GetAllLocations();
 
-            return null;
+			foreach (var location in dbLocations)
+			{
+				AvailableLocations.Add(new LocationDto { Id = location.Id, Name = location.Name });
+			}
+
+			MaxAvailableTransportVolume = await _apiService.GetTransportMaxVolume();
+
+			await UpdateState();
         }
 
-        public void Initialize()
+        public async Task UpdateState()
         {
-            
-            AvailableLocations = _unitOfWork.LocationRepository.GetAll();
-            MaxAvailableTransportVolume = _unitOfWork.TransportRepository.GetMaxVolume();
-
-            UpdateState();
-        }
-
-        public void UpdateState()
-        {
-            var orders = _unitOfWork.OrderRepository.GetAll();
+            var orders = await _apiService.GetAllOrders();
 
             Orders.Clear();
             foreach (var order in orders)
@@ -125,15 +127,15 @@ namespace Abeslamidze_Kursovaya7.ViewModels
                 Orders.Add(order);
             }
 
-            var deliveries = _unitOfWork.DeliveryRepository.GetAll();
+            var deliveries = await _apiService.GetAllDeliveries();
 
-            Deliveries.Clear();
+			Deliveries.Clear();
             foreach (var delivery in deliveries)
             {
                 Deliveries.Add(delivery);
             }
 
-            var transports = _unitOfWork.TransportRepository.GetAll();
+            var transports = await _apiService.GetAllTransports();
 
             Transports.Clear();
             foreach (var transport in transports)

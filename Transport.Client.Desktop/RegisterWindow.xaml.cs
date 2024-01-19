@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Windows;
-using Abeslamidze_Kursovaya7.Models;
+﻿using System.Windows;
 using Abeslamidze_Kursovaya7.ViewModels;
+using Transport.DTOs;
 
 namespace Abeslamidze_Kursovaya7
 {
@@ -25,6 +24,6 @@ namespace Abeslamidze_Kursovaya7
 
         public RegisterWindowViewModel ViewModel { get; }
 
-        public Order? DataResult { get; private set; }
+        public NewOrderDto? DataResult { get; private set; }
     }
 }

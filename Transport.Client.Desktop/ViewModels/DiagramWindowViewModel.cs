@@ -1,10 +1,10 @@
-﻿using Abeslamidze_Kursovaya7.Models;
-using OxyPlot;
+﻿using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Transport.DTOs;
 
 namespace Abeslamidze_Kursovaya7.ViewModels
 {
@@ -69,14 +69,14 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 
     public class DeliveryCountDiagramViewModel : BaseDiagramWindowViewModel
     {
-        public DeliveryCountDiagramViewModel(List<Delivery> data) : base(CalculatePlotValues(data))
+        public DeliveryCountDiagramViewModel(List<DeliveryDto> data) : base(CalculatePlotValues(data))
         {
         }
 
         public override string Title { get; } = "Кол-во грузоперевозок по месяцам";
         public override string LeftTitle { get; } = "Кол-во";
 
-        private static List<double> CalculatePlotValues(List<Delivery> data)
+        private static List<double> CalculatePlotValues(List<DeliveryDto> data)
         {
             var currentYear = DateTime.Now.Year;
 
@@ -101,14 +101,14 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 
     public class DeliveryTotalPriceDiagramViewModel : BaseDiagramWindowViewModel
     {
-        public DeliveryTotalPriceDiagramViewModel(List<Delivery> data) : base(CalculatePlotValues(data))
+        public DeliveryTotalPriceDiagramViewModel(List<DeliveryDto> data) : base(CalculatePlotValues(data))
         {
         }
 
         public override string Title { get; } = "Объем грузоперевозок по месяцам";
         public override string LeftTitle { get; } = "Объем (в рублях)";
 
-        private static List<double> CalculatePlotValues(List<Delivery> data)
+        private static List<double> CalculatePlotValues(List<DeliveryDto> data)
         {
             var currentYear = DateTime.Now.Year;
 
