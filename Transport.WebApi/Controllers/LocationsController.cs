@@ -20,11 +20,7 @@ public class LocationsController : ControllerBase
 	{
 		var dbLocations = await _unitOfWork.LocationRepository.GetAllAsync();
 
-		var locations = dbLocations.Select(x => new LocationDto
-		{
-			Id = x.Id,
-			Name = x.Name,
-		});
+		var locations = dbLocations.Select(Mapper.Map).ToList();
 
 		return Ok(locations);
 	}

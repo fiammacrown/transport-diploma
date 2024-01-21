@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Transport.DAL;
-using Transport.DAL.Entities;
 using Transport.DTOs;
 using Transport.WebApi.Services;
 
@@ -129,24 +128,4 @@ public class OrdersController : ControllerBase
 		}
 	}
 
-}
-
-public static class Mapper
-{
-	public static OrderDto Map(OrderEntity x)
-	{
-		return new OrderDto
-		{
-			Id = x.Id,
-			Weight = x.Weight,
-			From = Map(x.From),
-			To = Map(x.To),
-			Status = x.Status.ToString(),
-		};
-	}
-
-	public static string Map(LocationEntity x)
-	{
-		return x.Name;
-	}
 }

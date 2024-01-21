@@ -19,8 +19,4 @@
     <ProjectReference Include="..\Transport.DTOs\Transport.DTOs.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="NewFolder\" />
-  </ItemGroup>
-
 </Project>

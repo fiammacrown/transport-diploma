@@ -26,16 +26,7 @@ public class TransportsController : ControllerBase
 
 		var dbTransports = await _context.Transports.ToListAsync();
 
-		var transports = dbTransports.Select(x => new TransportDto
-		{
-			Id = x.Id,
-			Speed = x.Speed,
-			Volume = x.Volume,
-			CurrentLoad = x.CurrentLoad,
-			AvailableVolume = x.AvailableVolume,
-			PricePerKm = x.PricePerKm,
-			Status = x.Status.ToString(),
-		});
+		var transports = dbTransports.Select(Mapper.Map).ToList();
 
 		return Ok(transports);
 	}

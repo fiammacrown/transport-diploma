@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.ComponentModel;
 using Abeslamidze_Kursovaya7.Services;
 using Transport.DTOs;
+using System.Windows.Threading;
 
 namespace Abeslamidze_Kursovaya7
 {
@@ -203,57 +204,61 @@ namespace Abeslamidze_Kursovaya7
             var winTitle = "Начать выполнение";
             var result = await ViewModel.Start();
 
-            if (result != null)
+
+			if (result != null)
             {
-                var message = string.Format("Начато выполнение {0} грузоперевозок!",
-                   result.NumOfInProgressDeliveries);
+				foreach (var newDelivery in result)
+				{
+					ScheduleUpdateDelivery(newDelivery);
+				}
+
+				var message = string.Format("Начато выполнение {0} грузоперевозок!",
+                   result.Count);
 
                 MessageBox.Show(message, winTitle);
-
-                await ViewModel.UpdateState();
-            }
+				await ViewModel.UpdateState();
+			}
             else
             {
                 MessageBox.Show("Нет сформированных грузоперевозок!", winTitle);
             }
-       
         }
 
-        //private async void ActivateDispatchMonitoring()
-        //{
-        //    try
-        //    {
-        //        await Task.Run(() =>
-        //        {
-        //            while (true)
-        //            {
-        //                Thread.Sleep(1000);
+		private void ScheduleUpdateDelivery(DeliveryDto delivery)
+		{
+			DispatcherTimer timer = new DispatcherTimer();
 
-        //                if (!ViewModel.DispatchInProgress)
-        //                {
-        //                    var result = ViewModel.Update();
+			var interval = (delivery.EndDate - DateTime.Now).Value;
+			timer.Interval = interval;
 
-        //                    if (result != null && result.NumOfDoneDeliveries > 0)
-        //                    {
-        //                        Dispatcher.BeginInvoke(() =>
-        //                        {
-        //                            var message = string.Format("Завершено {0} грузоперевозок!", result.NumOfDoneDeliveries);
+			timer.Tick += async (sender, e) =>
+			{
+                // Function to be executed
+                try
+                {
+					Console.WriteLine("Function called at: " + DateTime.Now);
+					
+                    await ViewModel.Update(delivery.Id);
+					await ViewModel.UpdateState();
 
-        //                            MessageBox.Show(message, "Инфо");
-        //                            ViewModel.UpdateState();
-        //                        });
-        //                    }
-                           
-        //                }
-                       
-        //            }
+                    //TODO add info message 
+					//Dispatcher.BeginInvoke(() =>
+     //               {
+     //                   var message = string.Format("Завершена грузоперевозок!", result.NumOfDoneDeliveries);
 
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //    }
-        //}
-    }
+     //                   MessageBox.Show(message, "Инфо");
+     //               });
+                }
+				finally
+                {
+                    // Stop the timer after the function is called
+                    timer.Stop();
+                    timer = null;
+				}
+			};
+
+			// Start the timer
+			timer.Start();
+		}
+	}
 }

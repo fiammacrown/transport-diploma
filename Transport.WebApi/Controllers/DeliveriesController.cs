@@ -68,7 +68,9 @@ public class DeliveriesController : ControllerBase
 		{
 			var dbDeliveries = await _dispatchService.Dispatch();
 
-			return Ok(dbDeliveries);
+			var deliveries = dbDeliveries.Select(Mapper.Map).ToList();
+
+			return Ok(deliveries);
 		}
 		catch (Exception)
 		{
@@ -85,7 +87,9 @@ public class DeliveriesController : ControllerBase
 		{
 			var dbDeliveries = await _dispatchService.Start();
 
-			return Ok(dbDeliveries);
+			var deliveries = dbDeliveries.Select(Mapper.Map).ToList();
+
+			return Ok(deliveries);
 		}
 		catch (Exception)
 		{

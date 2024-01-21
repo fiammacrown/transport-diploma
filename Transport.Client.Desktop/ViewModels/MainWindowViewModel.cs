@@ -77,20 +77,20 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 
             return null;
         }
-        public async Task<DispatchServiceResult?> Start()
+        public async Task<List<DeliveryDto>?> Start()
         {
 			var deliveries = await _apiService.StartDeliveries();
-			if (deliveries.Count > 0)
-            {
-                var r = new DispatchServiceResult 
-                {
-					NumOfInProgressDeliveries = deliveries.Count
-				};
+			//if (deliveries.Count > 0)
+   //         {
+   //             var r = new DispatchServiceResult 
+   //             {
+			//		NumOfInProgressDeliveries = deliveries.Count
+			//	};
 
-                return r;
-            }
+   //             return r;
+   //         }
 
-            return null;
+            return deliveries;
             
         }
 
