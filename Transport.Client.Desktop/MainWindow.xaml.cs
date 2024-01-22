@@ -33,7 +33,6 @@ namespace Abeslamidze_Kursovaya7
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             await ViewModel.Initialize();
-            //ActivateDispatchMonitoring();
         }
 
         private void DataGridOrders_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -142,7 +141,7 @@ namespace Abeslamidze_Kursovaya7
 
                     var delivery = new DeliveryDto();
 
-                    delivery.StartDate = new DateTime(2023, i, day);
+                    delivery.StartDate = new DateTime(2024, i, day);
                     delivery.Price = price;
 
                     data.Add(delivery);
@@ -233,7 +232,6 @@ namespace Abeslamidze_Kursovaya7
 
 			timer.Tick += async (sender, e) =>
 			{
-                // Function to be executed
                 try
                 {
 					Console.WriteLine("Function called at: " + DateTime.Now);
@@ -251,13 +249,11 @@ namespace Abeslamidze_Kursovaya7
                 }
 				finally
                 {
-                    // Stop the timer after the function is called
                     timer.Stop();
                     timer = null;
 				}
 			};
 
-			// Start the timer
 			timer.Start();
 		}
 	}
