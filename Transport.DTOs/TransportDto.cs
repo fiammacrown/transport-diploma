@@ -3,6 +3,7 @@
 public class TransportDto
 {
 	public Guid Id { get; set; }
+	public string Name { get; set; }
 	public double Speed { get; set; }
 	public double Volume { get; set; }
 	public double CurrentLoad { get; set; }

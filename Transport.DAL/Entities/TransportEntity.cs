@@ -13,9 +13,10 @@ public class TransportEntity
     {
     }
 
-    public TransportEntity(double speed, double volume, double pricePerKm)
+    public TransportEntity(string name, double speed, double volume, double pricePerKm)
     {
         Id = Guid.NewGuid();
+        Name = name; 
         Speed = speed;
         Volume = volume;
         PricePerKm = pricePerKm;
@@ -23,6 +24,7 @@ public class TransportEntity
     }
 
     public Guid Id { get; set; }
+    public string Name { get; set; }
     public double Speed { get; set; }
     public double Volume { get; set; }
     public double CurrentLoad { get; set; }

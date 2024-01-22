@@ -56,9 +56,11 @@ public class ApplicationDbContext : DbContext
 			.OnDelete(DeleteBehavior.ClientSetNull);
 
 		modelBuilder.Entity<TransportEntity>().HasData(
-			new TransportEntity(350, 1500, 25),
-			new TransportEntity(550, 500, 15),
-			new TransportEntity(450, 1000, 35)
+			new TransportEntity("Truck-1 Mercedes-Benz", 100.5, 602, 25),
+			new TransportEntity("Truck-2 Volvo Trucks", 90.2, 357, 15),
+			new TransportEntity("Truck-3 Scania", 105.7, 406, 35),
+			new TransportEntity("Truck-4 Kamaz", 110.3, 551, 35),
+			new TransportEntity("Truck-5 Renault Trucks", 95.8, 754, 35)
 		);
 
 		modelBuilder.Entity<LocationEntity>().HasData(

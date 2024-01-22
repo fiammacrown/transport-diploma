@@ -43,7 +43,7 @@ namespace Transport.WebApi.Services
 						 tr.Id
 						);
 
-						newDelivery.CalculatePrice(tr);
+						newDelivery.CalculatePrice(order.Weight, tr);
 						_unitOfWork.DeliveryRepository.Add(newDelivery);
 						newDeliveries.Add(newDelivery);
 
@@ -53,44 +53,41 @@ namespace Transport.WebApi.Services
 						order.Assign();
 						_unitOfWork.OrderRepository.Update(order);
 
-						break;
+						continue;
 					}
 				}
 
-				else
+		
+				foreach (var transport in freeTransport)
 				{
-					foreach (var transport in freeTransport)
+					if (transport.Status == TransportStatus.Assigned)
 					{
-						if (transport.Status == TransportStatus.Assigned)
-						{
-							continue;
-						}
+						continue;
+					}
 
-						if (order.Weight <= transport.AvailableVolume)
-						{
+					if (order.Weight <= transport.AvailableVolume)
+					{
 
-							var newDelivery = new DeliveryEntity(
-								distance,
-								order.Id,
-								transport.Id
-							);
+						var newDelivery = new DeliveryEntity(
+							distance,
+							order.Id,
+							transport.Id
+						);
 
-							newDelivery.CalculatePrice(transport);
-							_unitOfWork.DeliveryRepository.Add(newDelivery);
-							newDeliveries.Add(newDelivery);
+						newDelivery.CalculatePrice(order.Weight, transport);
+						_unitOfWork.DeliveryRepository.Add(newDelivery);
+						newDeliveries.Add(newDelivery);
 
-							transport.Assign();
-							transport.Load(order);
-							_unitOfWork.TransportRepository.Update(transport);
+						transport.Assign();
+						transport.Load(order);
+						_unitOfWork.TransportRepository.Update(transport);
 
-							order.Assign();
-							_unitOfWork.OrderRepository.Update(order);
+						order.Assign();
+						_unitOfWork.OrderRepository.Update(order);
 
-							_temp.Add(distance, transport);
+						_temp.Add(distance, transport);
 
-							break;
-						}
-
+						break;
 					}
 
 				}

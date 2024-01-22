@@ -42,9 +42,9 @@ public class DeliveryEntity
     public double? Price { get; set; }
     public DeliveryStatus Status { get; set; }
 
-    public void CalculatePrice(TransportEntity transport)
+    public void CalculatePrice(double weight, TransportEntity transport)
     {
-        Price = Distance.InKm * transport.PricePerKm;
+        Price = (Distance.InKm * transport.PricePerKm) * weight;
     }
 
     public void InProgress(Distance distance, DateTime date)

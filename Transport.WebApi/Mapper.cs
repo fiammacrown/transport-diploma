@@ -50,6 +50,7 @@ public static class Mapper
         return new TransportDto
         {
             Id = x.Id,
+            Name = x.Name,
             Speed = x.Speed,
             Volume = x.Volume,
             CurrentLoad = x.CurrentLoad,

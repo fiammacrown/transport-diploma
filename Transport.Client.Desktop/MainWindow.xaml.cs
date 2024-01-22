@@ -182,7 +182,7 @@ namespace Abeslamidze_Kursovaya7
 
             if (result != null)
             {
-                var message = string.Format("Сформировано грузоперевозок: {0}\nЗаявки, помещенные в очереди: {1}\nЗадействовано единиц транспорта: {2}",
+                var message = string.Format("Сформировано грузоперевозок: {0}\nЗаявки, помещенные в очереди: {1}",
                    result.NumOfNewDeliveries,
                    result.NumOfInQueueOrders,
                    result.NumOfAssignedTransport);
@@ -194,7 +194,7 @@ namespace Abeslamidze_Kursovaya7
             }
             else
             {
-                MessageBox.Show("Распределение заявок не может быть выполнено!\nНет зарегистированных заявок или доступного транспорта!", winTitle);
+                MessageBox.Show("Распределение заявок не может быть выполнено!\nНет заявок или доступного транспорта!", winTitle);
             }
 
         }

@@ -60,26 +60,26 @@
                       RowHeaderWidth="50"
                       SelectionChanged="DataGridOrders_SelectionChanged">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*"/>
-                    <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" Width="*"/>
-                    <DataGridTextColumn Header="From" Binding="{Binding From}" Width="*"/>
-                    <DataGridTextColumn Header="To" Binding="{Binding To}" Width="*"/>
-                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
+                    <DataGridTextColumn Header="№" Binding="{Binding Id}" Width="*"/>
+                    <DataGridTextColumn Header="Вес (кг)" Binding="{Binding Weight}" Width="*"/>
+                    <DataGridTextColumn Header="Откуда" Binding="{Binding From}" Width="*"/>
+                    <DataGridTextColumn Header="Куда" Binding="{Binding To}" Width="*"/>
+                    <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="*"/>
                 </DataGrid.Columns>
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Status}" Value="InProgress">
-                                <Setter Property="Background" Value="DodgerBlue" />
+                                <Setter Property="Background" Value="LightBlue" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Status}" Value="Assigned">
                                 <Setter Property="Background" Value="LightGoldenrodYellow" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Status}" Value="Done">
-                                <Setter Property="Background" Value="LawnGreen" />
+                                <Setter Property="Background" Value="LightGreen" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Status}" Value="InQueue">
-                                <Setter Property="Background" Value="OrangeRed" />
+                                <Setter Property="Background" Value="LightCoral" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -96,23 +96,23 @@
                       HeadersVisibility="Column"
                       RowHeaderWidth="50">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*"/>
-                    <DataGridTextColumn Header="Order" Binding="{Binding Order.Id}" Width="*"/>
-                    <DataGridTextColumn Header="Transport" Binding="{Binding Transport.Id}" Width="*"/>
-                    <DataGridTextColumn Header="Price" Binding="{Binding Price}" Width="*"/>
-                    <DataGridTextColumn Header="Start Date" Binding="{Binding StartDate}" Width="*"/>
-                    <DataGridTextColumn Header="End Date" Binding="{Binding EndDate}" Width="*"/>
-                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
+                    <DataGridTextColumn Header="№" Binding="{Binding Id}" Width="*"/>
+                    <DataGridTextColumn Header="№ заказа" Binding="{Binding Order.Id}" Width="*"/>
+                    <DataGridTextColumn Header="№ транспорта" Binding="{Binding Transport.Id}" Width="*"/>
+                    <DataGridTextColumn Header="Стоимость (руб)" Binding="{Binding Price}" Width="*"/>
+                    <DataGridTextColumn Header="Дата начала" Binding="{Binding StartDate}" Width="*"/>
+                    <DataGridTextColumn Header="Дата окончания" Binding="{Binding EndDate}" Width="*"/>
+                    <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="*"/>
                 </DataGrid.Columns>
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
                         <Setter Property="IsHitTestVisible" Value="False"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Status}" Value="InProgress">
-                                <Setter Property="Background" Value="DodgerBlue" />
+                                <Setter Property="Background" Value="LightBlue" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Status}" Value="Done">
-                                <Setter Property="Background" Value="LawnGreen" />
+                                <Setter Property="Background" Value="LightGreen" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -123,10 +123,19 @@
                       Grid.Column="1"
                       Grid.RowSpan="4"
                       ItemsSource="{Binding Transports}"
-                      AutoGenerateColumns="True"
+                      AutoGenerateColumns="False"
                       IsReadOnly="True"
                       HeadersVisibility="Column"
                       RowHeaderWidth="50">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="№" Binding="{Binding Id}" Width="*"/>
+                    <DataGridTextColumn Header="Имя" Binding="{Binding Name}" Width="*"/>
+                    <DataGridTextColumn Header="Скорость (км\ч)" Binding="{Binding Speed}" Width="*"/>
+                    <DataGridTextColumn Header="Размер кузова (кг)" Binding="{Binding Volume}" Width="*"/>
+                    <DataGridTextColumn Header="Доступный размер кузова (кг)" Binding="{Binding AvailableVolume}" Width="*"/>
+                    <DataGridTextColumn Header="Цена за км" Binding="{Binding PricePerKm}" Width="*"/>
+                    <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="*"/>
+                </DataGrid.Columns>
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
                         <Setter Property="IsHitTestVisible" Value="False"/>
@@ -135,7 +144,7 @@
                                 <Setter Property="Background" Value="LightGoldenrodYellow" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Status}" Value="InTransit">
-                                <Setter Property="Background" Value="DodgerBlue" />
+                                <Setter Property="Background" Value="LightBlue" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
