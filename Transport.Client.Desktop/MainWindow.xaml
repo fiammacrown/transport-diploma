@@ -52,7 +52,7 @@
                       RowHeaderWidth="50"
                       SelectionChanged="DataGridOrders_SelectionChanged">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="№" Binding="{Binding Id}" Templa Width="*"/>
+                    <DataGridTextColumn Header="№" Binding="{Binding Id}" Width="*"/>
                     <DataGridTextColumn Header="Вес (кг)" Binding="{Binding Weight}" Width="*"/>
                     <DataGridTextColumn Header="Откуда" Binding="{Binding From}" Width="*"/>
                     <DataGridTextColumn Header="Куда" Binding="{Binding To}" Width="*"/>
