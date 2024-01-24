@@ -16,42 +16,35 @@
         <local:LoginView
             DataContext="{Binding Login}"
             Visibility="{Binding IsAuthorized, Converter={StaticResource BoolToHiddenConverter}, ConverterParameter=Reverse}" />
-
-
         <Grid Visibility="{Binding Login.IsAuthorized, Converter={StaticResource BoolToHiddenConverter}}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="220" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition />
+                <RowDefinition Height="Auto"/>
                 <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Button Grid.Row="0" Grid.Column="1" Content="Выйти" Command="{Binding Login.LogoutCommand}" Width="100" Height="30" HorizontalAlignment="Right" />
-            <TextBlock Grid.Row="0" Grid.Column="0" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Меню</TextBlock>
-            <Button x:Name="Button_Register" Grid.Row="1" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="Button_Click">Зарегистрировать заявку</Button>
-            <Button x:Name="Button_Dispatch" Grid.Row="5" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="Button_Click_1" IsEnabled="True">Распределить заявки</Button>
-            <Button x:Name="Button_Start" Grid.Row="6" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="Button_Click_2" IsEnabled="True">Начать выполнение</Button>
-            <Button x:Name="Button_Edit"  Grid.Row="2" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="EditSelected_Click" IsEnabled="False">Редактировать заявку</Button>
-            <Button x:Name="Button_Delete"  Grid.Row="3" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="DeleteSelected_Click" IsEnabled="False">Удалить заявку</Button>
-            <TextBlock Grid.Row="8" Grid.Column="0" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Диаграммы</TextBlock>
-            <Button x:Name="Button_Diagram1"  Grid.Row="9" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="Diagram1_Click">Кол-во грузоперевозок по месяцам</Button>
-            <Button x:Name="Button_Diagram2" Grid.Row="10" Grid.Column="0" FontSize="12" FontWeight="Bold" Click="Diagram2_Click">Объем грузоперевозок по месяцам</Button>
-            <TextBlock Grid.Row="0" Grid.Column="1" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Заявки</TextBlock>
+            <Menu Grid.Row="0" Height="25" VerticalAlignment="Top">
+                <MenuItem Header="Заявки">
+                    <MenuItem x:Name="menuCreate" Header="Создать"  Click="Button_Click"/>
+                    <MenuItem x:Name="menuEdit" Header="Редактировать"  Click="EditSelected_Click" IsEnabled="False"/>
+                    <MenuItem x:Name="menuDelete" Header="Удалить"  Click="DeleteSelected_Click" IsEnabled="False"/>
+                </MenuItem>
+                <MenuItem Header="Грузоперевозки">
+                    <MenuItem Header="Распределить" Click="Button_Click_1"/>
+                    <MenuItem Header="Начать"  Click="Button_Click_2" />
+                </MenuItem>
+                <MenuItem Header="Отчеты">
+                    <MenuItem Header="Кол-во грузоперевозок по месяцам"   Click="Diagram1_Click"/>
+                    <MenuItem Header="Объем грузоперевозок по месяцам"  Click="Diagram2_Click"/>
+                </MenuItem>
+                <MenuItem Header="Выход" Command="{Binding Login.LogoutCommand}"/>
+            </Menu>
+            <TextBlock Grid.Row="1" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Заявки</TextBlock>
             <DataGrid x:Name="DataGrid_Orders"
-                      Grid.Row="1"
-                      Grid.Column="1"
-                      Grid.RowSpan="3"
+                      Grid.Row="2"
                       ItemsSource="{Binding Orders}"
                       AutoGenerateColumns="False"
                       IsReadOnly="True"
@@ -85,11 +78,9 @@
                     </Style>
                 </DataGrid.RowStyle>
             </DataGrid>
-            <TextBlock Grid.Row="4" Grid.Column="1" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Грузоперевозки</TextBlock>
+            <TextBlock Grid.Row="3" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Грузоперевозки</TextBlock>
             <DataGrid x:Name="DataGrid_Deliveries"
-                      Grid.Row="5"
-                      Grid.Column="1"
-                      Grid.RowSpan="3"
+                      Grid.Row="4"
                       ItemsSource="{Binding Deliveries}"
                       AutoGenerateColumns="False"
                       IsReadOnly="True"
@@ -118,10 +109,8 @@
                     </Style>
                 </DataGrid.RowStyle>
             </DataGrid>
-            <TextBlock Grid.Row="8" Grid.Column="1" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Транспорт</TextBlock>
-            <DataGrid Grid.Row="9"
-                      Grid.Column="1"
-                      Grid.RowSpan="4"
+            <TextBlock Grid.Row="5" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Транспорт</TextBlock>
+            <DataGrid Grid.Row="6"
                       ItemsSource="{Binding Transports}"
                       AutoGenerateColumns="False"
                       IsReadOnly="True"
@@ -151,7 +140,5 @@
                 </DataGrid.RowStyle>
             </DataGrid>
         </Grid>
-
-
     </Grid>
 </Window>

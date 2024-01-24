@@ -39,17 +39,17 @@ namespace Abeslamidze_Kursovaya7
         {
             var selectedOrder = (OrderDto)DataGrid_Orders.SelectedItem;
 
-            if (selectedOrder != null && selectedOrder.Status == "Registered") //TODO fix
-            {
-                Button_Edit.IsEnabled = true;
-                Button_Delete.IsEnabled = true;
-            }
+            //if (selectedOrder != null && selectedOrder.Status == "Registered") //TODO fix
+            //{
+            //    Button_Edit.IsEnabled = true;
+            //    Button_Delete.IsEnabled = true;
+            //}
 
-            else
-            {
-                Button_Edit.IsEnabled = false;
-                Button_Delete.IsEnabled = false;
-            }
+            //else
+            //{
+            //    Button_Edit.IsEnabled = false;
+            //    Button_Delete.IsEnabled = false;
+            //}
         }
 
         private async void EditSelected_Click(object sender, RoutedEventArgs e)
