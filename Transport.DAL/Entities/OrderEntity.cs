@@ -26,9 +26,13 @@ public class OrderEntity
 
         FromId = fromId;
 
-        ToId = toId; 
+        ToId = toId;
 
-        Status = OrderStatus.Registered;
+		CreatedDate = null;
+
+		DeliveredDate = null;
+
+		Status = OrderStatus.Registered;
     }
 
 	public Guid Id { get; set; }
@@ -37,6 +41,9 @@ public class OrderEntity
 	public LocationEntity From { get; set; }
 	public Guid ToId { get; set; }
 	public LocationEntity To { get; set; }
+	public DateTime? CreatedDate { get; set; }
+	public DateTime? UpdatedDate { get; set; }
+	public DateTime? DeliveredDate { get; set; }
 	public OrderStatus Status { get; set; }
 
 	public void Assign()
@@ -54,9 +61,10 @@ public class OrderEntity
         Status = OrderStatus.InProgress;
     }
 
-    public void Done()
+    public void Done(DateTime? deliveredTime)
     {
-        Status = OrderStatus.Done;
+        DeliveredDate = deliveredTime;
+		Status = OrderStatus.Done;
     }
 
     public override string? ToString()

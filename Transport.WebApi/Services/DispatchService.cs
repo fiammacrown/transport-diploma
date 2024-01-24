@@ -166,7 +166,7 @@ namespace Transport.WebApi.Services
 			await _unitOfWork.TransportRepository.GetAllAsync();
 
 			inProgressDelivery.Done();
-			inProgressDelivery.Order.Done();
+			inProgressDelivery.Order.Done(inProgressDelivery.EndDate);
 			inProgressDelivery.Transport.Unload(inProgressDelivery.Order);
 			inProgressDelivery.Transport.Free();
 

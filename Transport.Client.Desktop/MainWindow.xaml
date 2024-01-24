@@ -7,15 +7,14 @@
         xmlns:local="clr-namespace:Abeslamidze_Kursovaya7"
         mc:Ignorable="d"
         Title="ООО Грузоперевозки" Height="850" Width="1153" Loaded="Window_Loaded" MinWidth="1050" MinHeight="700">
-
     <Window.Resources>
         <c:BoolToVisibilityConverter x:Key="BoolToHiddenConverter" TrueValue="Visible" FalseValue="Hidden" />
     </Window.Resources>
-
     <Grid>
         <local:LoginView
             DataContext="{Binding Login}"
             Visibility="{Binding IsAuthorized, Converter={StaticResource BoolToHiddenConverter}, ConverterParameter=Reverse}" />
+
         <Grid Visibility="{Binding Login.IsAuthorized, Converter={StaticResource BoolToHiddenConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -53,10 +52,13 @@
                       RowHeaderWidth="50"
                       SelectionChanged="DataGridOrders_SelectionChanged">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="№" Binding="{Binding Id}" Width="*"/>
+                    <DataGridTextColumn Header="№" Binding="{Binding Id}" Templa Width="*"/>
                     <DataGridTextColumn Header="Вес (кг)" Binding="{Binding Weight}" Width="*"/>
                     <DataGridTextColumn Header="Откуда" Binding="{Binding From}" Width="*"/>
                     <DataGridTextColumn Header="Куда" Binding="{Binding To}" Width="*"/>
+                    <DataGridTextColumn Header="Дата создания" Binding="{Binding CreatedDate}" Width="*"/>
+                    <DataGridTextColumn Header="Дата выполнения" Binding="{Binding DeliveredDate}" Width="*"/>
+                    <DataGridTextColumn Header="Изменено" Binding="{Binding UpdatedDate}" Width="*"/>
                     <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="*"/>
                 </DataGrid.Columns>
                 <DataGrid.RowStyle>

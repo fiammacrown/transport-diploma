@@ -31,6 +31,7 @@ public class OrderService
 			Weight = newOrder.Weight,
 			FromId = fromLocation.Id,
 			ToId = toLocation.Id,
+			CreatedDate = DateTime.Now
 		};
 
 		_unitOfWork.OrderRepository.Add(dbOrder);
@@ -77,6 +78,7 @@ public class OrderService
 		order.Weight = newOrder.Weight;
 		order.From = fromLocation;
 		order.To = toLocation;
+		order.UpdatedDate =	 DateTime.Now;
 
 		_unitOfWork.OrderRepository.Update(order);
 		_unitOfWork.Save();
@@ -107,23 +109,3 @@ public class OrderService
 		return true;
 	}
 }
-
-
-//public static class Mapper
-//{
-//	public static OrderEntity Map(OrderDto x)
-//	{
-//		return new OrderEntity
-//		{
-//			Weight = x.Weight,
-//			FromId = Map(x.From),
-//			ToId = Map(x.To),
-//		};
-//	}
-
-//	public static Guid Map(string x)
-//	{
-//		var location = _unitOfWork.LocationRepository.GetByName(x);
-//		return location.Id;
-//	}
-//}

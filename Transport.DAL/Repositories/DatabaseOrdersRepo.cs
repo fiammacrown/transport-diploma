@@ -31,7 +31,8 @@ public class DatabaseOrdersRepo : IOrdersRepo
     public Task<List<OrderEntity>> GetAllAsync()
     {
         //_entityContext.Locations.Load();
-        return _entityContext.Orders.ToListAsync();
+        return _entityContext.Orders
+			.OrderBy(o => o.Status).ToListAsync();
     }
 
     public OrderEntity? GetById(Guid id)

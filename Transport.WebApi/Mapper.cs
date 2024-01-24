@@ -14,6 +14,9 @@ public static class Mapper
             From = MapNameOnly(x.From),
             To = MapNameOnly(x.To),
             Status = x.Status.ToString(),
+            CreatedDate = x.CreatedDate,
+            UpdatedDate = x.UpdatedDate,
+            DeliveredDate = x.DeliveredDate,
         };
     }
 

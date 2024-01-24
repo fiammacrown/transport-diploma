@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Transport.DAL.Data;
 
@@ -11,9 +12,10 @@ using Transport.DAL.Data;
 namespace Transport.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240124213951_InitialCreate4")]
+    partial class InitialCreate4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,32 +74,32 @@ namespace Transport.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("e85984d3-b525-48f6-b2c7-b74429b2d9b6"),
+                            Id = new Guid("9ed8f3fd-c026-44da-b238-a74a59424845"),
                             Name = "Брест"
                         },
                         new
                         {
-                            Id = new Guid("42de35b9-78a3-4e40-beec-cecfb4c351dc"),
+                            Id = new Guid("c386e1ee-3e50-4b4b-a434-b94acb2e9447"),
                             Name = "Минск"
                         },
                         new
                         {
-                            Id = new Guid("e71b871f-6617-468a-881d-88b41ee3c531"),
+                            Id = new Guid("65f2797f-e9e4-4e19-a1e3-c2378cf88e17"),
                             Name = "Гомель"
                         },
                         new
                         {
-                            Id = new Guid("a790527b-1900-49cc-89c7-5e000106b65b"),
+                            Id = new Guid("ab8ef970-6f07-4730-8a17-c7d070bd5a13"),
                             Name = "Могилев"
                         },
                         new
                         {
-                            Id = new Guid("00b4dbc1-1d1b-47d4-9963-63e16ab7d81f"),
+                            Id = new Guid("235b2eb1-ef51-4757-afef-cb2f7758451f"),
                             Name = "Витебск"
                         },
                         new
                         {
-                            Id = new Guid("4227db5f-dad8-4e47-8fee-fbfaa7831ea8"),
+                            Id = new Guid("cc2608ca-e21a-4a1b-81a3-e610ba73cfd0"),
                             Name = "Гродно"
                         });
                 });
@@ -122,9 +124,6 @@ namespace Transport.DAL.Migrations
 
                     b.Property<Guid>("ToId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<double>("Weight")
                         .HasColumnType("float");
@@ -173,7 +172,7 @@ namespace Transport.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("2a7858db-9cf3-4891-a9f3-a4048ec7135a"),
+                            Id = new Guid("5a09e5bd-a0c8-490a-8d3e-c16d00585cff"),
                             AvailableVolume = 602.0,
                             CurrentLoad = 0.0,
                             Name = "Truck-1 Mercedes-Benz",
@@ -184,7 +183,7 @@ namespace Transport.DAL.Migrations
                         },
                         new
                         {
-                            Id = new Guid("4de429d0-9f50-4fd3-a8c6-073e4172dd19"),
+                            Id = new Guid("2c51a8e8-fe50-409c-8e9b-14f8e8e08d4c"),
                             AvailableVolume = 357.0,
                             CurrentLoad = 0.0,
                             Name = "Truck-2 Volvo Trucks",
@@ -195,7 +194,7 @@ namespace Transport.DAL.Migrations
                         },
                         new
                         {
-                            Id = new Guid("1cd2a41b-ad80-43bf-8554-91640901ffd5"),
+                            Id = new Guid("9dee582a-4ef2-4527-a235-06f6303a0955"),
                             AvailableVolume = 406.0,
                             CurrentLoad = 0.0,
                             Name = "Truck-3 Scania",
@@ -206,7 +205,7 @@ namespace Transport.DAL.Migrations
                         },
                         new
                         {
-                            Id = new Guid("6e5e5e09-0158-4d8b-9258-9b828170e636"),
+                            Id = new Guid("226048df-bb11-474a-8b33-2ed02b8aa6d2"),
                             AvailableVolume = 551.0,
                             CurrentLoad = 0.0,
                             Name = "Truck-4 Kamaz",
@@ -217,7 +216,7 @@ namespace Transport.DAL.Migrations
                         },
                         new
                         {
-                            Id = new Guid("9225ce08-d585-4262-945a-bdef4477921d"),
+                            Id = new Guid("a77c5f93-2982-42e2-92bd-f615d8bdda51"),
                             AvailableVolume = 754.0,
                             CurrentLoad = 0.0,
                             Name = "Truck-5 Renault Trucks",

@@ -22,10 +22,6 @@ namespace Abeslamidze_Kursovaya7
             InitializeComponent();
 
             DataContext = ViewModel = new MainWindowViewModel(_apiService);
-
-            // set default sorting by status for data grids
-            DataGrid_Deliveries.Items.SortDescriptions.Add(new SortDescription("Status", ListSortDirection.Ascending));
-            DataGrid_Orders.Items.SortDescriptions.Add(new SortDescription("Status", ListSortDirection.Ascending));
         }
 
         public MainWindowViewModel ViewModel { get; }

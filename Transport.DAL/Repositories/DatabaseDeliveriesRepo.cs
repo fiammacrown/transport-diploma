@@ -27,7 +27,8 @@ public class DatabaseDeliveriesRepo : IDeliveriesRepo
     public Task<List<DeliveryEntity>> GetAllAsync()
     {
         //_entityContext.Deliveries.Load();
-        return _entityContext.Deliveries.ToListAsync();
+        return _entityContext.Deliveries.
+            OrderBy(d => d.Status).ToListAsync();
 	}
 
     public DeliveryEntity? GetById(Guid id)
