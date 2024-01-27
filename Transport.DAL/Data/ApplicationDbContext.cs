@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 using Transport.DAL.Entities;
 
 namespace Transport.DAL.Data;
@@ -18,6 +19,10 @@ public class ApplicationDbContext : DbContext
     public DbSet<TransportEntity> Transports { get; set; }
 
     public DbSet<DeliveryEntity> Deliveries { get; set; }
+
+	public DbSet<UserEntity> Users { get; set; }
+
+	public DbSet<RoleEntity> Roles { get; set; }
 
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -55,6 +60,16 @@ public class ApplicationDbContext : DbContext
 			.HasForeignKey(o => o.TransportId)
 			.OnDelete(DeleteBehavior.ClientSetNull);
 
+		modelBuilder.Entity<UserEntity>()
+			.HasMany(o => o.Roles)
+			.WithMany(o => o.Users)
+			.UsingEntity(
+			"UserRoleEntity",
+				l => l.HasOne(typeof(RoleEntity)).WithMany().HasForeignKey("RolesId").HasPrincipalKey(nameof(RoleEntity.Id)),
+				r => r.HasOne(typeof(UserEntity)).WithMany().HasForeignKey("UsersId").HasPrincipalKey(nameof(UserEntity.Id)),
+				j => j.HasKey("UsersId", "RolesId"));
+
+
 		modelBuilder.Entity<TransportEntity>().HasData(
 			new TransportEntity("Truck-1 Mercedes-Benz", 100.5, 602, 25),
 			new TransportEntity("Truck-2 Volvo Trucks", 90.2, 357, 15),
@@ -72,6 +87,16 @@ public class ApplicationDbContext : DbContext
 			new LocationEntity("Гродно")
 		);
 
+		modelBuilder.Entity<RoleEntity>().HasData(
+			new RoleEntity(Role.Default),
+			new RoleEntity(Role.User),
+			new RoleEntity(Role.Manager),
+			new RoleEntity(Role.Admin)
+		);
+
+		modelBuilder.Entity<UserEntity>().HasData(
+			new UserEntity("admin", "admin")
+		);
 
 	}
 }
