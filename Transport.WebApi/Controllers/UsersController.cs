@@ -33,12 +33,13 @@ public class UsersController : ControllerBase
 			var audience = _configuration["Jwt:Audience"];
 			var key = Encoding.ASCII.GetBytes(_configuration["Jwt:SecurityKey"]);
 
+
 			var tokenDescriptor = new SecurityTokenDescriptor
 			{
 				Subject = new ClaimsIdentity(new[]
 				{
-					new Claim(JwtRegisteredClaimNames.Name, user.Username),
-					//new Claim(JwtRegisteredClaimNames.Role, user.Username),
+					new Claim(ClaimTypes.Name, user.Username),
+					new Claim(ClaimTypes.Role, "Admin")
 				}),
 				Expires = DateTime.UtcNow.AddMinutes(5),
 				Issuer = issuer,
@@ -57,7 +58,7 @@ public class UsersController : ControllerBase
 
 
 	[HttpGet]
-	[Authorize]
+	[Authorize(Roles = "Admin")]
 	public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
 	{
 
