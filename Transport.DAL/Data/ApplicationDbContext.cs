@@ -78,13 +78,23 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
 		// Seed admin user 
 		string ADMIN_ID = "1D6FCC45-2BBB-4AC5-821C-E034B87384E1";
-		string ROLE_ID = "AA5684EA-E8BD-4D3B-B4B1-373180E21CD2";
+		string ADMIN_ROLE_ID = "AA5684EA-E8BD-4D3B-B4B1-373180E21CD2";
+		string USER_ROLE_ID = "EC0ED5BF-56E0-4C33-90F2-BB327CF2F1D3";
 
 		modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
 		{
-			Id = ROLE_ID,
+			Id = ADMIN_ROLE_ID,
 			Name = "Admin",
-			ConcurrencyStamp = ROLE_ID
+			NormalizedName = "Admin",
+			ConcurrencyStamp = ADMIN_ROLE_ID
+		},
+		new IdentityRole
+		{
+			Id = USER_ROLE_ID,
+			Name = "User",
+			NormalizedName = "User",
+			ConcurrencyStamp = USER_ROLE_ID
+
 		});
 
 		var adminUser = new ApplicationUser
@@ -101,7 +111,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 		modelBuilder.Entity<ApplicationUser>().HasData(adminUser);
 		modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
 		{
-			RoleId = ROLE_ID,
+			RoleId = ADMIN_ROLE_ID,
 			UserId = ADMIN_ID
 		});
 	}

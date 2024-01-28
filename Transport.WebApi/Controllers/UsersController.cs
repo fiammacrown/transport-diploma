@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -77,10 +78,27 @@ public class UsersController : ControllerBase
 	}
 
 
-	[HttpGet]
+	[HttpPost]
 	[Authorize(Roles = "Admin")]
-	public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
+	[Route("Register")]
+	public async Task<ActionResult> Register(UserDto user)
 	{
+		var userExists = await _userManager.FindByNameAsync(user.Username);
+		if (userExists != null)
+			return BadRequest();
+
+		ApplicationUser newUser = new ApplicationUser()
+		{
+			SecurityStamp = Guid.NewGuid().ToString(),
+			UserName = user.Username,
+			Name = user.Name
+		};
+		var createUserResult = await _userManager.CreateAsync(newUser, user.Password);
+		if (!createUserResult.Succeeded)
+			return BadRequest();
+			
+		await _userManager.AddToRoleAsync(newUser, UserRoleEntity.User);
+
 		return Ok();
 	}
 }
