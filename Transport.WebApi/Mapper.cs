@@ -64,13 +64,4 @@ public static class Mapper
 
         };
     }
-
-	public static UserDto Map(UserEntity x)
-	{
-		return new UserDto
-		{
-			Username = x.Username,
-            Password = x.Password
-		};
-	}
 }

@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Transport.DAL.Data;
+using Transport.DAL.Entities;
 using Transport.DTOs;
 
 namespace Transport.WebApi.Controllers;
@@ -15,45 +16,64 @@ namespace Transport.WebApi.Controllers;
 [Route("[controller]")]
 public class UsersController : ControllerBase
 {
+	private readonly UserManager<ApplicationUser> _userManager;
+	private readonly RoleManager<IdentityRole> _roleManager;
 	private readonly IConfiguration _configuration;
-	private readonly ApplicationDbContext _context;
 
-	public UsersController(IConfiguration configuration, ApplicationDbContext context) {
+	public UsersController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration) {
+		_userManager = userManager;
+		_roleManager = roleManager;
 		_configuration = configuration;
-		_context = context;
 	}
 
 	[HttpPost]
 	[Route("Login")]
-	public IActionResult Login(UserDto user)
+	public async Task<ActionResult> Login(UserDto user)
 	{
-		if (user.Username == "admin" && user.Password == "admin")
+		var dbUser = await _userManager.FindByNameAsync(user.Username);
+		if (dbUser == null)
 		{
-			var issuer = _configuration["Jwt:Issuer"];
-			var audience = _configuration["Jwt:Audience"];
-			var key = Encoding.ASCII.GetBytes(_configuration["Jwt:SecurityKey"]);
-
-
-			var tokenDescriptor = new SecurityTokenDescriptor
-			{
-				Subject = new ClaimsIdentity(new[]
-				{
-					new Claim(ClaimTypes.Name, user.Username),
-					new Claim(ClaimTypes.Role, "Admin")
-				}),
-				Expires = DateTime.UtcNow.AddMinutes(5),
-				Issuer = issuer,
-				Audience = audience,
-				SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
-			};
-
-			var tokenHandler = new JwtSecurityTokenHandler();
-			var token = tokenHandler.CreateToken(tokenDescriptor);
-
-			return Ok(new { token = tokenHandler.WriteToken(token) });
+			return Unauthorized();
 		}
 
-		return Unauthorized();
+		if (!await _userManager.CheckPasswordAsync(dbUser, user.Password))
+		{
+			return Unauthorized();
+		}
+
+		var userRoles = await _userManager.GetRolesAsync(dbUser);
+		var authClaims = new List<Claim>
+			{
+			   new Claim(ClaimTypes.Name, dbUser.UserName),
+			   new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+			};
+
+		foreach (var userRole in userRoles)
+		{
+			authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+		}
+
+
+		var issuer = _configuration["Jwt:Issuer"];
+		var audience = _configuration["Jwt:Audience"];
+		var key = Encoding.ASCII.GetBytes(_configuration["Jwt:SecurityKey"]);
+
+
+		var tokenDescriptor = new SecurityTokenDescriptor
+		{
+			Issuer = issuer,
+			Audience = audience,
+			Expires = DateTime.UtcNow.AddHours(3),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256),
+            Subject = new ClaimsIdentity(authClaims)
+		};
+
+		var tokenHandler = new JwtSecurityTokenHandler();
+		var token = tokenHandler.CreateToken(tokenDescriptor);
+
+		return Ok(new { token = tokenHandler.WriteToken(token) });
+	
+		
 	}
 
 
@@ -61,11 +81,6 @@ public class UsersController : ControllerBase
 	[Authorize(Roles = "Admin")]
 	public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
 	{
-
-		var dbUsers = await _context.Users.ToListAsync();
-
-		var users = dbUsers.Select(Mapper.Map).ToList();
-
-		return Ok(users);
+		return Ok();
 	}
 }
