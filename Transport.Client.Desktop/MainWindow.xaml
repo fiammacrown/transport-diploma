@@ -28,8 +28,6 @@
             <Menu Grid.Row="0" Height="25" VerticalAlignment="Top">
                 <MenuItem Header="Заявки">
                     <MenuItem x:Name="menuCreate" Header="Создать"  Click="Button_Click"/>
-                    <MenuItem x:Name="menuEdit" Header="Редактировать"  Click="EditSelected_Click" IsEnabled="False"/>
-                    <MenuItem x:Name="menuDelete" Header="Удалить"  Click="DeleteSelected_Click" IsEnabled="False"/>
                 </MenuItem>
                 <MenuItem Header="Грузоперевозки">
                     <MenuItem Header="Распределить" Click="Button_Click_1"/>
@@ -51,6 +49,12 @@
                       SelectionMode="Single"
                       RowHeaderWidth="50"
                       SelectionChanged="DataGridOrders_SelectionChanged">
+                <DataGrid.ContextMenu>
+                    <ContextMenu Opened="ContextMenu_ContextMenuOpened">
+                        <MenuItem Name="oEdit" Header="Редактировать" Click="EditSelected_Click" />
+                        <MenuItem Name="oDelete" Header="Удалить" Click="DeleteSelected_Click" />
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="№" Binding="{Binding Id}" Width="*"/>
                     <DataGridTextColumn Header="Вес (кг)" Binding="{Binding Weight}" Width="*"/>

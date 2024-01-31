@@ -1,9 +1,11 @@
-﻿using Abeslamidze_Kursovaya7.Services;
+﻿using Abeslamidze_Kursovaya7.Models;
+using Abeslamidze_Kursovaya7.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using Transport.DTOs;
 
@@ -40,7 +42,7 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 		public LoginViewModel Login { get; }
         public string UserToken { get; }
 
-        public ObservableCollection<OrderDto> Orders { get; } = new ObservableCollection<OrderDto>();
+        public ObservableCollection<OrderModel> Orders { get; } = new ObservableCollection<OrderModel>();
 
         public ObservableCollection<DeliveryDto> Deliveries { get; } = new ObservableCollection<DeliveryDto>();
 
@@ -52,12 +54,12 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 			await UpdateState();
 		}
 
-        public async Task UpdateOrder(OrderDto order)
+        public async Task UpdateOrder(OrderModel order)
         {
 			await _apiService.UpdateOrder(order.Id, order);
 		}
 
-        public async Task DeleteOrder(OrderDto order)
+        public async Task DeleteOrder(OrderModel order)
         {
 			await _apiService.DeleteOrder(order.Id);
 		}
@@ -135,7 +137,7 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 
         public async Task UpdateState()
         {
-            var orders = await _apiService.GetAllOrders();
+            var orders = (await _apiService.GetAllOrders()).Select(x => OrderModel.Map(x));
 
             Orders.Clear();
             foreach (var order in orders)

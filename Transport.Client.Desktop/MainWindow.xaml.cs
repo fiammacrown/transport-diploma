@@ -8,6 +8,7 @@ using Abeslamidze_Kursovaya7.Services;
 using Transport.DTOs;
 using System.Windows.Threading;
 using Refit;
+using Abeslamidze_Kursovaya7.Models;
 
 namespace Abeslamidze_Kursovaya7
 {
@@ -58,7 +59,7 @@ namespace Abeslamidze_Kursovaya7
 
         private async void EditSelected_Click(object sender, RoutedEventArgs e)
         {
-            var selectedOrder = (OrderDto)DataGrid_Orders.SelectedItem;
+            var selectedOrder = (OrderModel)DataGrid_Orders.SelectedItem;
             if (selectedOrder != null)
             {
                 RegisterWindow registerWindow = new RegisterWindow();
@@ -93,7 +94,7 @@ namespace Abeslamidze_Kursovaya7
         }
         private async void DeleteSelected_Click(object sender, RoutedEventArgs e)
         {
-            var selectedOrder = (OrderDto)DataGrid_Orders.SelectedItem;
+            var selectedOrder = (OrderModel)DataGrid_Orders.SelectedItem;
             if (selectedOrder != null)
             {
                 MessageBoxResult result = MessageBox.Show("Удалить заявку?", "Подтверждение удаления", MessageBoxButton.YesNo, MessageBoxImage.Warning);
@@ -259,6 +260,16 @@ namespace Abeslamidze_Kursovaya7
 			};
 
 			timer.Start();
+		}
+
+		private void ContextMenu_ContextMenuOpened(object sender, RoutedEventArgs e)
+		{
+			var selectedOrder = (OrderModel)DataGrid_Orders.SelectedItem;
+			if (selectedOrder != null)
+			{
+				oEdit.IsEnabled = selectedOrder.CanEdit;
+				oDelete.IsEnabled = selectedOrder.CanDelete;
+			}
 		}
 	}
 }
