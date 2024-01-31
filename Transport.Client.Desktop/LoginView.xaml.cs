@@ -29,7 +29,15 @@ namespace Abeslamidze_Kursovaya7
             }
         }
 
-        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+		private void UsernameBox_TextChanged(object sender, RoutedEventArgs e)
+		{
+			if (sender is TextBox tb && DataContext is LoginViewModel vm)
+			{
+				vm.Username = tb.Text;
+			}
+		}
+
+		private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (sender is PasswordBox pb && DataContext is LoginViewModel vm)
             {

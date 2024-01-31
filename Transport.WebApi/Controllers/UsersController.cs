@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Transport.DAL.Data;
 using Transport.DAL.Entities;
 using Transport.DTOs;
 
@@ -29,7 +26,7 @@ public class UsersController : ControllerBase
 
 	[HttpPost]
 	[Route("Login")]
-	public async Task<ActionResult> Login(UserDto user)
+	public async Task<ActionResult<UserTokenDto>> Login(UserDto user)
 	{
 		var dbUser = await _userManager.FindByNameAsync(user.Username);
 		if (dbUser == null)
@@ -72,7 +69,7 @@ public class UsersController : ControllerBase
 		var tokenHandler = new JwtSecurityTokenHandler();
 		var token = tokenHandler.CreateToken(tokenDescriptor);
 
-		return Ok(new { token = tokenHandler.WriteToken(token) });
+		return Ok(new UserTokenDto { Token = tokenHandler.WriteToken(token) });
 	
 		
 	}
@@ -90,8 +87,7 @@ public class UsersController : ControllerBase
 		ApplicationUser newUser = new ApplicationUser()
 		{
 			SecurityStamp = Guid.NewGuid().ToString(),
-			UserName = user.Username,
-			Name = user.Name
+			UserName = user.Username
 		};
 		var createUserResult = await _userManager.CreateAsync(newUser, user.Password);
 		if (!createUserResult.Succeeded)

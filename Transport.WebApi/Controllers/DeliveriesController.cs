@@ -4,6 +4,7 @@ using Transport.DAL.Data;
 using Transport.DAL;
 using Transport.DTOs;
 using Transport.WebApi.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Transport.WebApi.Controllers;
 
@@ -21,6 +22,7 @@ public class DeliveriesController : ControllerBase
 	}
 
 	[HttpGet]
+	[Authorize(Roles = "Admin,User")]
 	public async Task<ActionResult<IEnumerable<DeliveryDto>>> GetDeliveries()
 	{
 		// загрузим заявки и транспорт в контекст
@@ -62,6 +64,7 @@ public class DeliveriesController : ControllerBase
 
 	[HttpGet]
 	[Route("Dispatch")]
+	[Authorize(Roles = "Admin,User")]
 	public async Task<ActionResult<IEnumerable<DeliveryDto>>> Dispatch()
 	{
 		try
@@ -81,6 +84,7 @@ public class DeliveriesController : ControllerBase
 
 	[HttpGet]
 	[Route("Start")]
+	[Authorize(Roles = "Admin,User")]
 	public async Task<ActionResult<IEnumerable<DeliveryDto>>> Start()
 	{
 		try
@@ -99,6 +103,7 @@ public class DeliveriesController : ControllerBase
 	}
 
 	[HttpGet("{id}")]
+	[Authorize(Roles = "Admin,User")]
 	async public Task<ActionResult> UpdateDelivery(Guid id)
 	{
 		try

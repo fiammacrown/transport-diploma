@@ -2,33 +2,41 @@
 using Abeslamidze_Kursovaya7.ViewModels;
 using System.Collections.Generic;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.ComponentModel;
 using Abeslamidze_Kursovaya7.Services;
 using Transport.DTOs;
 using System.Windows.Threading;
+using Refit;
 
 namespace Abeslamidze_Kursovaya7
 {
     public partial class MainWindow : Window
     {
-       
-        private readonly ApiService _apiService = new ApiService();
-
         public MainWindow()
         {
             InitializeComponent();
 
-            DataContext = ViewModel = new MainWindowViewModel(_apiService);
+            var tokenStore = new AuthTokenStore();
+            var apiService = RestService.For<IApiService>(
+                "https://localhost:7284/",
+                new RefitSettings
+                {
+                    AuthorizationHeaderValueGetter = (request, ct) =>
+                    {
+                        return Task.FromResult(tokenStore.Token ?? string.Empty);
+                    }
+                });
+            var authService = new AuthService(tokenStore, apiService);
+
+			DataContext = ViewModel = new MainWindowViewModel(apiService, authService);
         }
 
         public MainWindowViewModel ViewModel { get; }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            await ViewModel.Initialize();
+            //await ViewModel.Initialize();
         }
 
         private void DataGridOrders_SelectionChanged(object sender, SelectionChangedEventArgs e)

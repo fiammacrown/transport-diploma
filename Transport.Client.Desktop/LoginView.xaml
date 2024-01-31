@@ -21,20 +21,25 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="30" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="1" Grid.Column="1" Text="Пароль:" />
-        <PasswordBox x:Name="pwrd" Grid.Row="2" Grid.Column="1" d:Password="test value" FontSize="20"
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="Логин:" />
+        <TextBox x:Name="usrnm" Grid.Row="2" Grid.Column="1" FontSize="20" TextChanged="UsernameBox_TextChanged" />
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="Пароль:" />
+        <PasswordBox x:Name="pwrd" Grid.Row="4" Grid.Column="1" d:Password="test value" FontSize="20"
                      PasswordChanged="PasswordBox_PasswordChanged"
                      KeyDown="PasswordBox_KeyDown"/>
 
-        <Button Grid.Row="3" Grid.Column="1" Content="Login" Command="{Binding LoginCommand}"/>
+        <Button Grid.Row="5" Grid.Column="1" Content="Вход" Command="{Binding LoginCommand}"/>
 
-        <TextBlock Grid.Row="4" Grid.Column="1"
+        <TextBlock Grid.Row="6" Grid.Column="1"
                    d:Text="Error long error long error message long-message"
                    Text="{Binding ErrorMessage}"
                    Foreground="Red"

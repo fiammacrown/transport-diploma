@@ -22,6 +22,7 @@ public class TransportsController : ControllerBase
 	}
 
 	[HttpGet]
+	[Authorize(Roles = "Admin,User")]
 	public async Task<ActionResult<IEnumerable<TransportDto>>> GetTransports()
 	{
 
@@ -35,6 +36,7 @@ public class TransportsController : ControllerBase
 
 	[HttpGet]
 	[Route("GetMaxVolume")]
+	[Authorize(Roles = "Admin,User")]
 	public ActionResult<double> GetMaxVolume()
 	{
 		var maxVolume = _unitOfWork.TransportRepository.GetMaxVolume();

@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Transport.DTOs;
 
@@ -15,14 +16,29 @@ namespace Abeslamidze_Kursovaya7.ViewModels
         public List<LocationDto> AvailableLocations;
         public double MaxAvailableTransportVolume;
 
-        private readonly ApiService _apiService;
+        private readonly IApiService _apiService;
 
-        public MainWindowViewModel(ApiService a)
+        public MainWindowViewModel(IApiService apiService, AuthService authService)
         {
-			_apiService = a;
-        }
-       
-        public LoginViewModel Login { get; } = new LoginViewModel();
+			_apiService = apiService;
+
+            Login = new LoginViewModel(authService);
+			Login.PropertyChanged += _Login_PropertyChanged;
+		}
+
+		private async void _Login_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof(Login.IsAuthorized))
+			{
+				if (Login.IsAuthorized)
+				{
+					await Initialize();
+				}
+			}
+		}
+
+		public LoginViewModel Login { get; }
+        public string UserToken { get; }
 
         public ObservableCollection<OrderDto> Orders { get; } = new ObservableCollection<OrderDto>();
 
@@ -30,7 +46,7 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 
         public ObservableCollection<TransportDto> Transports { get; } = new ObservableCollection<TransportDto>();
 
-        public async Task AddNewOrder(NewOrderDto order)
+		public async Task AddNewOrder(NewOrderDto order)
         {
             await _apiService.CreateOrder(order);
 			await UpdateState();
@@ -38,7 +54,7 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 
         public async Task UpdateOrder(OrderDto order)
         {
-			await _apiService.UpdateOrder(order);
+			await _apiService.UpdateOrder(order.Id, order);
 		}
 
         public async Task DeleteOrder(OrderDto order)

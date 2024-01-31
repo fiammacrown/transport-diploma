@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Transport.DAL;
 using Transport.DTOs;
 
@@ -16,6 +17,7 @@ public class LocationsController : ControllerBase
 	}
 
 	[HttpGet]
+	[Authorize(Roles = "Admin,User")]
 	public async Task<ActionResult<IEnumerable<LocationDto>>> GetLocations()
 	{
 		var dbLocations = await _unitOfWork.LocationRepository.GetAllAsync();

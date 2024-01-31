@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Transport.DAL;
 using Transport.DTOs;
 using Transport.WebApi.Services;
@@ -19,6 +20,7 @@ public class OrdersController : ControllerBase
 	}
 
 	[HttpPost]
+	[Authorize(Roles = "Admin,User")]
 	public ActionResult<OrderDto> CreateOrder([FromBody] NewOrderDto order)
 	{
 		try
@@ -42,6 +44,7 @@ public class OrdersController : ControllerBase
 	}
 
 	[HttpGet("{id}")]
+	[Authorize(Roles = "Admin,User")]
 	public async Task<ActionResult<OrderDto>> GetOrder(Guid id)
 	{
 		await _unitOfWork.LocationRepository.GetAllAsync();
@@ -66,6 +69,7 @@ public class OrdersController : ControllerBase
 	}
 
 	[HttpGet]
+	[Authorize(Roles = "Admin,User")]
 	public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders()
 	{
 		await _unitOfWork.LocationRepository.GetAllAsync();
@@ -79,6 +83,7 @@ public class OrdersController : ControllerBase
 
 	[HttpGet]
 	[Route("InQueue")]
+	[Authorize(Roles = "Admin,User")]
 	public async Task<ActionResult<IEnumerable<OrderDto>>> GetInQueueOrders()
 	{
 		await _unitOfWork.LocationRepository.GetAllAsync();
@@ -92,6 +97,7 @@ public class OrdersController : ControllerBase
 
 	[HttpGet]
 	[Route("Assigned")]
+	[Authorize(Roles = "Admin,User")]
 	public async Task<ActionResult<IEnumerable<OrderDto>>> GetAssignedOrders()
 	{
 		await _unitOfWork.LocationRepository.GetAllAsync();
@@ -104,6 +110,7 @@ public class OrdersController : ControllerBase
 	}
 
 	[HttpPut("{id}")]
+	[Authorize(Roles = "Admin,User")]
 	public ActionResult<OrderDto> UpdateOrder(Guid id, [FromBody] NewOrderDto orderDto)
 	{
 		var dbOrder = _orderService.UpdateOrder(id, orderDto);
@@ -114,6 +121,7 @@ public class OrdersController : ControllerBase
 	}
 
 	[HttpDelete("{id}")]
+	[Authorize(Roles = "Admin,User")]
 	public ActionResult DeleteOrder(Guid id)
 	{
 		try
