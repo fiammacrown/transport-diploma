@@ -60,11 +60,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
 
 		modelBuilder.Entity<TransportEntity>().HasData(
-			new TransportEntity("Truck-1 Mercedes-Benz", 100.5, 602, 25),
-			new TransportEntity("Truck-2 Volvo Trucks", 90.2, 357, 15),
-			new TransportEntity("Truck-3 Scania", 105.7, 406, 35),
-			new TransportEntity("Truck-4 Kamaz", 110.3, 551, 35),
-			new TransportEntity("Truck-5 Renault Trucks", 95.8, 754, 35)
+			new TransportEntity("Truck-1 Mercedes-Benz", 400, 1000, 15.6),
+			new TransportEntity("Truck-2 Volvo Trucks", 350, 1500, 25.4),
+			new TransportEntity("Truck-3 Scania", 300, 500, 35.8),
+			new TransportEntity("Truck-4 Kamaz", 250, 2000, 45.7),
+			new TransportEntity("Truck-5 Renault Trucks", 200, 3000, 55.5)
 		);
 
 		modelBuilder.Entity<LocationEntity>().HasData(

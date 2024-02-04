@@ -10,6 +10,9 @@
     <Window.Resources>
         <c:BoolToVisibilityConverter x:Key="BoolToHiddenConverter" TrueValue="Visible" FalseValue="Hidden" />
         <c:GuidToStringConverter x:Key="GuidToStringConverter" />
+        <c:DeliveryStatusToStringConverter x:Key="DeliveryStatusToStringConverter" />
+        <c:TransportStatusToStringConverter x:Key="TransportStatusToStringConverter" />
+        <c:OrderStatusToStringConverter x:Key="OrderStatusToStringConverter" />
     </Window.Resources>
     <Grid>
         <local:LoginView
@@ -67,7 +70,7 @@
                     <DataGridTextColumn Header="Дата создания" Binding="{Binding CreatedDate}" Width="*"/>
                     <DataGridTextColumn Header="Дата выполнения" Binding="{Binding DeliveredDate}" Width="*"/>
                     <DataGridTextColumn Header="Изменено" Binding="{Binding UpdatedDate}" Width="*"/>
-                    <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="*"/>
+                    <DataGridTextColumn Header="Статус" Binding="{Binding Status, Converter={StaticResource OrderStatusToStringConverter}}" Width="*"/>
                 </DataGrid.Columns>
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
@@ -103,7 +106,7 @@
                     <DataGridTextColumn Header="Стоимость (руб)" Binding="{Binding Price}" Width="*"/>
                     <DataGridTextColumn Header="Дата начала" Binding="{Binding StartDate}" Width="*"/>
                     <DataGridTextColumn Header="Дата окончания" Binding="{Binding EndDate}" Width="*"/>
-                    <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="*"/>
+                    <DataGridTextColumn Header="Статус" Binding="{Binding Status, Converter={StaticResource DeliveryStatusToStringConverter}}" Width="*"/>
                 </DataGrid.Columns>
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
@@ -132,8 +135,8 @@
                     <DataGridTextColumn Header="Скорость (км\ч)" Binding="{Binding Speed}" Width="*"/>
                     <DataGridTextColumn Header="Размер кузова (кг)" Binding="{Binding Volume}" Width="*"/>
                     <DataGridTextColumn Header="Доступный размер кузова (кг)" Binding="{Binding AvailableVolume}" Width="*"/>
-                    <DataGridTextColumn Header="Цена за км" Binding="{Binding PricePerKm}" Width="*"/>
-                    <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="*"/>
+                    <DataGridTextColumn Header="Цена за км (руб)" Binding="{Binding PricePerKm}" Width="*"/>
+                    <DataGridTextColumn Header="Статус" Binding="{Binding Status, Converter={StaticResource TransportStatusToStringConverter}}" Width="*"/>
                 </DataGrid.Columns>
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
