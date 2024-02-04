@@ -9,7 +9,10 @@ namespace Abeslamidze_Kursovaya7.ViewModels
         private readonly AuthService _authService;
 
 		private bool _isAuthorized = false;
+        private bool _isAdmin = false;
+
         private string _username = string.Empty;
+		private string _role = string.Empty;
 		private string _errorMessage = string.Empty;
         private RelayCommand? _loginCommand;
         private RelayCommand? _logoutCommand;
@@ -25,14 +28,25 @@ namespace Abeslamidze_Kursovaya7.ViewModels
             private set => SetProperty(ref _isAuthorized, value);
         }
 
-        public string Username 
+		public bool IsAdmin
+		{
+			get => _isAdmin;
+			private set => SetProperty(ref _isAdmin, value);
+		}
+
+		public string Username 
         { 
             get => _username;
             set => SetProperty(ref _username, value); 
         }
 
+		public string Role
+		{
+			get => _role;
+			set => SetProperty(ref _role, value);
+		}
 
-        public string Password { get; set; }
+		public string Password { get; set; }
 
         public string ErrorMessage
         {
@@ -46,7 +60,9 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 
         private async void Login()
         {
-			IsAuthorized = await _authService.LoginAsync(Username, Password);
+			var result = await _authService.LoginAsync(Username, Password);
+            IsAuthorized = result.IsAuthorized;
+            IsAdmin = result.IsAdmin;
 
 			ErrorMessage = IsAuthorized
                 ? string.Empty
@@ -58,6 +74,8 @@ namespace Abeslamidze_Kursovaya7.ViewModels
             _authService.Logout();
 
             IsAuthorized = false;
+            IsAdmin = false;
+
 			Password = string.Empty;
 			ErrorMessage = string.Empty;
 		}

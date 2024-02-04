@@ -9,6 +9,7 @@
         Title="ООО Грузоперевозки" Height="850" Width="1153" Loaded="Window_Loaded" MinWidth="1050" MinHeight="700">
     <Window.Resources>
         <c:BoolToVisibilityConverter x:Key="BoolToHiddenConverter" TrueValue="Visible" FalseValue="Hidden" />
+        <c:BoolToVisibilityConverter x:Key="BoolToHiddenConverter2" TrueValue="Visible" FalseValue="Collapsed" />
         <c:GuidToStringConverter x:Key="GuidToStringConverter" />
         <c:DeliveryStatusToStringConverter x:Key="DeliveryStatusToStringConverter" />
         <c:TransportStatusToStringConverter x:Key="TransportStatusToStringConverter" />
@@ -38,8 +39,11 @@
                     <MenuItem Header="Начать"  Click="Button_Click_2" />
                 </MenuItem>
                 <MenuItem Header="Отчеты">
-                    <MenuItem Header="Кол-во грузоперевозок по месяцам"   Click="Diagram1_Click"/>
-                    <MenuItem Header="Объем грузоперевозок по месяцам"  Click="Diagram2_Click"/>
+                    <MenuItem Header="Кол-во грузоперевозок по месяцам" Click="Diagram1_Click"/>
+                    <MenuItem Header="Объем грузоперевозок по месяцам" Click="Diagram2_Click"/>
+                </MenuItem>
+                <MenuItem Header="Администратор" Visibility="{Binding Login.IsAdmin, Converter={StaticResource BoolToHiddenConverter2}}">
+                    <MenuItem Header="Создать пользователя" Click="Button_Click_3"/>
                 </MenuItem>
                 <MenuItem Header="Аккаунт">
                     <MenuItem Header="{Binding Login.Username}" IsEnabled="False" />

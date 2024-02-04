@@ -12,6 +12,10 @@ namespace Abeslamidze_Kursovaya7.Services
 		[Post("/Users/Login")]
 		public Task<UserTokenDto> Login([Body] UserDto user);
 
+		[Post("/Users/Register")]
+		[Headers("Authorization: Bearer")]
+		public Task Register([Body] UserDto user);
+
 		// Locations
 		[Get("/Locations")]
 		[Headers("Authorization: Bearer")]

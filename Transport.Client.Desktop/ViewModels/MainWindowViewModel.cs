@@ -46,6 +46,12 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 
         public ObservableCollection<TransportDto> Transports { get; } = new ObservableCollection<TransportDto>();
 
+
+		public async Task AddNewUser(UserDto user)
+		{
+			await _apiService.Register(user);
+		}
+
 		public async Task AddNewOrder(NewOrderDto order)
         {
             await _apiService.CreateOrder(order);

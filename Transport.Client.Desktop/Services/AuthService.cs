@@ -1,14 +1,23 @@
-﻿using System;
+﻿
+using System;
 using System.Threading.Tasks;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 
 namespace Abeslamidze_Kursovaya7.Services
 {
+    public class LoginResult
+    {
+        public bool IsAuthorized { get; set; }
+        public bool IsAdmin { get; set; }
+    }
+
     public class AuthService
     {
         private readonly IAuthTokenStore _tokenStore;
         private readonly IApiService _apiService;
 
-        public AuthService(
+		public AuthService(
             IAuthTokenStore tokenStore,
             IApiService apiService)
         {
@@ -16,7 +25,7 @@ namespace Abeslamidze_Kursovaya7.Services
             _apiService = apiService;
         }
 
-        public async Task<bool> LoginAsync(string username, string password)
+        public async Task<LoginResult> LoginAsync(string username, string password)
         {
             try
             {
@@ -30,11 +39,16 @@ namespace Abeslamidze_Kursovaya7.Services
 
 				_tokenStore.Token = result.Token;
 
-				return true;
+                if (_tokenStore.IsAdmin())
+                {
+                    return new LoginResult { IsAuthorized = true, IsAdmin = true };
+                }
+
+				return new LoginResult { IsAuthorized = true, IsAdmin = false };
 			}
             catch (Exception)
             {
-                return false;
+                return new LoginResult { IsAuthorized = false, IsAdmin = false }; ;
             }
 		}
 

@@ -174,7 +174,8 @@ namespace Abeslamidze_Kursovaya7
             }
         }
 
-        private async void Button_Click_1(object sender, RoutedEventArgs e)
+
+		private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
             var winTitle = "Распределение заявок";
 
@@ -215,6 +216,20 @@ namespace Abeslamidze_Kursovaya7
 
 			MessageBox.Show(message, winTitle);
 			await ViewModel.UpdateState();
+		}
+
+		private async void Button_Click_3(object sender, RoutedEventArgs e)
+		{
+			CreateUserWindow createUserWindow = new CreateUserWindow();
+
+			if (createUserWindow.ShowDialog() == true)
+			{
+				var result = createUserWindow.DataResult;
+				if (result != null)
+				{
+					await ViewModel.AddNewUser(result);
+				}
+			}
 		}
 
 		private void ScheduleUpdateDelivery(DeliveryDto delivery)
