@@ -46,7 +46,11 @@ namespace Abeslamidze_Kursovaya7.Services
 		[Get("/Deliveries/{id}")]
 		[Headers("Authorization: Bearer")]
 		public Task UpdateDelivery(Guid id);
-		
+
+		[Get("/Deliveries/UpdateAll")]
+		[Headers("Authorization: Bearer")]
+		public Task UpdateAllDelivery();
+
 		// Orders
 		[Get("/Orders")]
 		[Headers("Authorization: Bearer")]

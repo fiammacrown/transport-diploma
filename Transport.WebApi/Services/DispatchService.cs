@@ -1,4 +1,5 @@
-﻿using Transport.DAL;
+﻿using System.Linq;
+using Transport.DAL;
 using Transport.DAL.Entities;
 
 namespace Transport.WebApi.Services
@@ -175,6 +176,39 @@ namespace Transport.WebApi.Services
 			_unitOfWork.TransportRepository.Update(inProgressDelivery.Transport);
 			
 			_unitOfWork.Save();
+		}
+
+		async public Task UpdateAll()
+		{
+			var deliveries = _unitOfWork.DeliveryRepository.GetInProgress();
+
+			if (deliveries.Count <= 0)
+			{
+				return;
+			}
+
+			// загрузим заявки и транспорт в контекст
+			await _unitOfWork.LocationRepository.GetAllAsync();
+			await _unitOfWork.OrderRepository.GetAllAsync();
+			await _unitOfWork.TransportRepository.GetAllAsync();
+
+			foreach (var inProgressDelivery in deliveries)
+			{
+				if (inProgressDelivery.EndDate <= DateTime.Now)
+				{
+					inProgressDelivery.Done();
+					inProgressDelivery.Order.Done(inProgressDelivery.EndDate);
+					inProgressDelivery.Transport.Unload(inProgressDelivery.Order);
+					inProgressDelivery.Transport.Free();
+
+					_unitOfWork.DeliveryRepository.Update(inProgressDelivery);
+					_unitOfWork.OrderRepository.Update(inProgressDelivery.Order);
+					_unitOfWork.TransportRepository.Update(inProgressDelivery.Transport);
+
+					_unitOfWork.Save();
+				}
+
+			}
 		}
 	}
 }

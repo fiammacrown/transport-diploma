@@ -32,6 +32,7 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 			{
 				if (Login.IsAuthorized)
 				{
+                    await _apiService.UpdateAllDelivery();
 					await Initialize();
 				}
 			}

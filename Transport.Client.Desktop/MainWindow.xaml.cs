@@ -246,6 +246,10 @@ namespace Abeslamidze_Kursovaya7
                     await ViewModel.Update(delivery.Id);
 					await ViewModel.UpdateState();
                 }
+                catch (Exception ex)
+                {
+                    // silence error 
+                }
 				finally
                 {
                     timer.Stop();

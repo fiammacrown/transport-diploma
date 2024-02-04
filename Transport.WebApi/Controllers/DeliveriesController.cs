@@ -119,4 +119,23 @@ public class DeliveriesController : ControllerBase
 				"Error updating delivery");
 		}
 	}
+
+	[HttpGet]
+	[Route("UpdateAll")]
+	[Authorize(Roles = "Admin,User")]
+	async public Task<ActionResult> UpdateAll()
+	{
+		try
+		{
+
+			await _dispatchService.UpdateAll();
+
+			return Ok();
+		}
+		catch (Exception)
+		{
+			return StatusCode(StatusCodes.Status500InternalServerError,
+				"Error updating deliveries");
+		}
+	}
 }
