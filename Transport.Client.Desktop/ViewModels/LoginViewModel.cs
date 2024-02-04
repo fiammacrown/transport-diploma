@@ -9,7 +9,8 @@ namespace Abeslamidze_Kursovaya7.ViewModels
         private readonly AuthService _authService;
 
 		private bool _isAuthorized = false;
-        private string _errorMessage = string.Empty;
+        private string _username = string.Empty;
+		private string _errorMessage = string.Empty;
         private RelayCommand? _loginCommand;
         private RelayCommand? _logoutCommand;
 
@@ -24,7 +25,13 @@ namespace Abeslamidze_Kursovaya7.ViewModels
             private set => SetProperty(ref _isAuthorized, value);
         }
 
-        public string Username { get; set; }
+        public string Username 
+        { 
+            get => _username;
+            set => SetProperty(ref _username, value); 
+        }
+
+
         public string Password { get; set; }
 
         public string ErrorMessage

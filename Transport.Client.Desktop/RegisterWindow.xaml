@@ -29,7 +29,7 @@
 
         </Grid.RowDefinitions>
         <TextBlock FontSize="24" FontWeight="Bold" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center">Заявка</TextBlock>
-        <Label Content="Вес"  FontSize="16"  Grid.Row="1" Grid.Column="0" />
+        <Label Content="Вес (кг)"  FontSize="16"  Grid.Row="1" Grid.Column="0" />
         <TextBox  Grid.Row="1" Grid.Column="1"
                   Text="{Binding Weight, Mode=TwoWay, ValidatesOnDataErrors=True, Converter={StaticResource StringToDouble}}" />
         <Label Content="Место отправления"  FontSize="16"  Grid.Row="2" Grid.Column="0" />

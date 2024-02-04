@@ -13,8 +13,6 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 {
 	public class MainWindowViewModel : ObservableObject
     {
-        public bool DispatchInProgress = false;
-
         public List<LocationDto> AvailableLocations;
         public double MaxAvailableTransportVolume;
 
@@ -64,51 +62,23 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 			await _apiService.DeleteOrder(order.Id);
 		}
 
-		public class DispatchServiceResult
-		{
-			public int NumOfNewDeliveries { get; set; }
-			public int NumOfInProgressDeliveries { get; set; }
-			public int NumOfDoneDeliveries { get; set; }
-			public int NumOfAssignedOrders { get; set; }
-			public int NumOfInQueueOrders { get; set; }
-			public int NumOfInProgressOrders { get; set; }
-			public int NumOfDoneOrders { get; set; }
-			public int NumOfAssignedTransport { get; set; }
-		}
-
-		public async Task<DispatchServiceResult?> Dispatch()
+		public async Task<List<DeliveryDto>?> Dispatch()
         {
             var deliveries = await _apiService.DispatchDeliveries();
-            if (deliveries.Count > 0)
+            if (deliveries.Count < 0)
             {
-                var r = new DispatchServiceResult
-                {
-                    NumOfNewDeliveries = deliveries.Count,
-                    // TODO fix
-                    NumOfInQueueOrders = 0,
-                    NumOfAssignedOrders = 0,
-                    NumOfAssignedTransport = 0,
-            };
-
-				return r;
+                return null;
             }
-
-            return null;
-        }
+			return deliveries;
+		}
         public async Task<List<DeliveryDto>?> Start()
         {
 			var deliveries = await _apiService.StartDeliveries();
-			//if (deliveries.Count > 0)
-   //         {
-   //             var r = new DispatchServiceResult 
-   //             {
-			//		NumOfInProgressDeliveries = deliveries.Count
-			//	};
-
-   //             return r;
-   //         }
-
-            return deliveries;
+			if (deliveries.Count < 0)
+			{
+				return null;
+			}
+			return deliveries;
             
         }
 

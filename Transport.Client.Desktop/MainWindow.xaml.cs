@@ -178,36 +178,27 @@ namespace Abeslamidze_Kursovaya7
         {
             var winTitle = "Распределение заявок";
 
-            ViewModel.DispatchInProgress = true;
-
             var result = await ViewModel.Dispatch();
+			var message = "Распределение заявок не может быть выполнено!";
 
-            ViewModel.DispatchInProgress = false;
-
-            if (result != null)
+			if (result != null)
             {
-                var message = string.Format("Сформировано грузоперевозок: {0}\nЗаявки, помещенные в очереди: {1}",
-                   result.NumOfNewDeliveries,
-                   result.NumOfInQueueOrders,
-                   result.NumOfAssignedTransport);
+			message = string.Format("Сформировано грузоперевозок: {0}!",
+			  result.Count);
+			}
+ 
 
-                MessageBox.Show(message, winTitle);
+            MessageBox.Show(message, winTitle);
+			await ViewModel.UpdateState();
 
-                await ViewModel.UpdateState();
-
-            }
-            else
-            {
-                MessageBox.Show("Распределение заявок не может быть выполнено!\nНет заявок или доступного транспорта!", winTitle);
-            }
-
-        }
+		}
 
         private async void Button_Click_2(object sender, RoutedEventArgs e)
         {
             var winTitle = "Начать выполнение";
-            var result = await ViewModel.Start();
 
+            var result = await ViewModel.Start();
+			var message = "Нет сформированных грузоперевозок!";
 
 			if (result != null)
             {
@@ -216,17 +207,15 @@ namespace Abeslamidze_Kursovaya7
 					ScheduleUpdateDelivery(newDelivery);
 				}
 
-				var message = string.Format("Начато выполнение {0} грузоперевозок!",
-                   result.Count);
+				message = string.Format("Начато выполнение {0} грузоперевозок!",
+                  result.Count);
 
-                MessageBox.Show(message, winTitle);
-				await ViewModel.UpdateState();
+               
 			}
-            else
-            {
-                MessageBox.Show("Нет сформированных грузоперевозок!", winTitle);
-            }
-        }
+
+			MessageBox.Show(message, winTitle);
+			await ViewModel.UpdateState();
+		}
 
 		private void ScheduleUpdateDelivery(DeliveryDto delivery)
 		{
@@ -238,19 +227,9 @@ namespace Abeslamidze_Kursovaya7
 			timer.Tick += async (sender, e) =>
 			{
                 try
-                {
-					Console.WriteLine("Function called at: " + DateTime.Now);
-					
+                { 
                     await ViewModel.Update(delivery.Id);
 					await ViewModel.UpdateState();
-
-                    //TODO add info message 
-					//Dispatcher.BeginInvoke(() =>
-     //               {
-     //                   var message = string.Format("Завершена грузоперевозок!", result.NumOfDoneDeliveries);
-
-     //                   MessageBox.Show(message, "Инфо");
-     //               });
                 }
 				finally
                 {

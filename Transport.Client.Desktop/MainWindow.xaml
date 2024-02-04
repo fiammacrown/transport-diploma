@@ -9,6 +9,7 @@
         Title="ООО Грузоперевозки" Height="850" Width="1153" Loaded="Window_Loaded" MinWidth="1050" MinHeight="700">
     <Window.Resources>
         <c:BoolToVisibilityConverter x:Key="BoolToHiddenConverter" TrueValue="Visible" FalseValue="Hidden" />
+        <c:GuidToStringConverter x:Key="GuidToStringConverter" />
     </Window.Resources>
     <Grid>
         <local:LoginView
@@ -37,7 +38,10 @@
                     <MenuItem Header="Кол-во грузоперевозок по месяцам"   Click="Diagram1_Click"/>
                     <MenuItem Header="Объем грузоперевозок по месяцам"  Click="Diagram2_Click"/>
                 </MenuItem>
-                <MenuItem Header="Выход" Command="{Binding Login.LogoutCommand}"/>
+                <MenuItem Header="Аккаунт">
+                    <MenuItem Header="{Binding Login.Username}" IsEnabled="False" />
+                    <MenuItem Header="Выход" Command="{Binding Login.LogoutCommand}"/>
+                </MenuItem>
             </Menu>
             <TextBlock Grid.Row="1" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Заявки</TextBlock>
             <DataGrid x:Name="DataGrid_Orders"
@@ -56,7 +60,7 @@
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="№" Binding="{Binding Id}" Width="*"/>
+                    <DataGridTextColumn Header="№" Binding="{Binding Id, Converter={StaticResource GuidToStringConverter}}" Width="*"/>
                     <DataGridTextColumn Header="Вес (кг)" Binding="{Binding Weight}" Width="*"/>
                     <DataGridTextColumn Header="Откуда" Binding="{Binding From}" Width="*"/>
                     <DataGridTextColumn Header="Куда" Binding="{Binding To}" Width="*"/>
@@ -93,9 +97,9 @@
                       HeadersVisibility="Column"
                       RowHeaderWidth="50">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="№" Binding="{Binding Id}" Width="*"/>
-                    <DataGridTextColumn Header="№ заказа" Binding="{Binding Order.Id}" Width="*"/>
-                    <DataGridTextColumn Header="№ транспорта" Binding="{Binding Transport.Id}" Width="*"/>
+                    <DataGridTextColumn Header="№" Binding="{Binding Id, Converter={StaticResource GuidToStringConverter}}" Width="*"/>
+                    <DataGridTextColumn Header="№ заказа" Binding="{Binding Order.Id, Converter={StaticResource GuidToStringConverter}}" Width="*"/>
+                    <DataGridTextColumn Header="№ транспорта" Binding="{Binding Transport.Id, Converter={StaticResource GuidToStringConverter}}" Width="*"/>
                     <DataGridTextColumn Header="Стоимость (руб)" Binding="{Binding Price}" Width="*"/>
                     <DataGridTextColumn Header="Дата начала" Binding="{Binding StartDate}" Width="*"/>
                     <DataGridTextColumn Header="Дата окончания" Binding="{Binding EndDate}" Width="*"/>
@@ -123,7 +127,7 @@
                       HeadersVisibility="Column"
                       RowHeaderWidth="50">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="№" Binding="{Binding Id}" Width="*"/>
+                    <DataGridTextColumn Header="№" Binding="{Binding Id, Converter={StaticResource GuidToStringConverter}}" Width="*"/>
                     <DataGridTextColumn Header="Имя" Binding="{Binding Name}" Width="*"/>
                     <DataGridTextColumn Header="Скорость (км\ч)" Binding="{Binding Speed}" Width="*"/>
                     <DataGridTextColumn Header="Размер кузова (кг)" Binding="{Binding Volume}" Width="*"/>
