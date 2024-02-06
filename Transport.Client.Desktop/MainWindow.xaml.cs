@@ -20,7 +20,8 @@ namespace Abeslamidze_Kursovaya7
 
             var tokenStore = new AuthTokenStore();
             var apiService = RestService.For<IApiService>(
-                "https://localhost:7284/",
+				//"https://localhost:7284/",
+				"https://sabeslamidze-transport-api.azurewebsites.net/",
                 new RefitSettings
                 {
                     AuthorizationHeaderValueGetter = (request, ct) =>

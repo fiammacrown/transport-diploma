@@ -250,14 +250,14 @@ namespace Transport.DAL.Migrations
                         {
                             Id = "1D6FCC45-2BBB-4AC5-821C-E034B87384E1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5fd0ae2f-49e1-4c02-ba03-449408a19a71",
+                            ConcurrencyStamp = "91cb531d-05bb-4842-b7b8-a8bfa9c978ce",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Administrator",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDhfslrgvUMf2A1i24Hf9FDuPKJlSRAEaLva8y4GmAltHVc+g6x7H8xEQhL8CMtypA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBDH4xZYgSvnXvHYKXlJP5gvgAPX5Da1OzGDX8D3BemZTpBQ7J1ucxCMREn2WXVh1g==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f97728fc-3c6c-48a5-a753-fef83bd08480",
+                            SecurityStamp = "57e3ce4d-adb0-448c-b52d-11c7cb668a34",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -313,32 +313,32 @@ namespace Transport.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("e92ef5a8-f2f9-4d6d-8b36-b371eba286cc"),
+                            Id = new Guid("fef9f8a2-997e-49ac-945b-ee43eee74c83"),
                             Name = "Брест"
                         },
                         new
                         {
-                            Id = new Guid("5aac5be6-ef18-44c1-8ed0-95c1c9a3ad46"),
+                            Id = new Guid("b0a105ec-ff7a-449f-93cf-e0d87eb62db7"),
                             Name = "Минск"
                         },
                         new
                         {
-                            Id = new Guid("e0387659-9bd8-402e-b5c0-7ae26296a03e"),
+                            Id = new Guid("daab75a8-bd63-4f95-85b4-5ae6b8593436"),
                             Name = "Гомель"
                         },
                         new
                         {
-                            Id = new Guid("e5973d94-cd33-4c09-acdd-14a474aa0030"),
+                            Id = new Guid("af07d59d-52d7-40ae-a56c-86452fc0470d"),
                             Name = "Могилев"
                         },
                         new
                         {
-                            Id = new Guid("d78b5ed9-bb63-4eff-ad89-417620cca552"),
+                            Id = new Guid("e437ace2-4069-4ec7-a9e9-cf85af06a00a"),
                             Name = "Витебск"
                         },
                         new
                         {
-                            Id = new Guid("dfc56458-7e9b-4388-9c10-bbed71818ec6"),
+                            Id = new Guid("d27bee90-57b4-48bc-a302-0e91347ecf82"),
                             Name = "Гродно"
                         });
                 });
@@ -414,58 +414,58 @@ namespace Transport.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("2619990a-f893-4bfe-9ef4-60f5d97354fb"),
-                            AvailableVolume = 602.0,
+                            Id = new Guid("94f44e7e-ffec-4cc6-b531-a96c3494ac49"),
+                            AvailableVolume = 1000.0,
                             CurrentLoad = 0.0,
                             Name = "Truck-1 Mercedes-Benz",
-                            PricePerKm = 25.0,
-                            Speed = 100.5,
+                            PricePerKm = 15.6,
+                            Speed = 400.0,
                             Status = 2,
-                            Volume = 602.0
+                            Volume = 1000.0
                         },
                         new
                         {
-                            Id = new Guid("3780a21c-a45f-4d03-9c44-6a399b18e629"),
-                            AvailableVolume = 357.0,
+                            Id = new Guid("7fe2f26c-a709-481e-904a-dba164295a40"),
+                            AvailableVolume = 1500.0,
                             CurrentLoad = 0.0,
                             Name = "Truck-2 Volvo Trucks",
-                            PricePerKm = 15.0,
-                            Speed = 90.200000000000003,
+                            PricePerKm = 25.399999999999999,
+                            Speed = 350.0,
                             Status = 2,
-                            Volume = 357.0
+                            Volume = 1500.0
                         },
                         new
                         {
-                            Id = new Guid("b4df07b0-0117-4aab-bc54-96d88f4194c0"),
-                            AvailableVolume = 406.0,
+                            Id = new Guid("b7213ef7-afc8-497c-aa7c-960e65f4d5ef"),
+                            AvailableVolume = 500.0,
                             CurrentLoad = 0.0,
                             Name = "Truck-3 Scania",
-                            PricePerKm = 35.0,
-                            Speed = 105.7,
+                            PricePerKm = 35.799999999999997,
+                            Speed = 300.0,
                             Status = 2,
-                            Volume = 406.0
+                            Volume = 500.0
                         },
                         new
                         {
-                            Id = new Guid("c433f8c3-07bd-462b-ad86-3ff989108251"),
-                            AvailableVolume = 551.0,
+                            Id = new Guid("6df941ac-6faf-4f0b-81cc-2e4c1f12d8ec"),
+                            AvailableVolume = 2000.0,
                             CurrentLoad = 0.0,
                             Name = "Truck-4 Kamaz",
-                            PricePerKm = 35.0,
-                            Speed = 110.3,
+                            PricePerKm = 45.700000000000003,
+                            Speed = 250.0,
                             Status = 2,
-                            Volume = 551.0
+                            Volume = 2000.0
                         },
                         new
                         {
-                            Id = new Guid("85533a2e-083b-4e09-ba96-b9c5e4adceb0"),
-                            AvailableVolume = 754.0,
+                            Id = new Guid("36fb6627-bf85-452b-bf35-a95cc04abf97"),
+                            AvailableVolume = 3000.0,
                             CurrentLoad = 0.0,
                             Name = "Truck-5 Renault Trucks",
-                            PricePerKm = 35.0,
-                            Speed = 95.799999999999997,
+                            PricePerKm = 55.5,
+                            Speed = 200.0,
                             Status = 2,
-                            Volume = 754.0
+                            Volume = 3000.0
                         });
                 });
 

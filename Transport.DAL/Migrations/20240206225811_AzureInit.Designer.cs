@@ -12,8 +12,8 @@ using Transport.DAL.Data;
 namespace Transport.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240127233042_InitialCreate7")]
-    partial class InitialCreate7
+    [Migration("20240206225811_AzureInit")]
+    partial class AzureInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -55,7 +55,15 @@ namespace Transport.DAL.Migrations
                         {
                             Id = "AA5684EA-E8BD-4D3B-B4B1-373180E21CD2",
                             ConcurrencyStamp = "AA5684EA-E8BD-4D3B-B4B1-373180E21CD2",
-                            Name = "Admin"
+                            Name = "Admin",
+                            NormalizedName = "Admin"
+                        },
+                        new
+                        {
+                            Id = "EC0ED5BF-56E0-4C33-90F2-BB327CF2F1D3",
+                            ConcurrencyStamp = "EC0ED5BF-56E0-4C33-90F2-BB327CF2F1D3",
+                            Name = "User",
+                            NormalizedName = "User"
                         });
                 });
 
@@ -244,13 +252,14 @@ namespace Transport.DAL.Migrations
                         {
                             Id = "1D6FCC45-2BBB-4AC5-821C-E034B87384E1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ba058d4d-67b6-47fd-9312-e16a2f15699a",
+                            ConcurrencyStamp = "91cb531d-05bb-4842-b7b8-a8bfa9c978ce",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Administrator",
-                            PasswordHash = "AQAAAAEAACcQAAAAENaFAQDpRIHQ/bTu1sATBaTVQFYPWSlUw/ulxjxMwpH/zZwi9dUGhuCphxWzyUA8DA==",
+                            NormalizedUserName = "admin",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBDH4xZYgSvnXvHYKXlJP5gvgAPX5Da1OzGDX8D3BemZTpBQ7J1ucxCMREn2WXVh1g==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "9894a14c-f913-4510-94b4-890a330be7df",
+                            SecurityStamp = "57e3ce4d-adb0-448c-b52d-11c7cb668a34",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -306,32 +315,32 @@ namespace Transport.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("cbf7f715-ced2-4ff4-8124-845903ae2a2f"),
+                            Id = new Guid("fef9f8a2-997e-49ac-945b-ee43eee74c83"),
                             Name = "Брест"
                         },
                         new
                         {
-                            Id = new Guid("559af1cc-543f-4c4b-8169-43151cc20e99"),
+                            Id = new Guid("b0a105ec-ff7a-449f-93cf-e0d87eb62db7"),
                             Name = "Минск"
                         },
                         new
                         {
-                            Id = new Guid("8132b124-ece3-4be7-809f-7a76832392fe"),
+                            Id = new Guid("daab75a8-bd63-4f95-85b4-5ae6b8593436"),
                             Name = "Гомель"
                         },
                         new
                         {
-                            Id = new Guid("d8b2e7e5-6d54-4de8-ac43-0882f710e2b8"),
+                            Id = new Guid("af07d59d-52d7-40ae-a56c-86452fc0470d"),
                             Name = "Могилев"
                         },
                         new
                         {
-                            Id = new Guid("d91a4e67-d515-441b-9ae0-315f9950724a"),
+                            Id = new Guid("e437ace2-4069-4ec7-a9e9-cf85af06a00a"),
                             Name = "Витебск"
                         },
                         new
                         {
-                            Id = new Guid("60b2741b-2602-4faf-afa4-9e39d65428ff"),
+                            Id = new Guid("d27bee90-57b4-48bc-a302-0e91347ecf82"),
                             Name = "Гродно"
                         });
                 });
@@ -407,58 +416,58 @@ namespace Transport.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("61995412-eaa3-4660-b67e-36ba0b1688ce"),
-                            AvailableVolume = 602.0,
+                            Id = new Guid("94f44e7e-ffec-4cc6-b531-a96c3494ac49"),
+                            AvailableVolume = 1000.0,
                             CurrentLoad = 0.0,
                             Name = "Truck-1 Mercedes-Benz",
-                            PricePerKm = 25.0,
-                            Speed = 100.5,
+                            PricePerKm = 15.6,
+                            Speed = 400.0,
                             Status = 2,
-                            Volume = 602.0
+                            Volume = 1000.0
                         },
                         new
                         {
-                            Id = new Guid("9c2c0c58-364a-4613-835a-79c82d2cfa52"),
-                            AvailableVolume = 357.0,
+                            Id = new Guid("7fe2f26c-a709-481e-904a-dba164295a40"),
+                            AvailableVolume = 1500.0,
                             CurrentLoad = 0.0,
                             Name = "Truck-2 Volvo Trucks",
-                            PricePerKm = 15.0,
-                            Speed = 90.200000000000003,
+                            PricePerKm = 25.399999999999999,
+                            Speed = 350.0,
                             Status = 2,
-                            Volume = 357.0
+                            Volume = 1500.0
                         },
                         new
                         {
-                            Id = new Guid("1d6ddb6f-74ba-4a36-95c7-3a8dc21013fe"),
-                            AvailableVolume = 406.0,
+                            Id = new Guid("b7213ef7-afc8-497c-aa7c-960e65f4d5ef"),
+                            AvailableVolume = 500.0,
                             CurrentLoad = 0.0,
                             Name = "Truck-3 Scania",
-                            PricePerKm = 35.0,
-                            Speed = 105.7,
+                            PricePerKm = 35.799999999999997,
+                            Speed = 300.0,
                             Status = 2,
-                            Volume = 406.0
+                            Volume = 500.0
                         },
                         new
                         {
-                            Id = new Guid("3239f807-1c83-408d-915d-7adbd4d1214f"),
-                            AvailableVolume = 551.0,
+                            Id = new Guid("6df941ac-6faf-4f0b-81cc-2e4c1f12d8ec"),
+                            AvailableVolume = 2000.0,
                             CurrentLoad = 0.0,
                             Name = "Truck-4 Kamaz",
-                            PricePerKm = 35.0,
-                            Speed = 110.3,
+                            PricePerKm = 45.700000000000003,
+                            Speed = 250.0,
                             Status = 2,
-                            Volume = 551.0
+                            Volume = 2000.0
                         },
                         new
                         {
-                            Id = new Guid("5deaf023-c5cc-4177-bcb4-96e96fede26c"),
-                            AvailableVolume = 754.0,
+                            Id = new Guid("36fb6627-bf85-452b-bf35-a95cc04abf97"),
+                            AvailableVolume = 3000.0,
                             CurrentLoad = 0.0,
                             Name = "Truck-5 Renault Trucks",
-                            PricePerKm = 35.0,
-                            Speed = 95.799999999999997,
+                            PricePerKm = 55.5,
+                            Speed = 200.0,
                             Status = 2,
-                            Volume = 754.0
+                            Volume = 3000.0
                         });
                 });
 
