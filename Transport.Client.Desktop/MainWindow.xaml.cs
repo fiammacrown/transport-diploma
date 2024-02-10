@@ -12,9 +12,9 @@ using Abeslamidze_Kursovaya7.Models;
 
 namespace Abeslamidze_Kursovaya7
 {
-    public partial class MainWindow : Window
-    {
-        public MainWindow()
+	public partial class MainWindow : Window
+	{
+		public MainWindow()
         {
             InitializeComponent();
 
@@ -32,9 +32,9 @@ namespace Abeslamidze_Kursovaya7
             var authService = new AuthService(tokenStore, apiService);
 
 			DataContext = ViewModel = new MainWindowViewModel(apiService, authService);
-        }
+		}
 
-        public MainWindowViewModel ViewModel { get; }
+		public MainWindowViewModel ViewModel { get; }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -45,20 +45,20 @@ namespace Abeslamidze_Kursovaya7
         {
             var selectedOrder = (OrderDto)DataGrid_Orders.SelectedItem;
 
-            //if (selectedOrder != null && selectedOrder.Status == "Registered") //TODO fix
-            //{
-            //    Button_Edit.IsEnabled = true;
-            //    Button_Delete.IsEnabled = true;
-            //}
+            if (selectedOrder != null && selectedOrder.Status == "Registered")
+            { 
+                menuDelete.IsEnabled = true;
+                menuEdit.IsEnabled = true;
+            }
 
-            //else
-            //{
-            //    Button_Edit.IsEnabled = false;
-            //    Button_Delete.IsEnabled = false;
-            //}
-        }
+            else
+            {
+				menuDelete.IsEnabled = false;
+				menuEdit.IsEnabled = false;
+			}
+}
 
-        private async void EditSelected_Click(object sender, RoutedEventArgs e)
+    private async void EditSelected_Click(object sender, RoutedEventArgs e)
         {
             var selectedOrder = (OrderModel)DataGrid_Orders.SelectedItem;
             if (selectedOrder != null)

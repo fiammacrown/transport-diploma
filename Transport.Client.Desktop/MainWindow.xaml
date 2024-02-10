@@ -32,7 +32,9 @@
             </Grid.RowDefinitions>
             <Menu Grid.Row="0" Height="25" VerticalAlignment="Top">
                 <MenuItem Header="Заявки">
-                    <MenuItem x:Name="menuCreate" Header="Создать"  Click="Button_Click"/>
+                    <MenuItem Header="Создать"  Click="Button_Click"/>
+                    <MenuItem x:Name="menuEdit" Header="Редактировать" Click="EditSelected_Click" IsEnabled="False"/>
+                    <MenuItem x:Name ="menuDelete" Header="Удалить" Click="DeleteSelected_Click" IsEnabled="False"/>
                 </MenuItem>
                 <MenuItem Header="Грузоперевозки">
                     <MenuItem Header="Распределить" Click="Button_Click_1"/>
