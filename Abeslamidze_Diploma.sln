@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abeslamidze_Kursovaya7", "Transport.Client.Desktop\Abeslamidze_Kursovaya7.csproj", "{1757BC45-EDE0-4CB9-B2E8-AB56E41E0299}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transport.Client.Desktop", "Transport.Client.Desktop\Transport.Client.Desktop.csproj", "{1757BC45-EDE0-4CB9-B2E8-AB56E41E0299}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transport.WebApi", "Transport.WebApi\Transport.WebApi.csproj", "{4AAB1ECB-9143-4C8C-9453-68F20DA26F65}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transport.WebApi", "Transport.WebApi\Transport.WebApi.csproj", "{4AAB1ECB-9143-4C8C-9453-68F20DA26F65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transport.Dtos", "Transport.DTOs\Transport.DTOs.csproj", "{C79A17BB-A62B-4619-8F96-716938DD4DE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transport.DTOs", "Transport.DTOs\Transport.DTOs.csproj", "{C79A17BB-A62B-4619-8F96-716938DD4DE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transport.DAL", "Transport.DAL\Transport.DAL.csproj", "{4E3592A0-6395-4E75-8880-05430D94007B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transport.DAL", "Transport.DAL\Transport.DAL.csproj", "{4E3592A0-6395-4E75-8880-05430D94007B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
