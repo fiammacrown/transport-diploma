@@ -7,46 +7,62 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:Abeslamidze_Kursovaya7"
         mc:Ignorable="d"
-        Title="Новая заявка" Height="450" Width="400">
-
+        Title="Новая заявка" Height="400" Width="350">
     <Window.Resources>
         <c:StringToDoubleConverter x:Key="StringToDouble" />
-        <!--<DataTemplate x:Key="LocationItemTemplate">
-            <TextBlock Text="{Binding Name}" />
-        </DataTemplate>-->
     </Window.Resources>
-    <Grid>
+    <Grid Margin="20">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <!-- Empty row -->
         </Grid.RowDefinitions>
-        <TextBlock FontSize="24" FontWeight="Bold" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center">Заявка</TextBlock>
-        <Label Content="Вес (кг)"  FontSize="16"  Grid.Row="1" Grid.Column="0" />
-        <TextBox  Grid.Row="1" Grid.Column="1"
-                  Text="{Binding Weight, Mode=TwoWay, ValidatesOnDataErrors=True, Converter={StaticResource StringToDouble}}" />
-        <Label Content="Место отправления"  FontSize="16"  Grid.Row="2" Grid.Column="0" />
-        <ComboBox Grid.Row="2" Grid.Column="1"
-                  IsReadOnly="True"
-                  ItemsSource="{Binding Locations}"
-                  SelectedItem="{Binding From, Mode=TwoWay, ValidatesOnDataErrors=True}"
-                  />
-        <!--ItemTemplate="{StaticResource LocationItemTemplate}"-->
-        <Label Content="Место доставки"  FontSize="16"  Grid.Row="3" Grid.Column="0" />
-        <ComboBox Grid.Row="3" Grid.Column="1"
-                  IsReadOnly="True"
-                  ItemsSource="{Binding Locations}"
-                  SelectedItem="{Binding To, Mode=TwoWay, ValidatesOnDataErrors=True}"
-                   />
-        <!--ItemTemplate="{StaticResource LocationItemTemplate}"-->
-        <Button Grid.Row="8" Grid.Column="0" Content="Сохранить" Command="{Binding SaveCommand}" />
-        <Button Grid.Row="8" Grid.Column="1" Content="Отмена" Command="{Binding CancelCommand}" />
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"  Text="Заявка" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0, 20, 0, 0">
+            <Label Content="Вес (кг):" FontSize="16"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0, 20, 0, 0">
+            <TextBox Text="{Binding Weight, Mode=TwoWay, ValidatesOnDataErrors=True, Converter={StaticResource StringToDouble}}" Width="100"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0, 10, 0, 0">
+            <Label Content="Место отправления:" FontSize="16"/>
+        </StackPanel>
+        
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0, 10, 0, 0">
+            <ComboBox Width="100"
+                      IsReadOnly="True"
+                      ItemsSource="{Binding Locations}"
+                      SelectedItem="{Binding From, Mode=TwoWay, ValidatesOnDataErrors=True}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0, 10, 0, 0">
+            <Label Content="Место доставки:" FontSize="16"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0, 10, 0, 0">
+            <ComboBox Width="100"
+                      IsReadOnly="True"
+                      ItemsSource="{Binding Locations}"
+                      SelectedItem="{Binding To, Mode=TwoWay, ValidatesOnDataErrors=True}"/>
+        </StackPanel>
+        
+        <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,20,0,0"  Width="100">
+            <Button Content="Сохранить" Command="{Binding SaveCommand}" Width="100" Height="30"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right"  VerticalAlignment="Bottom" Margin="0,20,0,0"  Width="100">
+            <Button Content="Отмена" Command="{Binding CancelCommand}" Width="100" Height="30"/>
+        </StackPanel>
     </Grid>
 </Window>

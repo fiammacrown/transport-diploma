@@ -5,24 +5,43 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Abeslamidze_Kursovaya7"
         mc:Ignorable="d"
-        Title="Новый пользователь" Height="280" Width="305">
-    <Grid>
+        Title="Новый пользователь" Height="350" Width="300">
+    <Grid Margin="20">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Label Content="Логин"  FontSize="16"  Grid.Row="0" Grid.Column="0" />
-        <TextBox  Grid.Row="0" Grid.Column="1" Text="{Binding Username, Mode=TwoWay, ValidatesOnDataErrors=True }" />
-        <Label Content="Пароль"  FontSize="16"  Grid.Row="1" Grid.Column="0" />
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Password,  Mode=TwoWay, ValidatesOnDataErrors=True }"/>
 
-        <Button Grid.Row="2" Grid.Column="0" Content="Сохранить" Command="{Binding SaveCommand}" />
-        <Button Grid.Row="2" Grid.Column="1" Content="Отмена" Command="{Binding CancelCommand}" />
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Пользователь" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center"/>
+        
+        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0, 20, 0, 0">
+            <Label Content="Логин:" FontSize="16" HorizontalAlignment="Left"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="0, 20, 0, 0">
+            <TextBox Text="{Binding Username, Mode=TwoWay, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" Width="150"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="0, 10, 0, 0">
+            <Label Content="Пароль:" FontSize="16" HorizontalAlignment="Left"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Margin="0, 10, 0, 0">
+            <TextBox Text="{Binding Password, Mode=TwoWay, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" Width="150"/>
+        </StackPanel>
+        
+        <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,20,0,0"  Width="100">
+            <Button Content="Сохранить" Command="{Binding SaveCommand}" Width="100" Height="30"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right"  VerticalAlignment="Bottom" Margin="0,20,0,0"  Width="100">
+            <Button Content="Отмена" Command="{Binding CancelCommand}" Width="100" Height="30"/>
+        </StackPanel>
     </Grid>
 </Window>
