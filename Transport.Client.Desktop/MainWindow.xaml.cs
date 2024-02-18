@@ -9,6 +9,8 @@ using Transport.DTOs;
 using System.Windows.Threading;
 using Refit;
 using Abeslamidze_Kursovaya7.Models;
+using Transport.Client.Desktop;
+using System.Windows.Input;
 
 namespace Abeslamidze_Kursovaya7
 {
@@ -31,10 +33,12 @@ namespace Abeslamidze_Kursovaya7
                 });
             var authService = new AuthService(tokenStore, apiService);
 
+            ApiService = apiService;
 			DataContext = ViewModel = new MainWindowViewModel(apiService, authService);
 		}
 
 		public MainWindowViewModel ViewModel { get; }
+        public IApiService ApiService { get; }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -56,9 +60,27 @@ namespace Abeslamidze_Kursovaya7
 				menuDelete.IsEnabled = false;
 				menuEdit.IsEnabled = false;
 			}
-}
+        }
 
-    private async void EditSelected_Click(object sender, RoutedEventArgs e)
+		private void DataGridTransports_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			//var selectedOrder = (OrderDto)DataGrid_Orders.SelectedItem;
+
+		}
+
+		private void DataGridTransports_DoubleClick(object sender, MouseButtonEventArgs e)
+        {
+			var selectedTransport = (TransportDto)DataGrid_Transports.SelectedItem;
+            if (selectedTransport != null)
+            {
+				var transportWindow = new TransportDetailsWindow(selectedTransport, ApiService);
+                transportWindow.ShowDialog();
+			}
+
+		}
+
+
+	    private async void EditSelected_Click(object sender, RoutedEventArgs e)
         {
             var selectedOrder = (OrderModel)DataGrid_Orders.SelectedItem;
             if (selectedOrder != null)

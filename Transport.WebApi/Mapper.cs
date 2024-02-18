@@ -59,6 +59,7 @@ public static class Mapper
             CurrentLoad = x.CurrentLoad,
             AvailableVolume = x.AvailableVolume,
             PricePerKm = x.PricePerKm,
+            ImageURL = x.ImageURL,
             Status = x.Status.ToString(),
 
 

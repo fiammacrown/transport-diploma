@@ -30,6 +30,10 @@ namespace Abeslamidze_Kursovaya7.Services
 		[Headers("Authorization: Bearer")]
 		public Task<double> GetTransportMaxVolume();
 
+		[Get("/Transports/GetDeliveryHistory")]
+		[Headers("Authorization: Bearer")]
+		public Task<TransportHistoryDto> GetTransportHistory(Guid id);
+
 		// Deliveries
 		[Get("/Deliveries")]
 		[Headers("Authorization: Bearer")]

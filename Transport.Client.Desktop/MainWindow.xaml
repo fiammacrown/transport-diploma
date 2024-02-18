@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Abeslamidze_Kursovaya7"
         mc:Ignorable="d"
-        Title="ООО Грузоперевозки" Height="850" Width="1153" Loaded="Window_Loaded" MinWidth="1050" MinHeight="700">
+        Title="ООО Грузоперевозки" Height="850" Width="1200" Loaded="Window_Loaded" MinWidth="1050" MinHeight="700">
     <Window.Resources>
         <c:BoolToVisibilityConverter x:Key="BoolToHiddenConverter" TrueValue="Visible" FalseValue="Hidden" />
         <c:BoolToVisibilityConverter x:Key="BoolToHiddenConverter2" TrueValue="Visible" FalseValue="Collapsed" />
@@ -130,23 +130,21 @@
             </DataGrid>
             <TextBlock Grid.Row="5" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">Транспорт</TextBlock>
             <DataGrid Grid.Row="6"
+                      x:Name="DataGrid_Transports"
                       ItemsSource="{Binding Transports}"
-                      AutoGenerateColumns="False"
                       IsReadOnly="True"
+                      AutoGenerateColumns="False"
                       HeadersVisibility="Column"
                       RowHeaderWidth="50">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="№" Binding="{Binding Id, Converter={StaticResource GuidToStringConverter}}" Width="*"/>
                     <DataGridTextColumn Header="Имя" Binding="{Binding Name}" Width="*"/>
-                    <DataGridTextColumn Header="Скорость (км\ч)" Binding="{Binding Speed}" Width="*"/>
-                    <DataGridTextColumn Header="Размер кузова (кг)" Binding="{Binding Volume}" Width="*"/>
                     <DataGridTextColumn Header="Доступный размер кузова (кг)" Binding="{Binding AvailableVolume}" Width="*"/>
-                    <DataGridTextColumn Header="Цена за км (руб)" Binding="{Binding PricePerKm}" Width="*"/>
                     <DataGridTextColumn Header="Статус" Binding="{Binding Status, Converter={StaticResource TransportStatusToStringConverter}}" Width="*"/>
                 </DataGrid.Columns>
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
-                        <Setter Property="IsHitTestVisible" Value="False"/>
+                        <EventSetter Event="MouseDoubleClick" Handler="DataGridTransports_DoubleClick"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Status}" Value="Assigned">
                                 <Setter Property="Background" Value="LightGoldenrodYellow" />

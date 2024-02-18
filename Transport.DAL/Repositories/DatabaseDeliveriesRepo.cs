@@ -50,4 +50,11 @@ public class DatabaseDeliveriesRepo : IDeliveriesRepo
             .Where(d => d.Status == DeliveryStatus.New)
             .ToList();
     }
+
+	public List<DeliveryEntity> GetByTransportId(Guid transportId)
+	{
+		return _entityContext.Deliveries
+			.Where(d => d.TransportId == transportId && d.Status == DeliveryStatus.Done)
+			.ToList();
+	}
 }

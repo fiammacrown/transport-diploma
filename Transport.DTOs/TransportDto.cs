@@ -9,5 +9,6 @@ public class TransportDto
 	public double CurrentLoad { get; set; }
 	public double AvailableVolume { get; set; }
 	public double PricePerKm { get; set; }
+	public string ImageURL { get; set; }
 	public string Status { get; set; }
 }

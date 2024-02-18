@@ -59,11 +59,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
 
 		modelBuilder.Entity<TransportEntity>().HasData(
-			new TransportEntity("Truck-1 Mercedes-Benz", 400, 1000, 15.6),
-			new TransportEntity("Truck-2 Volvo Trucks", 350, 1500, 25.4),
-			new TransportEntity("Truck-3 Scania", 300, 500, 35.8),
-			new TransportEntity("Truck-4 Kamaz", 250, 2000, 45.7),
-			new TransportEntity("Truck-5 Renault Trucks", 200, 3000, 55.5)
+			new TransportEntity("Truck-1 Mercedes-Benz", 250, 1000, 15.6, "https://sabeslamidze-transport-api.azurewebsites.net/images/truck-1.png"),
+			new TransportEntity("Truck-2 Volvo Trucks", 200, 1500, 25.4, "https://sabeslamidze-transport-api.azurewebsites.net/images/truck-2.jpg"),
+			new TransportEntity("Truck-3 Scania", 150, 500, 35.8, "https://sabeslamidze-transport-api.azurewebsites.net/images/truck-3.jpeg"),
+			new TransportEntity("Truck-4 Kamaz", 250, 2000, 45.7, "https://sabeslamidze-transport-api.azurewebsites.net/images/truck-4.jpg"),
+			new TransportEntity("Truck-5 Renault Trucks", 200, 3000, 55.5, "https://sabeslamidze-transport-api.azurewebsites.net/images/truck-5.jpg")
 		);
 
 		modelBuilder.Entity<LocationEntity>().HasData(

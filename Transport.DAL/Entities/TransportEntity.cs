@@ -13,13 +13,14 @@ public class TransportEntity
     {
     }
 
-    public TransportEntity(string name, double speed, double volume, double pricePerKm)
+    public TransportEntity(string name, double speed, double volume, double pricePerKm, string imageURL)
     {
         Id = Guid.NewGuid();
         Name = name; 
         Speed = speed;
         Volume = volume;
         PricePerKm = pricePerKm;
+        ImageURL = imageURL;
         Status = TransportStatus.Free;
     }
 
@@ -30,6 +31,7 @@ public class TransportEntity
     public double CurrentLoad { get; set; }
     public double AvailableVolume { get => Volume - CurrentLoad; set { } }
     public double PricePerKm { get; set; }
+    public string ImageURL { get; set; }
     public TransportStatus Status { get; set; }
 
 

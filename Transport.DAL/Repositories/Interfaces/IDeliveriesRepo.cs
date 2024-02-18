@@ -10,4 +10,5 @@ public interface IDeliveriesRepo
     DeliveryEntity? GetById(Guid id);
     List<DeliveryEntity> GetInProgress();
     List<DeliveryEntity> GetNew();
+	List<DeliveryEntity> GetByTransportId(Guid transportId);
 }
