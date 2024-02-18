@@ -112,6 +112,13 @@
                     <DataGridTextColumn Header="Стоимость (руб)" Binding="{Binding Price}" Width="*"/>
                     <DataGridTextColumn Header="Дата начала" Binding="{Binding StartDate}" Width="*"/>
                     <DataGridTextColumn Header="Дата окончания" Binding="{Binding EndDate}" Width="*"/>
+                    <DataGridTemplateColumn Header="Прогресс" Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ProgressBar x:Name="progressbar" Maximum="100" Width="140" Height="20" Value="{Binding Progress}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn Header="Статус" Binding="{Binding Status, Converter={StaticResource DeliveryStatusToStringConverter}}" Width="*"/>
                 </DataGrid.Columns>
                 <DataGrid.RowStyle>

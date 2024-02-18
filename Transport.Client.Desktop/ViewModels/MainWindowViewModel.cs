@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Transport.Client.Desktop.Models;
 using Transport.DTOs;
 
 namespace Abeslamidze_Kursovaya7.ViewModels
@@ -43,7 +44,7 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 
         public ObservableCollection<OrderModel> Orders { get; } = new ObservableCollection<OrderModel>();
 
-        public ObservableCollection<DeliveryDto> Deliveries { get; } = new ObservableCollection<DeliveryDto>();
+        public ObservableCollection<DeliveryModel> Deliveries { get; } = new ObservableCollection<DeliveryModel>();
 
         public ObservableCollection<TransportDto> Transports { get; } = new ObservableCollection<TransportDto>();
 
@@ -122,7 +123,7 @@ namespace Abeslamidze_Kursovaya7.ViewModels
                 Orders.Add(order);
             }
 
-            var deliveries = await _apiService.GetAllDeliveries();
+            var deliveries = (await _apiService.GetAllDeliveries()).Select(x => DeliveryModel.Map(x));
 
 			Deliveries.Clear();
             foreach (var delivery in deliveries)

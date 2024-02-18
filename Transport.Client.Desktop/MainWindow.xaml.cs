@@ -11,6 +11,8 @@ using Refit;
 using Abeslamidze_Kursovaya7.Models;
 using Transport.Client.Desktop;
 using System.Windows.Input;
+using Transport.Client.Desktop.Models;
+using System.Linq;
 
 namespace Abeslamidze_Kursovaya7
 {
@@ -226,9 +228,18 @@ namespace Abeslamidze_Kursovaya7
 
 			if (result != null)
             {
+				await ViewModel.UpdateState();
+
 				foreach (var newDelivery in result)
 				{
 					ScheduleUpdateDelivery(newDelivery);
+
+                    // set progress bar updates
+					var observDelivery = ViewModel.Deliveries.FirstOrDefault(x => x.Id == newDelivery.Id);
+					if (observDelivery != null)
+					{
+                        UpdateProgress(observDelivery, newDelivery);
+					}
 				}
 
 				message = string.Format("Начато выполнение {0} грузоперевозок!",
@@ -238,7 +249,6 @@ namespace Abeslamidze_Kursovaya7
 			}
 
 			MessageBox.Show(message, winTitle);
-			await ViewModel.UpdateState();
 		}
 
 		private async void Button_Click_3(object sender, RoutedEventArgs e)
@@ -281,6 +291,32 @@ namespace Abeslamidze_Kursovaya7
 			};
 
 			timer.Start();
+		}
+
+        private void UpdateProgress(DeliveryModel observDelivery, DeliveryDto delivery)
+        {
+			DispatcherTimer timer = new DispatcherTimer();
+
+            TimeSpan total = (delivery.EndDate - DateTime.Now).Value;
+            //double step = total.Seconds * 0.1;
+
+			timer.Interval = TimeSpan.FromSeconds(1);
+
+			timer.Tick += (sender, e) =>
+			{
+			    if (observDelivery.Progress == total.Seconds)
+                {
+                    timer.Stop();
+					timer = null;
+				}
+                else
+                {
+                    observDelivery.Progress += 1;
+                }
+			};
+
+			timer.Start();
+
 		}
 
 		private void ContextMenu_ContextMenuOpened(object sender, RoutedEventArgs e)
