@@ -1,1 +1,1 @@
-# Abeslamidze_Kursovaya7
+# Abeslamidze_Diploma
