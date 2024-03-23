@@ -203,14 +203,32 @@ namespace Abeslamidze_Kursovaya7
 		private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
             var winTitle = "Распределение заявок";
+            var message = "";
+			var error = "";
+
+            if (ViewModel.Orders.Where(o => o.Status == "Registered").Count() == 0 &&
+				ViewModel.Orders.Where(o => o.Status == "InQueue").Count() == 0 )
+            {
+                error = "Нет зарегистрированных заявок.";
+            }
+
+            if (ViewModel.Transports.Where(t => t.Status == "Free").Count() == 0)
+            {
+				error = "Нет свободного транспорта.";
+			}
+
+            if (error != "")
+            {
+				message = string.Format("Распределение заявок не может быть выполнено!\n{0}",
+                    error);
+                MessageBox.Show(message, winTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+			}
 
             var result = await ViewModel.Dispatch();
-			var message = "Распределение заявок не может быть выполнено!";
-
 			if (result != null)
             {
-			message = string.Format("Сформировано грузоперевозок: {0}!",
-			  result.Count);
+			    message = string.Format("Сформировано грузоперевозок: {0}!", result.Count);
 			}
  
 
@@ -223,8 +241,18 @@ namespace Abeslamidze_Kursovaya7
         {
             var winTitle = "Начать выполнение";
 
-            var result = await ViewModel.Start();
-			var message = "Нет сформированных грузоперевозок!";
+			var message = "";
+			var error = "";
+
+
+			if (ViewModel.Deliveries.Where(d => d.Status == "New").Count() == 0)
+			{
+				error = "Нет сформированных грузоперевозок!";
+				MessageBox.Show(error, winTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+			}
+
+			var result = await ViewModel.Start();
 
 			if (result != null)
             {
@@ -232,13 +260,14 @@ namespace Abeslamidze_Kursovaya7
 
 				foreach (var newDelivery in result)
 				{
-					ScheduleUpdateDelivery(newDelivery);
+                    var currentTime = DateTime.Now;
+					ScheduleUpdateDelivery(newDelivery, currentTime);
 
                     // set progress bar updates
 					var observDelivery = ViewModel.Deliveries.FirstOrDefault(x => x.Id == newDelivery.Id);
 					if (observDelivery != null)
 					{
-                        UpdateProgress(observDelivery, newDelivery);
+                        UpdateProgress(observDelivery, newDelivery, currentTime);
 					}
 				}
 
@@ -265,11 +294,11 @@ namespace Abeslamidze_Kursovaya7
 			}
 		}
 
-		private void ScheduleUpdateDelivery(DeliveryDto delivery)
+		private void ScheduleUpdateDelivery(DeliveryDto delivery, DateTime currentTime)
 		{
 			DispatcherTimer timer = new DispatcherTimer();
 
-			var interval = (delivery.EndDate - DateTime.Now).Value;
+			var interval = (delivery.EndDate - currentTime).Value;
 			timer.Interval = interval;
 
 			timer.Tick += async (sender, e) =>
@@ -278,6 +307,18 @@ namespace Abeslamidze_Kursovaya7
                 { 
                     await ViewModel.Update(delivery.Id);
 					await ViewModel.UpdateState();
+
+                    var ordersInQueue = ViewModel.Orders.Where(o => o.Status == "InQueue").ToList();
+
+					foreach (var order in ordersInQueue)
+                    {
+                        if (delivery.Transport.AvailableVolume >= order.Weight)
+                        {
+                            var message = string.Format("Заявка {0} , находящаяся в очереди, может быть выполнена транспортом {1}.",
+				        order.Id, delivery.Transport.Name);
+						}
+                    }
+
                 }
                 catch (Exception ex)
                 {
@@ -293,25 +334,25 @@ namespace Abeslamidze_Kursovaya7
 			timer.Start();
 		}
 
-        private void UpdateProgress(DeliveryModel observDelivery, DeliveryDto delivery)
+        private void UpdateProgress(DeliveryModel observDelivery, DeliveryDto delivery, DateTime currentTime)
         {
-			DispatcherTimer timer = new DispatcherTimer();
+			DispatcherTimer timer = new DispatcherTimer(DispatcherPriority.Render);
 
-            TimeSpan total = (delivery.EndDate - DateTime.Now).Value;
-            //double step = total.Seconds * 0.1;
+            TimeSpan total = (delivery.EndDate - currentTime).Value;
+            double step = 100 / total.TotalSeconds;
 
 			timer.Interval = TimeSpan.FromSeconds(1);
 
 			timer.Tick += (sender, e) =>
 			{
-			    if (observDelivery.Progress == total.Seconds)
+			    if (observDelivery.Progress >= 100)
                 {
                     timer.Stop();
 					timer = null;
 				}
                 else
                 {
-                    observDelivery.Progress += 1;
+                    observDelivery.Progress += step;
                 }
 			};
 

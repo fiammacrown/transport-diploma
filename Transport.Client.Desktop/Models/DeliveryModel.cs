@@ -8,14 +8,35 @@ namespace Transport.Client.Desktop.Models
     public class DeliveryModel: ObservableObject
 	{
 		double _progress = 0;
+		DateTime? _startDate = null;
+		DateTime? _endDate = null;
+		string _status = string.Empty;
 
 		public Guid Id { get; set; }
+
 		public OrderDto Order { get; set; }
+
 		public TransportDto Transport { get; set; }
-		public DateTime? StartDate { get; set; }
-		public DateTime? EndDate { get; set; }
+
+		public DateTime? StartDate
+		{
+			get => _startDate;
+			set => SetProperty(ref _startDate, value);
+		}
+
+		public DateTime? EndDate
+		{
+			get => _endDate;
+			set => SetProperty(ref _endDate, value);
+		}
+
 		public double? Price { get; set; }
-		public string Status { get; set; }
+
+		public string Status
+		{
+			get => _status;
+			set => SetProperty(ref _status, value);
+		}
 
 		public double Progress
 		{

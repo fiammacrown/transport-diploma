@@ -3,6 +3,7 @@ using Abeslamidze_Kursovaya7.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -125,13 +126,24 @@ namespace Abeslamidze_Kursovaya7.ViewModels
 
             var deliveries = (await _apiService.GetAllDeliveries()).Select(x => DeliveryModel.Map(x));
 
-			Deliveries.Clear();
+			//Deliveries.Clear();
             foreach (var delivery in deliveries)
             {
-                Deliveries.Add(delivery);
-            }
+                var existingDelivery = Deliveries.FirstOrDefault(d => d.Id == delivery.Id);
+				if (existingDelivery != null)
+                {
+                    existingDelivery.StartDate = delivery.StartDate;
+                    existingDelivery.EndDate = delivery.EndDate;
+                    existingDelivery.Price  = delivery.Price;   
+                    existingDelivery.Status = delivery.Status;
+                }
+                else
+                {
+					Deliveries.Insert(0, delivery);
+				}  
+			}
 
-            var transports = await _apiService.GetAllTransports();
+			var transports = await _apiService.GetAllTransports();
 
             Transports.Clear();
             foreach (var transport in transports)
