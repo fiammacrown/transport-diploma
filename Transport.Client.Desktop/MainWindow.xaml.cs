@@ -308,14 +308,18 @@ namespace Abeslamidze_Kursovaya7
                     await ViewModel.Update(delivery.Id);
 					await ViewModel.UpdateState();
 
-                    var ordersInQueue = ViewModel.Orders.Where(o => o.Status == "InQueue").ToList();
+					var statusList = new List<string> { "InQueue", "Registered" };
+					var newOrders = ViewModel.Orders.Where(o => statusList.Contains(o.Status)).ToList();
 
-					foreach (var order in ordersInQueue)
+					foreach (var order in newOrders)
                     {
-                        if (delivery.Transport.AvailableVolume >= order.Weight)
+                        if (delivery.Transport.Volume >= order.Weight)
                         {
-                            var message = string.Format("Заявка {0} , находящаяся в очереди, может быть выполнена транспортом {1}.",
+                            var message = string.Format("Заявка {0} может быть выполнена транспортом {1}.",
 				        order.Id, delivery.Transport.Name);
+
+							MessageBox.Show(message, "Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
+                            break;
 						}
                     }
 
