@@ -271,10 +271,7 @@ namespace Abeslamidze_Kursovaya7
 					}
 				}
 
-				message = string.Format("Начато выполнение {0} грузоперевозок!",
-                  result.Count);
-
-               
+				message = string.Format("Начато выполнение {0} грузоперевозок!", result.Count);
 			}
 
 			MessageBox.Show(message, winTitle);
@@ -315,19 +312,20 @@ namespace Abeslamidze_Kursovaya7
                     {
                         if (delivery.Transport.Volume >= order.Weight)
                         {
-                            var message = string.Format("Заявка {0} может быть выполнена транспортом {1}.",
-				        order.Id, delivery.Transport.Name);
+                            var message = string.Format(
+                                "Заявка {0} может быть выполнена транспортом {1}.",
+                                order.Id,
+                                delivery.Transport.Name);
 
 							MessageBox.Show(message, "Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
                             break;
 						}
                     }
-
                 }
                 catch (Exception ex)
                 {
-                    // silence error 
-                }
+					MessageBox.Show(ex.ToString(), "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+				}
 				finally
                 {
                     timer.Stop();

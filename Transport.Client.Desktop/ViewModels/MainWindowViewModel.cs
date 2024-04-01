@@ -94,8 +94,6 @@ namespace Abeslamidze_Kursovaya7.ViewModels
         public async Task Update(Guid deliveryId)
         {
 			await _apiService.UpdateDelivery(deliveryId);
-            return;
-
 		}
 
         public async Task Initialize()
